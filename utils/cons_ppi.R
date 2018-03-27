@@ -1,15 +1,15 @@
 library(igraph)
 library(ggplot2)
 
-data <- read.csv(file="~/protein-integration/data/PathwayCommons9.All.hgnc.sif", sep="\t", header = FALSE)
-rppa <- read.csv(file="~/protein-integration/brca_rppa.txt", sep="\t", header=TRUE, row.names = 1)
-rppa <- rppa[-1,]
-#rppa <- read.csv(file="mean_imputed_rppa.csv", header=TRUE, row.names = 1, stringsAsFactors = FALSE)
+#pathway : 1546602 * 2
+#rppa : 188 * 376
+pathway <- read.csv(file="~/protein-integration/data/PathwayCommons9.All.hgnc.sif", sep="\t", header = FALSE)
+rppa <- read.csv(file="~/protein-integration/data/mean_imputed_rppa.csv", header=TRUE, row.names = 1)
 substring(rownames(rppa),1,1)
 row.names(rppa) <- substring(rownames(rppa),2)
 
-data[2] <- NULL
-genepair <- unique(data)
+pathway[2] <- NULL
+genepair <- unique(pathway)
 adjmtx <- get.adjacency(graph.edgelist(as.matrix(genepair), directed=FALSE))
 ppi <- graph_from_adjacency_matrix(adjmtx, mode = "undirected")
 
@@ -29,7 +29,7 @@ ppi.degrees <- degree(ppi)
 hub_gene <- ppi.degrees[ppi.degrees>4000]
 barplot(hub_gene, names.arg = names(hub_gene), cex.names=0.7)
 
-#intersection of ppi and rppa
+#intersection of ppi and rppa : 186
 ppi_gene <- V(ppi)
 rppa_gene <- rownames(rppa)
-common_gene <- intersect(ppi_gene,rppa_gene)
+common_gene <- intersect(names(ppi_gene),rppa_gene)
