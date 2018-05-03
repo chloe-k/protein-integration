@@ -1,49 +1,71 @@
-library(KEGGgraph)
-library(igraph)
-library(ggplot2)
 
 
+datapath <- file.path('data')
+kegg_db <- '../data/KEGG_DB/'
 ##################################################################################
 ##################################################################################
 #############Constructing Directed Gene-gene GRAPH################################
 
 # This code implements constructing global directed gene-gene graph from all kegg pathway(525 pathways)
 #525 pathways -> 327 pathways(It is the number of existing kgml)
-kegg_list <- scan("../data/kegg_pathway", what="", sep = "\n")
-kgml_list <- list()
 
-for(pathid in kegg_list){
-  tryCatch(
-    {
-      tmp <- paste('../data/KEGG_DB/hsa',pathid,sep="")
-      tmp <- paste(tmp,".xml", sep="")
-      retrieveKGML(pathwayid = pathid, organism = "hsa", destfile = tmp, method = "wget")
-      kgml_list <- append(kgml_list, tmp)
-      cat(pathid,'is downloaded!...................')
+if(!dir.exists(kegg_db)) {
+  kegg_list <- scan("../data/kegg_pathway", what="", sep = "\n")
+  kgml_list <- list()
+  
+  for(pathid in kegg_list){
+    tryCatch(
+      {
+        tmp <- paste('../data/KEGG_DB/hsa',pathid,sep="")
+        tmp <- paste(tmp,".xml", sep="")
+        retrieveKGML(pathwayid = pathid, organism = "hsa", destfile = tmp, method = "wget")
+        kgml_list <- append(kgml_list, tmp)
+        cat(pathid,'is downloaded!...................')
+        
+      },
+      error=function(e){
+        cat(pathid,'is not exist')
+        message(e)
+      }
       
-    },
-    error=function(e){
-      cat(pathid,'is not exist')
-      message(e)
-    }
-    
-  )
+    )
+  }
+  
+} else{
+  
+  kgml_list <- list.files(path='../data/KEGG_DB', full.names=TRUE)
 }
 
 
 #kgml_list <- paste('../data/KEGG_DB/',exist_list,sep="")
 graphs <- list()
+pathSet <- list()
 
 for(kgml in kgml_list){
-  pathwayG <- parseKGML2Graph(kgml)
+  
+  # parse kgml file
+  k <- parseKGML(kgml)
+  
+  # pathway set
+  node_names <- unlist(lapply(X=nodes(k),
+                              FUN=function(x) {
+                                ifelse(getType(x)=="gene", getSYMBOL(sapply( strsplit(getName(x),":"), '[[', 2 ), data='org.Hs.eg'), NA)
+                              }), use.names = F)
+  pathSet[[substring(getName(k),9)]] <- node_names[!is.na(node_names)]
+  
+  # graph set
+  pathwayG <- parseKGML2Graph(kgml, expandGenes=TRUE)
   graphs <- append(graphs, pathwayG)
 }
 
 
-
 merged_G <- mergeGraphs(graphs)
-G <- igraph.from.graphNEL(merged_G)
+directGraph <- igraph.from.graphNEL(merged_G)
 
+V(directGraph)$name <- sapply(X = V(directGraph)$name, FUN = function(x) getSYMBOL(strsplit(x, ":")[[1]][2], data='org.Hs.eg'), USE.NAMES = F)
+
+save(directGraph, file=file.path(datapath, paste(c("directGraph", from, "rda"), collapse='.')))
+save(pathSet, file=file.path(datapath, paste(c("pathSet", from, "rda"), collapse='.')))
 
 ##################################################################################
 ##################################################################################
