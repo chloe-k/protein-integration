@@ -35,5 +35,8 @@ vignettes/*.pdf
 # except data folder
 data/
 
+# except result folder
+result/
+
 # jupyter notebook
 *.ipynb_checkpoints
