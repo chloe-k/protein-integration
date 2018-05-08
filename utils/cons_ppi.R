@@ -2,13 +2,9 @@ cons_ppi <- function(datapath){
   
   #PathwayCommons9 is updated in 2017/06/29
   
-  datapath <- '~/protein-integration/data/'
+  #datapath <- '~/protein-integration/data/'
   pathway <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
   rppa <- read.csv(file.path(datapath, 'mean_imputed_rppa.csv'), header=T, row.names=1, sep=",")
-  
-  #remove the prefix 'r' of row name
-  substring(rownames(rppa),1,1)
-  row.names(rppa) <- substring(rownames(rppa),2)
   
   #remove chemical compound(CHEBI) interaction in ppi
   chem <- which(pathway[2] == 'consumption-controlled-by')
@@ -22,15 +18,13 @@ cons_ppi <- function(datapath){
   pathway[2] <- NULL
   genepair <- unique(pathway)
   adjmtx <- get.adjacency(graph.edgelist(as.matrix(genepair), directed=FALSE))
-  #ppiGraph <- graph_from_adjacency_matrix(adjmtx, mode = "undirected")
-  DppiGraph <- graph_from_adjacency_matrix(adjmtx, mode = "directed")
+  ppiGraph <- graph_from_adjacency_matrix(adjmtx, mode = "undirected")
+  Dadjmtx <- get.adjacency(graph.edgelist(as.matrix(genepair), directed=TRUE))
+  DppiGraph <- graph_from_adjacency_matrix(Dadjmtx, mode = "directed")
   
   #ppi genes : 24129 
   #ppi edges : 919192  (regardless of interaction type) 
-  #gsize(ppiGraph)
-  
-  #directed ppi genes : 31693 
-  #directed ppi edges : 2922100 
+  gsize(ppiGraph)
   gsize(DppiGraph)
   
   #save(ppiGraph, file=file.path(datapath, paste(c("ppiGraph","rda"), collapse='.')))
