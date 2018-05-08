@@ -1,5 +1,5 @@
 preprcs_rppa <- function(datapath, rawrppapath){
-  rawrppapath <- file.path(datapath, 'brca_rppa.txt')
+  #rawrppapath <- file.path(datapath, 'brca_rppa.txt')
   
   # read rppa data (226*937)
   rppa <- read.delim(rawrppapath, header = T, stringsAsFactors = F, row.names = 1)
@@ -26,12 +26,29 @@ preprcs_rppa <- function(datapath, rawrppapath){
   
   # fill missing values with median(row) imputation
   library(mice)
+  library(pracma)
   tail(md.pattern(decomp_rppa))
   
-  imputed_rppa <- data.frame(lapply(X=decomp_rppa,
+  imputed_rppa <- data.frame(apply(X=decomp_rppa,
+                                    MARGIN = 1,
                                     FUN=function(x) {
                                       if(is.numeric(x))
                                         ifelse(is.na(x),median(x,na.rm=T),x)
                                       else x}))
+  imputed_rppa <- as.data.frame(t(imputed_rppa))
+  row.names(imputed_rppa) <- rownames(decomp_rppa)
+  tail(md.pattern(imputed_rppa))
+  
+  # mean expression by gene
+  # Because row name can not be duplicated, process mean aggregate in first column.
+  rpparow <- sapply(strsplit(row.names(imputed_rppa), "\\|"), "[[", 1)
+  imputed_rppa <- cbind(rpparow,imputed_rppa)
+  
+  mean_imputed_rppa <- aggregate(imputed_rppa[,-1], list(gene=imputed_rppa[,1]), FUN=mean)
+  row.names(mean_imputed_rppa) <- mean_imputed_rppa[,1]
+  mean_imputed_rppa <- mean_imputed_rppa[,-1]
+  
+  
+  write.csv(mean_imputed_rppa, file.path(datapath,'mean_imputed_rppa.csv'))
   
 }
