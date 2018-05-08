@@ -1,12 +1,12 @@
 cons_ppi <- function(datapath){
   
-  #PathwayCommons9 is updated in 2017/06/29
+  # PathwayCommons9 is updated in 2017/06/29
   
   #datapath <- '~/protein-integration/data/'
   pathway <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
   rppa <- read.csv(file.path(datapath, 'mean_imputed_rppa.csv'), header=T, row.names=1, sep=",")
   
-  #remove chemical compound(CHEBI) interaction in ppi
+  # remove chemical compound(CHEBI) interaction in ppi
   chem <- which(pathway[2] == 'consumption-controlled-by')
   chem <- c(chem, which(pathway[2] == 'controls-production-of'))
   chem <- c(chem, which(pathway[2] == 'controls-transport-of-chemical'))
@@ -14,20 +14,41 @@ cons_ppi <- function(datapath){
   chem <- c(chem, which(pathway[2] == 'reacts-with'))
   pathway <- pathway[-chem,]
   
-  #make ppi igraph
+  # bidirected interaction in ppi
+  bidir <- which(pathway[2] == 'in-complex-with')
+  bidir <- c(bidir, which(pathway[2] == 'interacts-with'))
+  bidir <- c(bidir, which(pathway[2] == 'neighbor-of'))
+  
+  # make reverse direction
+  bidir_prot <- pathway[bidir,]
+  revdir <- data.frame(matrix(vector(), length(bidir_prot[[1]]), 3, dimnames=list(c(), c("V1", "V2", "V3"))))
+  revdir$V1 <- bidir_prot$V3
+  revdir$V3 <- bidir_prot$V1
+  dpathway <- rbind(pathway, revdir)
+  
+  # make ppi igraph
   pathway[2] <- NULL
-  genepair <- unique(pathway)
+  dpathway[2] <- NULL
+  genepair <- pathway[!duplicated(pathway), ]
+  dgenepair <- dpathway[!duplicated(dpathway),]
+  
+  # undirected ppi
   adjmtx <- get.adjacency(graph.edgelist(as.matrix(genepair), directed=FALSE))
   ppiGraph <- graph_from_adjacency_matrix(adjmtx, mode = "undirected")
-  Dadjmtx <- get.adjacency(graph.edgelist(as.matrix(genepair), directed=TRUE))
+  
+  # directed ppi
+  Dadjmtx <- get.adjacency(graph.edgelist(as.matrix(dgenepair), directed=TRUE))
   DppiGraph <- graph_from_adjacency_matrix(Dadjmtx, mode = "directed")
   
-  #ppi genes : 24129 
-  #ppi edges : 919192  (regardless of interaction type) 
+  # ppi genes : 24129 
+  # ppi edges : 919192  (regardless of interaction type) 
   gsize(ppiGraph)
+  
+  # ppi genes : 24129 
+  # ppi edges : 1375336  (regardless of interaction type) 
   gsize(DppiGraph)
   
-  #save(ppiGraph, file=file.path(datapath, paste(c("ppiGraph","rda"), collapse='.')))
+  save(ppiGraph, file=file.path(datapath, paste(c("ppiGraph","rda"), collapse='.')))
   save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph","rda"), collapse='.')))
 
 ########################################################################################  
