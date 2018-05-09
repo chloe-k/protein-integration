@@ -75,7 +75,8 @@ imput_ppi <- function(datapath, rppapath, ppiGraph){
   w <- cbind(W0)
 ####################################################################################################### 
   w_list <- list(genes = w)
-  ppi_mc <- diffuse_mc(graph = ppiGraph, scores = w_list, n.perm = 10000)
+  K_pstep <- pStepKernel(ppiGraph, a=)
+  ppi_mc <- diffuse_mc(graph = ppiGraph, scores = w_list, n.perm = 10000, K=k_pstep)
   
   
 }

@@ -3,6 +3,7 @@ library(igraph)
 library(ggplot2)
 library(annotate)
 library(org.Hs.eg.db)
+library(diffuStats)
 
 sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 
@@ -23,15 +24,18 @@ load(file.path(graphpath))
 load(file.path(datapath, 'pathSet.rda'))
 
 ppipath <- file.path(datapath, 'ppiGraph.rda')
+dppipath <- file.path(datapath, 'DppiGraph.rda')
 if(!file.exists(ppipath)) {
   cat('ppiGraph does not exist, now creating ppiGraph start')
   cons_ppi(datapath)
 }
 load(file.path(ppipath))
+load(file.path(dppipath))
 
 
 g <- directGraph
 m <- directGraph
+dp <- DppiGraph
 p <- ppiGraph
 
 
@@ -45,7 +49,7 @@ if(!file.exists(rppapath)) {
   preprcs_rppa(datapath, rawrppapath)
 }
 
-p <- imput_ppi(datapath, rppapath, ppiGraph)
+im_p <- imput_ppi(datapath, rppapath, p)
 
 
 
