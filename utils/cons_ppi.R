@@ -3,18 +3,20 @@ cons_ppi <- function(datapath){
   # PathwayCommons9 is updated in 2017/06/29
   
   #datapath <- '~/protein-integration/data/'
-  pathway <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
+  pathway_profile <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
   rppa <- read.csv(file.path(datapath, 'mean_imputed_rppa.csv'), header=T, row.names=1, sep=",")
   
   # remove chemical compound(CHEBI) interaction in ppi
-  chem <- which(pathway[2] == 'consumption-controlled-by')
-  chem <- c(chem, which(pathway[2] == 'controls-production-of'))
-  chem <- c(chem, which(pathway[2] == 'controls-transport-of-chemical'))
-  chem <- c(chem, which(pathway[2] == 'chemical-affects'))
-  chem <- c(chem, which(pathway[2] == 'reacts-with'))
-  pathway <- pathway[-chem,]
+  chem <- list()
+  chem <- which(pathway_profile[2] == 'consumption-controlled-by')
+  chem <- c(chem, which(pathway_profile[2] == 'controls-production-of'))
+  chem <- c(chem, which(pathway_profile[2] == 'controls-transport-of-chemical'))
+  chem <- c(chem, which(pathway_profile[2] == 'chemical-affects'))
+  chem <- c(chem, which(pathway_profile[2] == 'reacts-with'))
+  pathway <- pathway_profile[-chem,]
   
   # bidirected interaction in ppi
+  bidir <- list()
   bidir <- which(pathway[2] == 'in-complex-with')
   bidir <- c(bidir, which(pathway[2] == 'interacts-with'))
   bidir <- c(bidir, which(pathway[2] == 'neighbor-of'))
@@ -33,12 +35,10 @@ cons_ppi <- function(datapath){
   dgenepair <- dpathway[!duplicated(dpathway),]
   
   # undirected ppi
-  adjmtx <- get.adjacency(graph.edgelist(as.matrix(genepair), directed=FALSE))
-  ppiGraph <- graph_from_adjacency_matrix(adjmtx, mode = "undirected")
+  ppiGraph <- graph.data.frame(genepair, directed=FALSE)
   
   # directed ppi
-  Dadjmtx <- get.adjacency(graph.edgelist(as.matrix(dgenepair), directed=TRUE))
-  DppiGraph <- graph_from_adjacency_matrix(Dadjmtx, mode = "directed")
+  DppiGraph <- graph.data.frame(dgenepair, directed=TRUE)
   
   # ppi genes : 24129 
   # ppi edges : 919192  (regardless of interaction type) 

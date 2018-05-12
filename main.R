@@ -3,7 +3,8 @@ library(igraph)
 library(ggplot2)
 library(annotate)
 library(org.Hs.eg.db)
-library(diffuStats)
+library(RANKS)
+library(Matrix)
 
 sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 
@@ -23,6 +24,18 @@ if(!file.exists(graphpath)) {
 load(file.path(graphpath))
 load(file.path(datapath, 'pathSet.rda'))
 
+# imputation ppi node value by using RPPA profile
+
+rppapath <- file.path(datapath, 'mean_imputed_rppa.csv')
+
+if(!file.exists(rppapath)) {
+  cat('preprocessed rppa profile does not exist, now preprocessing RPPA profile start')
+  rawrppapath <- file.path(datapath, 'brca_rppa.txt')
+  preprcs_rppa(datapath, rawrppapath)
+}
+
+#w0_rppa <- imput_ppi(datapath, rppapath)
+
 ppipath <- file.path(datapath, 'ppiGraph.rda')
 dppipath <- file.path(datapath, 'DppiGraph.rda')
 if(!file.exists(ppipath)) {
@@ -39,17 +52,7 @@ dp <- DppiGraph
 p <- ppiGraph
 
 
-# imputation ppi node value by using RPPA profile
 
-rppapath <- file.path(datapath, 'mean_imputed_rppa.csv')
-
-if(!file.exists(rppapath)) {
-  cat('preprocessed rppa profile does not exist, now preprocessing RPPA profile start')
-  rawrppapath <- file.path(datapath, 'brca_rppa.txt')
-  preprcs_rppa(datapath, rawrppapath)
-}
-
-im_p <- imput_ppi(datapath, rppapath, p)
 
 
 

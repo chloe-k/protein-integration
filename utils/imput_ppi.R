@@ -1,15 +1,15 @@
-imput_ppi <- function(datapath, rppapath, ppiGraph){
+imput_ppi <- function(datapath, rppapath){
   
   datapath <- '~/protein-integration/data/'
   rppapath <- file.path(datapath, 'mean_imputed_rppa.csv')
-  ppiGraph <- p
+  ppi <- p
   
   # assign rppa mean expression to ppi node(intersect with rppa and ppi gene)
   # The number of common gene : 183(RPPA & PPI)
   # RPPA : 188
   # PPI : 24129
   rppa <- read.csv(rppapath, header=T, row.names = 1)
-  common_gene <- intersect(rownames(rppa), V(ppiGraph)$name)
+  common_gene <- intersect(rownames(rppa), V(ppi)$name)
   rppa <- rppa[common_gene,]
 
   ########################################################################################
@@ -43,6 +43,8 @@ imput_ppi <- function(datapath, rppapath, ppiGraph){
   
   rppa <- rppa[,samples_r]
   
+  write.csv(rppa, file.path(datapath,'rppa_POI.csv'))
+  
   # split into 353 good / 472 poor group
   good_samples <- which(clinical$survival>group_cut)
   poor_samples <- which(clinical$survival<=group_cut)
@@ -50,7 +52,6 @@ imput_ppi <- function(datapath, rppapath, ppiGraph){
   y <- list(good_samples, poor_samples)
   
   # tscore calculation(get W0)
-  # (Mann-Whitney test)
   l_rppa <- list(rppa)
   x_norm <- list(0)
   x_stats <- list(0)
@@ -71,13 +72,26 @@ imput_ppi <- function(datapath, rppapath, ppiGraph){
   }
   
   # assign initial weights to the pathway graph
-  W0 <- getW0(gene_weight, ppiGraph)
-  w <- cbind(W0)
+  W0 <- getW0(gene_weight, ppi)
+  
 ####################################################################################################### 
-  w_list <- list(genes = w)
-  K_pstep <- pStepKernel(ppiGraph, a=)
-  ppi_mc <- diffuse_mc(graph = ppiGraph, scores = w_list, n.perm = 10000, K=k_pstep)
+   
+  adj <- as_adjacency_matrix(ppi, type = "both", names = TRUE, sparse = TRUE)
   
+  for(i in 1:length(W0)){
+    print(rownames(adj)[i])
+    for(j in 1:length(W0)){
+      if(is.na(adj[i][j])) next
+      if(adj[i][j] == 1 && i != j){
+        print(colnames(adj)[j])
+        adj[i][j] <- W0[[i]] + W0[[j]]
+      }
+    }
+  }
   
+  labels <- which(W0 > 0)
+  diffus_ppi <- RWR(adj, labels, norm = FALSE)
+  
+
 }
   

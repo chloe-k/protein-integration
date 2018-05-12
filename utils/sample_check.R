@@ -19,3 +19,15 @@ ppi.degrees <- degree(ppi)
 #check intersect of cptac and ppi genes
 #10403
 length(intersect(names(ppi.degrees), rownames(cptac)))
+
+#Pathway graph & RPPA gene : 197
+rppa <- read.csv(file="~/protein-integration/data/rppa_POI.csv", header = T, row.names = 1, stringsAsFactors = F)
+rppa_pathSet <- list()
+
+for(i in 1:length(pathSet)){
+  len_rpath <- length(intersect(pathSet[[i]],rownames(rppa)))
+  if(len_rpath>0){
+    print(names(pathSet[i]))
+    rppa_pathSet[[names(pathSet[i])]] <- unlist(intersect(pathSet[[i]],rownames(rppa)))
+  }
+}
