@@ -1,6 +1,6 @@
-imput_ppi <- function(datapath, rppapath){
+imput_ppi <- function(datapath, rppapath, p){
   
-  datapath <- '~/protein-integration/data/'
+  datapath <- '~/protein-integration/data'
   rppapath <- file.path(datapath, 'mean_imputed_rppa.csv')
   ppi <- p
   
@@ -11,7 +11,7 @@ imput_ppi <- function(datapath, rppapath){
   rppa <- read.csv(rppapath, header=T, row.names = 1)
   common_gene <- intersect(rownames(rppa), V(ppi)$name)
   rppa <- rppa[common_gene,]
-
+  
   ########################################################################################
   # read clinical information of BRCA patients
   # RPPA & clinical : 937
@@ -74,24 +74,27 @@ imput_ppi <- function(datapath, rppapath){
   # assign initial weights to the pathway graph
   W0 <- getW0(gene_weight, ppi)
   
-####################################################################################################### 
-   
+  ####################################################################################################### 
+  
   adj <- as_adjacency_matrix(ppi, type = "both", names = TRUE, sparse = TRUE)
+  df_adj <- as.data.frame(as.matrix(adj))
   
   for(i in 1:length(W0)){
-    print(rownames(adj)[i])
+    print(i)
+    print(rownames(df_adj)[i])
+    print('--------------')
     for(j in 1:length(W0)){
-      if(is.na(adj[i][j])) next
-      if(adj[i][j] == 1 && i != j){
-        print(colnames(adj)[j])
-        adj[i][j] <- W0[[i]] + W0[[j]]
+      if(df_adj[i,j] == 1 && i != j){
+        print(colnames(df_adj)[j])
+        df_adj[i,j] <- W0[[i]] + W0[[j]]
       }
     }
   }
   
+  save(df_adj, file=file.path(datapath, paste(c("df_adj","rda"), collapse='.')))
+  
   labels <- which(W0 > 0)
   diffus_ppi <- RWR(adj, labels, norm = FALSE)
   
-
-}
   
+}
