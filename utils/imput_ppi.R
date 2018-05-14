@@ -77,14 +77,8 @@ imput_ppi <- function(datapath, rppapath, p){
   #save(df_adj, file=file.path(datapath, paste(c("df_adj","rda"), collapse='.')))
   
   adj <- as.matrix(get.adjacency(ppi))
+  
   labels <- which(W0 > 0)
   diffus_ppi <- RWR(adj, labels, norm = FALSE, tmax = 5000, eps=1e-6)
-  
-
-  
-  
-  
-  
-  
   
 }
