@@ -14,7 +14,7 @@ getW0 <- function(gene_weight, globalGraph){
     }
   }
   
-#  W0 <- W0/sum(W0)
+  W0 <- W0/sum(W0)
   
   return(W0)
 }

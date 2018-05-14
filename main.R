@@ -1,3 +1,4 @@
+#source("https://bioconductor.org/biocLite.R")
 library(KEGGgraph)
 library(igraph)
 library(ggplot2)
@@ -51,24 +52,4 @@ m <- directGraph
 dp <- DppiGraph
 p <- ppiGraph
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+imput_ppi(datapath,rppapath,p)

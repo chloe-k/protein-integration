@@ -13,6 +13,8 @@ cons_ppi <- function(datapath){
   chem <- c(chem, which(pathway_profile[2] == 'controls-transport-of-chemical'))
   chem <- c(chem, which(pathway_profile[2] == 'chemical-affects'))
   chem <- c(chem, which(pathway_profile[2] == 'reacts-with'))
+  chem <- c(chem, grep('CHEBI', pathway_profile[[1]]), value=FALSE)
+  chem <- c(chem, grep('CHEBI', pathway_profile[[3]]), value=FALSE)
   pathway <- pathway_profile[-chem,]
   
   # bidirected interaction in ppi
@@ -40,12 +42,12 @@ cons_ppi <- function(datapath){
   # directed ppi
   DppiGraph <- graph.data.frame(dgenepair, directed=TRUE)
   
-  # ppi genes : 24129 
-  # ppi edges : 919192  (regardless of interaction type) 
+  # ppi genes : 20057 
+  # ppi edges : 904706  (regardless of interaction type) 
   gsize(ppiGraph)
   
-  # ppi genes : 24129 
-  # ppi edges : 1375336  (regardless of interaction type) 
+  # ppi genes : 20057 
+  # ppi edges : 1360850  (regardless of interaction type) 
   gsize(DppiGraph)
   
   save(ppiGraph, file=file.path(datapath, paste(c("ppiGraph","rda"), collapse='.')))
