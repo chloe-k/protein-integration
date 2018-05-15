@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#source("https://bioconductor.org/biocLite.R")
-=======
 source("https://bioconductor.org/biocLite.R")
->>>>>>> 35f50b12a74e49f305e40ad95098695a102f150e
 library(KEGGgraph)
 library(igraph)
 library(ggplot2)
@@ -10,6 +6,7 @@ library(annotate)
 library(org.Hs.eg.db)
 library(RANKS)
 library(Matrix)
+library(NetPreProc)
 
 sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 
