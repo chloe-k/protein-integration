@@ -24,10 +24,24 @@ length(intersect(names(ppi.degrees), rownames(cptac)))
 rppa <- read.csv(file="~/protein-integration/data/rppa_POI.csv", header = T, row.names = 1, stringsAsFactors = F)
 rppa_pathSet <- list()
 
+sink("data/pathway_rppa.txt")
+cat("Pathway\tnum_RPPA_genes\tRPPA_gene\n")
+
 for(i in 1:length(pathSet)){
   len_rpath <- length(intersect(pathSet[[i]],rownames(rppa)))
   if(len_rpath>0){
-    print(names(pathSet[i]))
     rppa_pathSet[[names(pathSet[i])]] <- unlist(intersect(pathSet[[i]],rownames(rppa)))
+    num_rppa <- length(unlist(intersect(pathSet[[i]],rownames(rppa))))
+    cat(names(pathSet[i]))
+    cat('\t')
+    cat(num_rppa)
+    cat('\t')
+    for(cnt in 1:num_rppa){
+      cat(unlist(intersect(pathSet[[i]],rownames(rppa)))[cnt])
+      cat('\t')
+    }
+    cat('\n')
   }
 }
+sink()
+
