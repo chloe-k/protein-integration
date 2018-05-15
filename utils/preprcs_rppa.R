@@ -1,5 +1,5 @@
-preprcs_rppa <- function(datapath, rawrppapath){
-  #rawrppapath <- file.path(datapath, 'brca_rppa.txt')
+preprcs_rppa <- function(gdacpath){
+  rawrppapath <- file.path(gdacpath, 'brca_rppa.txt')
   
   # read rppa data (226*937)
   rppa <- read.delim(rawrppapath, header = T, stringsAsFactors = F, row.names = 1)
@@ -49,6 +49,6 @@ preprcs_rppa <- function(datapath, rawrppapath){
   mean_imputed_rppa <- mean_imputed_rppa[,-1]
   
   
-  write.csv(mean_imputed_rppa, file.path(datapath,'mean_imputed_rppa.csv'))
+  write.csv(mean_imputed_rppa, file.path(gdacpath,'mean_imputed_rppa.csv'))
   
 }
