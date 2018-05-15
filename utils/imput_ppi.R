@@ -74,11 +74,11 @@ imput_ppi <- function(datapath, rppapath, p){
   # assign initial weights to the pathway graph
   W0 <- getW0(gene_weight, ppi)
   
-  #save(df_adj, file=file.path(datapath, paste(c("df_adj","rda"), collapse='.')))
-  
   adj <- as.matrix(get.adjacency(ppi))
   
   labels <- which(W0 > 0)
-  diffus_ppi <- RWR(adj, labels, norm = FALSE, tmax = 5000, eps=1e-6)
+
+  diffus_ppi <- RWR(W = adj, ind.positives = labels, gamma = 0.3, tmax = 1000, eps = 1e-10, norm = TRUE)
+  save(diffus_ppi, file=file.path(datapath, paste(c("diffus_ppi","rda"), collapse='.')))
   
 }
