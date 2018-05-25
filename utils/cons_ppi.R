@@ -1,40 +1,39 @@
 cons_ppi <- function(datapath, gdacpath){
   
   # PathwayCommons9 is updated in 2017/06/29
-  
-  #gdacpath <- '~/protein-integration/data/'
-  pathway_profile <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
+  # read data
+  ppi_profile <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
   rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, sep=",")
   
   # remove chemical compound(CHEBI) interaction in ppi
   chem <- list()
-  chem <- which(pathway_profile[2] == 'consumption-controlled-by')
-  chem <- c(chem, which(pathway_profile[2] == 'controls-production-of'))
-  chem <- c(chem, which(pathway_profile[2] == 'controls-transport-of-chemical'))
-  chem <- c(chem, which(pathway_profile[2] == 'chemical-affects'))
-  chem <- c(chem, which(pathway_profile[2] == 'reacts-with'))
-  chem <- c(chem, grep('CHEBI', pathway_profile[[1]]), value=FALSE)
-  chem <- c(chem, grep('CHEBI', pathway_profile[[3]]), value=FALSE)
-  pathway <- pathway_profile[-chem,]
+  chem <- which(ppi_profile[2] == 'consumption-controlled-by')
+  chem <- c(chem, which(ppi_profile[2] == 'controls-production-of'))
+  chem <- c(chem, which(ppi_profile[2] == 'controls-transport-of-chemical'))
+  chem <- c(chem, which(ppi_profile[2] == 'chemical-affects'))
+  chem <- c(chem, which(ppi_profile[2] == 'reacts-with'))
+  chem <- c(chem, grep('CHEBI', ppi_profile[[1]]), value=FALSE)
+  chem <- c(chem, grep('CHEBI', ppi_profile[[3]]), value=FALSE)
+  ppi <- ppi_profile[-chem,]
   
   # bidirected interaction in ppi
   bidir <- list()
-  bidir <- which(pathway[2] == 'in-complex-with')
-  bidir <- c(bidir, which(pathway[2] == 'interacts-with'))
-  bidir <- c(bidir, which(pathway[2] == 'neighbor-of'))
+  bidir <- which(ppi[2] == 'in-complex-with')
+  bidir <- c(bidir, which(ppi[2] == 'interacts-with'))
+  bidir <- c(bidir, which(ppi[2] == 'neighbor-of'))
   
   # make reverse direction
-  bidir_prot <- pathway[bidir,]
+  bidir_prot <- ppi[bidir,]
   revdir <- data.frame(matrix(vector(), length(bidir_prot[[1]]), 3, dimnames=list(c(), c("V1", "V2", "V3"))))
   revdir$V1 <- bidir_prot$V3
   revdir$V3 <- bidir_prot$V1
-  dpathway <- rbind(pathway, revdir)
+  dppi <- rbind(ppi, revdir)
   
   # make ppi igraph
-  pathway[2] <- NULL
-  dpathway[2] <- NULL
-  genepair <- pathway[!duplicated(pathway), ]
-  dgenepair <- dpathway[!duplicated(dpathway),]
+  ppi[2] <- NULL
+  dppi[2] <- NULL
+  genepair <- ppi[!duplicated(ppi), ]
+  dgenepair <- dppi[!duplicated(dppi),]
   
   # undirected ppi
   ppiGraph <- graph.data.frame(genepair, directed=FALSE)
@@ -59,18 +58,18 @@ cons_ppi <- function(datapath, gdacpath){
   ########LIST##########
   #HNF4A  APP   JUN   MAX   MYC   SP1  TP53   SREBF1  TCF3  LEF1  MAZ  FOXO4  NOG 
   ######################
-  ppiGraph.degrees <- degree(ppiGraph)
-  ppi_df <- as.data.frame(ppiGraph.degrees)
-  hist(ppi_df$ppiGraph.degrees, breaks = 1000, xlab = "Degree", main = "Degree-Frequency histogram in PPI")
-  ppi_log10 <- log10(ppi_df$ppiGraph.degrees)
-  hist(ppi_log10, breaks = 1000, xlab = "Degree", main = "Degree-Frequency log10-histogram in PPI")
-  hub_gene <- ppiGraph.degrees[ppiGraph.degrees>2000]
-  #barplot(hub_gene, names.arg = ppiGraph.degrees, cex.names=0.7)
-  
-  #intersection of ppi and rppa : 186
-  ppi_gene <- V(ppiGraph)
-  rppa_gene <- rownames(rppa)
-  common_gene <- intersect(names(ppi_gene),rppa_gene)
+  # ppiGraph.degrees <- degree(ppiGraph)
+  # ppi_df <- as.data.frame(ppiGraph.degrees)
+  # hist(ppi_df$ppiGraph.degrees, breaks = 1000, xlab = "Degree", main = "Degree-Frequency histogram in PPI")
+  # ppi_log10 <- log10(ppi_df$ppiGraph.degrees)
+  # hist(ppi_log10, breaks = 1000, xlab = "Degree", main = "Degree-Frequency log10-histogram in PPI")
+  # hub_gene <- ppiGraph.degrees[ppiGraph.degrees>2000]
+  # #barplot(hub_gene, names.arg = ppiGraph.degrees, cex.names=0.7)
+  # 
+  # #intersection of ppi and rppa : 186
+  # ppi_gene <- V(ppiGraph)
+  # rppa_gene <- rownames(rppa)
+  # common_gene <- intersect(names(ppi_gene),rppa_gene)
   
 }
 

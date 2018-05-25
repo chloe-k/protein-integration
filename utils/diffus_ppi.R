@@ -1,6 +1,5 @@
-imput_ppi <- function(datapath, gdacpath, p, name="ppi"){
+diffus_ppi <- function(datapath, gene_weight = gene_weight, ppiGraph = p){
   
-  gdacpath <- '~/protein-integration/data/BRCA_GDAC'
   rppapath <- file.path(gdacpath, 'mean_imputed_rppa.csv')
   ppi <- p
   
@@ -9,8 +8,10 @@ imput_ppi <- function(datapath, gdacpath, p, name="ppi"){
   # RPPA : 188
   # PPI : 24129
   rppa <- read.csv(rppapath, header=T, row.names = 1)
-  common_gene <- intersect(rownames(rppa), V(ppi)$name)
-  rppa <- rppa[common_gene,]
+  common_gene <- intersect(rownames(rppa), substring(V(ppi)$name,2))
+  rppa <- rppa[common_gene,] 
+  
+  row.names(rppa) <- paste("p",rownames(rppa),sep = "")
   
   ########################################################################################
   # read clinical information of BRCA patients
@@ -57,29 +58,29 @@ imput_ppi <- function(datapath, gdacpath, p, name="ppi"){
   x_stats <- list(0)
   gene_weight <- list(0)
   DEBUG <- FALSE
-  a <- list(0)
   for(i in 1:length(l_rppa)) {
     # normalize gene profile
     x_norm[[i]] <- get.geneprofile.norm(l_rppa[[i]])
     
     # statistics for genes
-    x_stats[[i]] <- get.genes.stats(x=l_rppa[[i]], x_norm=x_norm[[i]], y=y, 
+    x_stats[[i]] <- get.genes.stats(x=l_rppa[[i]], x_norm=x_norm[[i]], y=y,
                                     DEBUG=DEBUG, testStatistic=c('t-test'), pname=c('rppa'), datapath=datapath)
     # initialize gene weights
-    a[[i]] <- x_stats[[i]][,2]
     geneWeight <- -log(x_stats[[i]][,2]+2.2e-16)
     geneWeight[which(is.na(geneWeight))] <- 0
     gene_weight[[i]] <- (geneWeight - min(geneWeight)) / (max(geneWeight) - min(geneWeight))
     
   }
   
-  # assign initial weights to the pathway graph
+  # assign initial weights to the PPI graph
   W0 <- getW0(gene_weight, ppi)
   
   adj <- as.matrix(get.adjacency(ppi))
   
+  # PPI graph diffusion using Markov Random Walk
   dfs_ppi <- random.walk(W0, adj, r=0.5, niter=5000, thresh=1e-05)
+  print('PPI diffusion complete..')
+  #save(dfs_ppi, file=file.path(datapath, paste(c(name,"rda"), collapse='.')))
   
-  save(dfs_ppi, file=file.path(datapath, paste(c("diffus",name,"rda"), collapse='.')))
-  
+  return(dfs_ppi[[1]]) # return p.inf the stationary distribution of W0
 }
