@@ -39,6 +39,8 @@ preprcs_rppa <- function(gdacpath){
   row.names(imputed_rppa) <- rownames(decomp_rppa)
   tail(md.pattern(imputed_rppa))
   
+  write.csv(imputed_rppa, file.path(gdacpath,'decomposed_rppa.csv'))
+  
   # mean expression by gene
   # Because row name can not be duplicated, process mean aggregate in first column.
   rpparow <- sapply(strsplit(row.names(imputed_rppa), "\\|"), "[[", 1)
@@ -47,6 +49,7 @@ preprcs_rppa <- function(gdacpath){
   mean_imputed_rppa <- aggregate(imputed_rppa[,-1], list(gene=imputed_rppa[,1]), FUN=mean)
   row.names(mean_imputed_rppa) <- mean_imputed_rppa[,1]
   mean_imputed_rppa <- mean_imputed_rppa[,-1]
+  row.names(mean_imputed_rppa) <- trimws(rownames(mean_imputed_rppa), "b")
   
   
   write.csv(mean_imputed_rppa, file.path(gdacpath,'mean_imputed_rppa.csv'))

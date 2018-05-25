@@ -4,33 +4,46 @@ read_data <- function(year, datapath){
   
   # read BRCA data
   methyl <- read.csv(file.path(gdacpath, 'brca_methylation.csv'), header=T, row.names=1)
-  rnaseq <- read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), header=T, row.names=2)
-  preprcs_rppa(gdacpath)
   
-  # read rppa data
+  # remove unknown gene name(row)
+  rna_sample <- names(read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), nrows = 1))
+  rnaseq <- read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), header=F, row.names=1, col.names = rna_sample, skip=17) 
+  rnaseq$gene_id <- c()
+  
+  # imputation ppi node value by using RPPA data
+  rppapath <- file.path(gdacpath, 'mean_imputed_rppa.csv')
+  if(!file.exists(rppapath)) {
+    print('preprocessed rppa profile does not exist, now preprocessing RPPA profile start')
+    preprcs_rppa(gdacpath)
+  }
+  
+  # read rppa data (188*937)
   rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, stringsAsFactors = F)
   
-  # process rppa
-  #row.names(rppa) <- substring(rownames(rppa),2) # 188 genes
-  rppa_gene_id <- gene_name_id_map[rownames(rppa),]
-  unmapped_rppa <- which(is.na(rppa_gene_id)) # 4 genes
-  rppa <- rppa[-unmapped_rppa,]   # 184 genes
   
-  # map gene name to id
-  gene_name_id_map <- read.csv(file.path(gdacpath, 'gene_name_id_map'), skip=29,header=F, row.names=1)
-  row.names(methyl) <- gene_name_id_map[rownames(methyl),]
-  row.names(rppa) <- gene_name_id_map[rownames(rppa),]
+  #--------------- map gene name to id -------------------------#
+  #gene_name_id_map <- read.csv(file.path(gdacpath, 'gene_name_id_map'), skip=29,header=F, row.names=1)
+  
+  # process rppa (remove unmapped geneid)
+  #rppa_gene_id <- gene_name_id_map[rownames(rppa),]
+  #unmapped_rppa <- which(is.na(rppa_gene_id)) # 4 genes
+  #rppa <- rppa[-unmapped_rppa,]   # 181 genes
+  
+  #row.names(methyl) <- gene_name_id_map[rownames(methyl),]
+  #row.names(rppa) <- gene_name_id_map[rownames(rppa),]
   
   # remove gene name column (RNAseq)
-  rnaseq$gene_name <- c()
+  #rnaseq$gene_name <- c()
+  
+  #--------------- end map gene name to id -------------------------#
   
   # differentiate RNAseq, methylation, RPPA genes
   row.names(rnaseq) <- paste("g", rownames(rnaseq), sep="")
   row.names(methyl) <- paste("m", rownames(methyl), sep="")
-  row.names(rppa) <- paste("r", rownames(rppa), sep="")
+  row.names(rppa) <- paste("p", rownames(rppa), sep="")
   
   # read clinical information of BRCA patients
-  clinical <- read.csv(file.path(datapath, 'brca_clinical.csv'), header=T, row.names=1)
+  clinical <- read.csv(file.path(gdacpath, 'brca_clinical.csv'), header=T, row.names=1)
   
   group_cut <- 365*year
   
@@ -66,7 +79,7 @@ read_data <- function(year, datapath){
   methyl <- methyl[,samples]
   rppa <- rppa[,samples]
   
-  # split into 218 good / 247 poor group
+  # split into 177 good / 199 poor group
   good_samples <- which(clinical$survival>group_cut)
   poor_samples <- which(clinical$survival<=group_cut)
   
