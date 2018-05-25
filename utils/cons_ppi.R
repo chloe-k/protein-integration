@@ -1,10 +1,10 @@
-cons_ppi <- function(datapath){
+cons_ppi <- function(datapath, gdacpath){
   
   # PathwayCommons9 is updated in 2017/06/29
   
-  #datapath <- '~/protein-integration/data/'
+  #gdacpath <- '~/protein-integration/data/'
   pathway_profile <- read.csv(file.path(datapath, 'PathwayCommons9.All.hgnc.sif'), header=F, sep="\t")
-  rppa <- read.csv(file.path(datapath, 'mean_imputed_rppa.csv'), header=T, row.names=1, sep=",")
+  rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, sep=",")
   
   # remove chemical compound(CHEBI) interaction in ppi
   chem <- list()

@@ -1,7 +1,7 @@
-imput_ppi <- function(datapath, rppapath, p){
+imput_ppi <- function(datapath, gdacpath, p, name="ppi"){
   
-  datapath <- '~/protein-integration/data'
-  rppapath <- file.path(datapath, 'mean_imputed_rppa.csv')
+  gdacpath <- '~/protein-integration/data/BRCA_GDAC'
+  rppapath <- file.path(gdacpath, 'mean_imputed_rppa.csv')
   ppi <- p
   
   # assign rppa mean expression to ppi node(intersect with rppa and ppi gene)
@@ -16,7 +16,7 @@ imput_ppi <- function(datapath, rppapath, p){
   # read clinical information of BRCA patients
   # RPPA & clinical : 937
   # year :3 => RPPA & clinical : 825
-  clinical <- read.csv(file.path(datapath, 'brca_clinical.csv'), header=T, row.names=1)
+  clinical <- read.csv(file.path(gdacpath, 'brca_clinical.csv'), header=T, row.names=1)
   year <- 3
   
   group_cut <- 365*year
@@ -43,7 +43,7 @@ imput_ppi <- function(datapath, rppapath, p){
   
   rppa <- rppa[,samples_r]
   
-  write.csv(rppa, file.path(datapath,'rppa_POI.csv'))
+  write.csv(rppa, file.path(gdacpath,'rppa_POI.csv'))
   
   # split into 353 good / 472 poor group
   good_samples <- which(clinical$survival>group_cut)
@@ -57,6 +57,7 @@ imput_ppi <- function(datapath, rppapath, p){
   x_stats <- list(0)
   gene_weight <- list(0)
   DEBUG <- FALSE
+  a <- list(0)
   for(i in 1:length(l_rppa)) {
     # normalize gene profile
     x_norm[[i]] <- get.geneprofile.norm(l_rppa[[i]])
@@ -65,6 +66,7 @@ imput_ppi <- function(datapath, rppapath, p){
     x_stats[[i]] <- get.genes.stats(x=l_rppa[[i]], x_norm=x_norm[[i]], y=y, 
                                     DEBUG=DEBUG, testStatistic=c('t-test'), pname=c('rppa'), datapath=datapath)
     # initialize gene weights
+    a[[i]] <- x_stats[[i]][,2]
     geneWeight <- -log(x_stats[[i]][,2]+2.2e-16)
     geneWeight[which(is.na(geneWeight))] <- 0
     gene_weight[[i]] <- (geneWeight - min(geneWeight)) / (max(geneWeight) - min(geneWeight))
@@ -74,11 +76,10 @@ imput_ppi <- function(datapath, rppapath, p){
   # assign initial weights to the pathway graph
   W0 <- getW0(gene_weight, ppi)
   
-  #save(df_adj, file=file.path(datapath, paste(c("df_adj","rda"), collapse='.')))
-  
   adj <- as.matrix(get.adjacency(ppi))
   
-  labels <- which(W0 > 0)
-  diffus_ppi <- RWR(adj, labels, norm = FALSE, tmax = 5000, eps=1e-6)
+  dfs_ppi <- random.walk(W0, adj, r=0.5, niter=5000, thresh=1e-05)
+  
+  save(dfs_ppi, file=file.path(datapath, paste(c("diffus",name,"rda"), collapse='.')))
   
 }

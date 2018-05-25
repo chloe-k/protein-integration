@@ -5,13 +5,13 @@ read_data <- function(year, datapath){
   # read BRCA data
   methyl <- read.csv(file.path(gdacpath, 'brca_methylation.csv'), header=T, row.names=1)
   rnaseq <- read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), header=T, row.names=2)
-  process_rppa(gdacpath)
+  preprcs_rppa(gdacpath)
   
   # read rppa data
   rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, stringsAsFactors = F)
   
   # process rppa
-  row.names(rppa) <- substring(rownames(rppa),2) # 188 genes
+  #row.names(rppa) <- substring(rownames(rppa),2) # 188 genes
   rppa_gene_id <- gene_name_id_map[rownames(rppa),]
   unmapped_rppa <- which(is.na(rppa_gene_id)) # 4 genes
   rppa <- rppa[-unmapped_rppa,]   # 184 genes
