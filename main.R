@@ -1,4 +1,4 @@
-source("https://bioconductor.org/biocLite.R")
+#source("https://bioconductor.org/biocLite.R")
 
 library(KEGGgraph)
 library(igraph)
@@ -103,7 +103,7 @@ res_pa_GMP <- fit.iDRWPClass(x=x, y=y, globalGraph=gmp,
                                     testStatistic= testStatistic, profile_name = profile_name,
                                     datapath = datapath, respath = respath, pathSet=pathSet,
                                     method = "DRW", samples = samples, pranking = "t-test", mode = "GMP",
-                                    iter = 10, AntiCorr=FALSE, DEBUG=TRUE)
+                                    iter = 10, AntiCorr=FALSE, DEBUG=FALSE)
 
 save(res_pa_GMP, file=file.path('data/model/res_pa_GMP.RData'))
 

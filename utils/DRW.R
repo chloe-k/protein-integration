@@ -1,12 +1,12 @@
 DRW <- function(W, p0, gamma=0.3){
-  print('#####DRW function starts!####')
+  
   # Add Ground Node, construct new adjacent matrix
   newrow <- matrix(1,1,dim(W)[2])
   rownames(newrow) <- c("GN")
-  W1 <- rBind(W,newrow)
+  W1 <- rbind(W,newrow)
   newcol <- matrix(1,dim(W1)[1],1)
   colnames(newcol) <- c("GN")
-  WGN <- cBind(W1,newcol)   # adjacency matrix after adding ground node
+  WGN <- cbind(W1,newcol)   # adjacency matrix after adding ground node
   
   p0 <- t(as.matrix(p0/sum(p0)))
   
