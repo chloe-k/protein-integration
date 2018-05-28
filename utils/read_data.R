@@ -20,7 +20,6 @@ read_data <- function(year, datapath){
   # read rppa data (188*937)
   rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, stringsAsFactors = F)
   
-  
   #--------------- map gene name to id -------------------------#
   #gene_name_id_map <- read.csv(file.path(gdacpath, 'gene_name_id_map'), skip=29,header=F, row.names=1)
   

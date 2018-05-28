@@ -100,10 +100,11 @@ x=list(rnaseq, imputed_methyl, rppa)
 
 # iDRW : RNA-seq + methylation + RPPA profiles (all overlapping genes)
 res_pa_GMP <- fit.iDRWPClass(x=x, y=y, globalGraph=gmp,
-                                    testStatistic= testStatistic, profile_name = profile_name,
-                                    datapath = datapath, respath = respath, pathSet=pathSet,
-                                    method = "DRW", samples = samples, pranking = "t-test", mode = "GMP",
-                                    iter = 10, AntiCorr=FALSE, DEBUG=FALSE)
+                             testStatistic= testStatistic, profile_name = profile_name,
+                             datapath = datapath, respath = respath, pathSet=pathSet,
+                             method = "DRW", samples = samples, pranking = "t-test", mode = "GMP",
+                             iter = 10, AntiCorr=FALSE, DEBUG=FALSE)
+
 
 save(res_pa_GMP, file=file.path('data/model/res_pa_GMP.RData'))
 

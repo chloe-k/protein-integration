@@ -1,5 +1,5 @@
 diffus_ppi <- function(datapath, gene_weight = gene_weight, ppi){
-  
+
   # assign initial weights to the PPI graph
   W0 <- getW0(gene_weight, ppi)
   
