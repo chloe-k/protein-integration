@@ -20,22 +20,6 @@ read_data <- function(year, datapath){
   # read rppa data (188*937)
   rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, stringsAsFactors = F)
   
-  #--------------- map gene name to id -------------------------#
-  #gene_name_id_map <- read.csv(file.path(gdacpath, 'gene_name_id_map'), skip=29,header=F, row.names=1)
-  
-  # process rppa (remove unmapped geneid)
-  #rppa_gene_id <- gene_name_id_map[rownames(rppa),]
-  #unmapped_rppa <- which(is.na(rppa_gene_id)) # 4 genes
-  #rppa <- rppa[-unmapped_rppa,]   # 181 genes
-  
-  #row.names(methyl) <- gene_name_id_map[rownames(methyl),]
-  #row.names(rppa) <- gene_name_id_map[rownames(rppa),]
-  
-  # remove gene name column (RNAseq)
-  #rnaseq$gene_name <- c()
-  
-  #--------------- end map gene name to id -------------------------#
-  
   # differentiate RNAseq, methylation, RPPA genes
   row.names(rnaseq) <- paste("g", rownames(rnaseq), sep="")
   row.names(methyl) <- paste("m", rownames(methyl), sep="")
@@ -98,6 +82,6 @@ read_data <- function(year, datapath){
   
   
   # save as RData
-  save(rnaseq, imputed_methyl, rppa, gene_name_id_map, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'data.RData'))
+  save(rnaseq, imputed_methyl, rppa, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'data.RData'))
   
 }
