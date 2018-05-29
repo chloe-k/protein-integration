@@ -1,5 +1,5 @@
 getW <- function(datapath, G, gene_weight, mode="GMP"){
-  
+  print('getting adjacency matrix starts(getW)..')
   len <- length(gene_weight)
   if(len > 1){
     if(mode == "GM"){
