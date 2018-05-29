@@ -46,7 +46,11 @@ fit.iDRWPClass <-
         if(DEBUG) cat('Getting W0 is done...')
         
         # get adjacency matrix of the (integrated) gene-gene graph
-        W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
+        wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+        if(!file.exists(wpath)){
+          W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
+        }
+        W = get(load(wpath))
       }
       
       # perform DRW on gene-gene graph
