@@ -31,7 +31,10 @@ load(file.path(pathSetpath))
 
 # read RNAseq, Methylation data, RPPA data
 data_all_path <- file.path(datapath, "data.RData")
-if(!file.exists(data_all_path)) read_data(year, datapath)
+if(!file.exists(data_all_path)) {
+  year <- 3
+  read_data(year, datapath)
+}
 load(data_all_path)
 
 ppipath <- file.path(datapath, 'ppiGraph.rda')  # undirected edge PPI
