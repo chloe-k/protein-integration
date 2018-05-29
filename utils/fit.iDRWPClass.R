@@ -22,59 +22,46 @@ fit.iDRWPClass <-
       
     }
     
-    xpath <- file.path(datapath, 'x.RData')
-    x_statspath <- file.path(datapath, 'x_stats.RData')
-    wpath <- file.path(datapath, 'vertexWeight.RData')
-    if(!(file.exists(xpath) && file.exists(x_statspath) && file.exists(wpath))){
-      load(xpath)
-      load(x_statspath)
-      load(wpath)
-    }
-    else{
-      if(method == "DRW") {
-        # assign initial weights to the pathway graph
-        if(mode == "GMP"){
-          
-          # get W0 of G & M 
-          gm <- globalGraph[[1]] %du% globalGraph[[2]]
-          W0 <- getW0(list(gene_weight[[1]], gene_weight[[2]]), gm)
-          
-          # get W0 of P
-          p_W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight[[3]], ppi = globalGraph[[3]])
-          
-          # concatenate W0 and p_W0
-          W0 <- c(W0, p_W0, use.names = TRUE)
-          if(DEBUG) cat('Getting W0 is done...')
-          
-          gmp <- gm %du% globalGraph[[3]]
-          # get adjacency matrix of the (integrated) gene-gene graph
-          W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
-        } 
-        else{
-          W0 <- getW0(gene_weight, globalGraph)
-          if(DEBUG) cat('Getting W0 is done...')
-          
-          # get adjacency matrix of the (integrated) gene-gene graph
-          W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
-        }
+    if(method == "DRW") {
+      # assign initial weights to the pathway graph
+      if(mode == "GMP"){
         
-        # perform DRW on gene-gene graph
-        if(DEBUG) cat('Performing directed random walk...')
-        vertexWeight <- DRW(W = W, p0 = W0, gamma = Gamma)
-        names(vertexWeight) <- names(W0)
-        if(DEBUG) cat('Done\n')	
-      } else {
-        vertexWeight <- NULL
+        # get W0 of G & M 
+        gm <- globalGraph[[1]] %du% globalGraph[[2]]
+        W0 <- getW0(list(gene_weight[[1]], gene_weight[[2]]), gm)
+        
+        # get W0 of P
+        p_W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight[[3]], ppi = globalGraph[[3]])
+        
+        # concatenate W0 and p_W0
+        W0 <- c(W0, p_W0, use.names = TRUE)
+        if(DEBUG) cat('Getting W0 is done...')
+        
+        gmp <- gm %du% globalGraph[[3]]
+        # get adjacency matrix of the (integrated) gene-gene graph
+        W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
+      } 
+      else{
+        W0 <- getW0(gene_weight, globalGraph)
+        if(DEBUG) cat('Getting W0 is done...')
+        
+        # get adjacency matrix of the (integrated) gene-gene graph
+        W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
       }
       
-      # reduce list of profile matrices
-      x <- Reduce(rbind, x_norm)
-      x_stats <- Reduce(rbind, x_stats)
-      save(x, file = file.path(datapath, paste(c("x","RData"), collapse = '.')))
-      save(x_stats, file = file.path(datapath, paste(c("x_stats", "RData"), collapse = '.')))
-      save(vertexWeight, file = file.path(datapath, paste(c("vertexWeight", "RData"), collapse = '.')))
-      desc <- c(profile_name, method, if(AntiCorr) "anticorr", "txt")
+      # perform DRW on gene-gene graph
+      if(DEBUG) cat('Performing directed random walk...')
+      vertexWeight <- DRW(W = W, p0 = W0, gamma = Gamma)
+      names(vertexWeight) <- names(W0)
+      if(DEBUG) cat('Done\n')	
+    } else {
+      vertexWeight <- NULL
     }
+    
+    # reduce list of profile matrices
+    x <- Reduce(rbind, x_norm)
+    x_stats <- Reduce(rbind, x_stats)
+    desc <- c(profile_name, method, if(AntiCorr) "anticorr", "txt")
     
     if(method == "gf") {
       
@@ -122,20 +109,20 @@ fit.iDRWPClass <-
     
     # classifier : glm / svmLinear
     
-    acc <- c()
-    for(k in seq(5,100,by=5)) {
-      rankn_feats <- names(stats_feats)[1:k]
-      set.seed(111)
-      #model <- train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter), method=classifier, family=binomial())
-      model <- train(X[,rankn_feats], Y, method=classifier, trControl = trainControl(method="LOOCV", repeats = iter), family=binomial())
-      acc <- c(acc, model$results$Accuracy)
-    }
-    
-    df <- data.frame(k=seq(5,100,by=5), accuracy=acc)
-    write.table(x=df,file = file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.')), row.names = F,quote = F)
-    
-    rankn_feats <- names(stats_feats)[1:df$k[which.max(df$accuracy)]]
-    set.seed(111)
+    # acc <- c()
+    # for(k in seq(5,100,by=5)) {
+    #   rankn_feats <- names(stats_feats)[1:k]
+    #   set.seed(111)
+    #   #model <- train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter), method=classifier, family=binomial())
+    #   model <- train(X[,rankn_feats], Y, method=classifier, trControl = trainControl(method="LOOCV", repeats = iter), family=binomial())
+    #   acc <- c(acc, model$results$Accuracy)
+    # }
+    # 
+    # df <- data.frame(k=seq(5,100,by=5), accuracy=acc)
+    # write.table(x=df,file = file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.')), row.names = F,quote = F)
+    # 
+    # rankn_feats <- names(stats_feats)[1:df$k[which.max(df$accuracy)]]
+    # set.seed(111)
     return(train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter), method=classifier, family=binomial()))
     
   }

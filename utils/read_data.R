@@ -98,6 +98,6 @@ read_data <- function(year, datapath){
   
   
   # save as RData
-  save(rnaseq, imputed_methyl, rppa, gene_name_id_map, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'data.RData'))
+  save(rnaseq, imputed_methyl, rppa, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'data.RData'))
   
 }
