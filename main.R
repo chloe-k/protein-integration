@@ -21,20 +21,21 @@ if(!dir.exists(respath)) dir.create(respath)
 
 # read rda data
 graphpath <- file.path(datapath,'directGraph.rda')
-if(!file.exists(graphpath)) {
+pathSetpath <- file.path(datapath,'pathSet.rda')
+if(!(file.exists(graphpath) && file.exists(pathSetpath))) {
   print('directGraph and pathSet do not exist, now creating directGraph and pathSet is start')
   cons_graph(datapath)
 }
 load(file.path(graphpath))
-load(file.path(datapath, 'pathSet.rda'))
+load(file.path(pathSetpath))
 
 # read RNAseq, Methylation data, RPPA data
 data_all_path <- file.path(datapath, "data.RData")
 if(!file.exists(data_all_path)) read_data(year, datapath)
 load(data_all_path)
 
-ppipath <- file.path(datapath, 'ppiGraph.rda')
-dppipath <- file.path(datapath, 'DppiGraph.rda')
+ppipath <- file.path(datapath, 'ppiGraph.rda')  # undirected edge PPI
+dppipath <- file.path(datapath, 'DppiGraph.rda')  # directed edge PPI
 if(!file.exists(ppipath)) {
   print('ppiGraph does not exist, now creating ppiGraph start')
   cons_ppi(datapath, gdacpath)
@@ -42,18 +43,6 @@ if(!file.exists(ppipath)) {
 load(file.path(ppipath))
 load(file.path(dppipath))
 
-# dfsppi <- 'diffus_ppi_8rel'
-# dfsppipath <- file.path(datapath, paste(c(dfsppi,'rda'), collapse = '.'))
-# if(!file.exists(dfsppipath)){
-#   print('diffused PPI with RPPA')
-#   diffus_ppi(datapath, gdacpath, p, dfsppi)
-# }
-# load(file.path(dfsppipath))
-
-# global directed pathway graph provided in DRWPClass
-#globGpath <- file.path(datapath, paste(c('dfsppi','rda'), collapse = '.'))
-
-load(file.path(datapath, "directGraph.rda"))
 
 # directed pathway graph provided in DRWPClass
 g <- directGraph 
@@ -61,6 +50,9 @@ V(g)$name <- paste("g",V(g)$name,sep="")
 
 m <- directGraph
 V(m)$name <-paste("m",V(m)$name,sep="")
+
+r <- directGraph
+V(r)$name <-paste("r",V(r)$name,sep="")
 
 p <- DppiGraph
 V(p)$name <-paste("p",V(p)$name,sep="")
@@ -76,34 +68,62 @@ y=list(good_samples, poor_samples)
 # RPPA pathway profile
 
 
-#---------------iDRW---------------#
+#----------------------------------------iDRW-----------------------------------------------------------#
 # concat directed pathway graphs within each profile
-# RNAseq + Methyl
-# gm <- g %du% m
-# testStatistic <- c("DESeq2", "t-test")
-# profile_name <- c("rna", "meth")
-# x=list(rnaseq, imputed_methyl) 
-# 
-# res_rna_meth <- fit.iDRWPClass(x=x, y=y, globalGraph=gm,
-#                                testStatistic= testStatistic, profile_name = profile_name,
-#                                datapath = datapath, pathSet=pathSet,
-#                                method = "DRW", samples = samples, pranking = "t-test",
-#                                iter = 10, AntiCorr=FALSE, DEBUG=TRUE)
-# 
 
-# RNAseq + Mehtyl + RPPA
-#gmp <- g %du% m %du% p
+#--------------------------------------- RNAseq + Methyl
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna", "meth")
+x=list(rnaseq, imputed_methyl)
+
+res_pa_GM <- fit.iDRWPClass(x=x, y=y, globalGraph=gm,
+                               testStatistic= testStatistic, profile_name = profile_name,
+                               datapath = datapath, respath = respath, pathSet=pathSet,
+                               method = "DRW", samples = samples, pranking = "t-test", mode = "GM",
+                               nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
+
+save(res_pa_GM, file=file.path('data/model/res_pa_GM.RData'))
+
+summary(res_pa_GM)
+print(res_pa_GM$results)
+print(res_pa_GM$resample$Accuracy)
+
+write.SigFeatures(res_fit=res_pa_GM, profile_name=profile_name, method="DRW", respath=respath)
+
+
+#--------------------------------------- RNAseq + Methyl + RPPA(Pathway Graph)
+gmr <- g %du% m %du% r
+testStatistic <- c("DESeq2", "t-test", "t-test")
+profile_name <- c("rna", "meth", "rppa(Pathway_Graph)")
+x=list(rnaseq, imputed_methyl, rppa)
+
+res_pa_GMR <- fit.iDRWPClass(x=x, y=y, globalGraph=gmr,
+                            testStatistic= testStatistic, profile_name = profile_name,
+                            datapath = datapath, respath = respath, pathSet=pathSet,
+                            method = "DRW", samples = samples, pranking = "t-test", mode = "GMR",
+                            nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
+
+save(res_pa_GMR, file=file.path('data/model/res_pa_GMR.RData'))
+
+summary(res_pa_GMR)
+print(res_pa_GMR$results)
+print(res_pa_GMR$resample$Accuracy)
+
+write.SigFeatures(res_fit=res_pa_GMR, profile_name=profile_name, method="DRW", respath=respath)
+
+
+#--------------------------------------- RNAseq + Methyl + RPPA(PPI Graph)
 testStatistic <- c("DESeq2", "t-test", "t-test")
 profile_name <- c("rna", "meth", "rppa")
 gmp <- list(g, m, p)
 x=list(rnaseq, imputed_methyl, rppa) 
 
-# iDRW : RNA-seq + methylation + RPPA profiles (all overlapping genes)
 res_pa_GMP <- fit.iDRWPClass(x=x, y=y, globalGraph=gmp,
                              testStatistic= testStatistic, profile_name = profile_name,
                              datapath = datapath, respath = respath, pathSet=pathSet,
                              method = "DRW", samples = samples, pranking = "t-test", mode = "GMP",
-                             iter = 10, AntiCorr=FALSE, DEBUG=FALSE)
+                             nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
 
 
 save(res_pa_GMP, file=file.path('data/model/res_pa_GMP.RData'))
@@ -113,3 +133,10 @@ print(res_pa_GMP$results)
 print(res_pa_GMP$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_GMP, profile_name=profile_name, method="DRW", respath=respath)
+
+
+# plot
+xlabs <- c("GM", "GMR", "GMP")
+res_models <- list(res_pa_GM, res_pa_GMR, res_pa_GMP)
+
+perf_boxplot(xlabs, res_models, perf_min = 0, perf_max = 1)
