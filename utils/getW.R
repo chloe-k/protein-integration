@@ -78,7 +78,7 @@ getW <- function(datapath, G, gene_weight, mode="GMP"){
   print(sum(W)) # number of edges (adjacency matrix)
 
   W[is.na(W)] <- 0
-  save(W, file.path=file.path(datapath, paste(c(mode,"W","RData"), collapse = '.')))
+  save(W, file=file.path(datapath, paste(c(mode,"W","RData"), collapse = '.')))
   print('Adjacency matrix W complete ...')
   
   return(W)
