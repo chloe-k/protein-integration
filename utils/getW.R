@@ -36,7 +36,7 @@ getW <- function(datapath, G, gene_weight, mode="GMP"){
       for(i in 1:length(intersect_gr)){
         idx <- which(paste("g", intersect_gr[i], sep="") == rownames(W))
         if(length(idx) > 0){
-          W[paste("r",intersect_gr[i],sep=""),paste("g",intersect_gr[i],sep="")] <- 1
+          W[paste("p",intersect_gr[i],sep=""),paste("g",intersect_gr[i],sep="")] <- 1
         }
       }
       
