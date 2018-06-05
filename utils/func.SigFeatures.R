@@ -1,7 +1,6 @@
 # write significant pathway / gene features
 write.SigFeatures <- function(res_fit, profile_name, method = "DRW", classifier = NULL, respath, AntiCorr = FALSE, da = FALSE) {
   
-  library(KEGG.db)
   pA <- get(load(file.path(respath, paste(c("pA", profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))))
   sigGeneset <- pA$sigGenes
   
@@ -10,7 +9,6 @@ write.SigFeatures <- function(res_fit, profile_name, method = "DRW", classifier 
   
   p <- substring(names(feats),2,6)
   
-  library(KEGGREST)
   pathway_name <- sapply(X = p, FUN = function(x) strsplit(keggGet(paste(c("hsa", x), collapse = ""))[[1]]$NAME, " - ")[[1]][1])
   
   desc <- c(profile_name, method, classifier, if(AntiCorr) "anticorr", if(da) "da","txt")

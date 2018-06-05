@@ -1,4 +1,6 @@
-#source("https://bioconductor.org/biocLite.R")
+
+########################### package load ############################
+# source("https://bioconductor.org/biocLite.R")
 
 library(KEGGgraph)
 library(igraph)
@@ -6,9 +8,16 @@ library(ggplot2)
 library(annotate)
 library(org.Hs.eg.db)
 library(diffusr)
+library(DESeq2)
 library(Matrix)
+library(stringr)
 library(caret)
+library(e1071)
 library(randomForest)
+library(KEGG.db)
+library(KEGGREST)
+
+######################################################################
 
 sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 
