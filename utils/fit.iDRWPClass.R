@@ -39,11 +39,11 @@ fit.iDRWPClass <-
         
         gmp <- gm %du% globalGraph[[3]]
         # get adjacency matrix of the (integrated) gene-gene graph
-        wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
-        if(!file.exists(wpath)){
+        #wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+        #if(!file.exists(wpath)){
           W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
-        }
-        W = get(load(wpath))
+        #}
+        #W = get(load(wpath))
       } 
       else{
         W0 <- getW0(gene_weight, globalGraph)
@@ -87,12 +87,17 @@ fit.iDRWPClass <-
       # pathway activity inference method
       # method = DRW / mean / median
       fname_profile = file.path(respath, paste(c("pathway_profile", desc), collapse = '.'))
+      pApath <- file.path(respath, paste(c("pA", profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))
       
-      
-      pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
-                            method = method, fname = fname_profile, rows = samples)
-      
-      save(pA, file=file.path(respath, paste(c("pA", profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.')))
+      if(!file.exists(pApath)){
+        pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
+                              method = method, fname = fname_profile, rows = samples)
+        
+        save(pA, file=pApath)
+      }else{
+        pA <- get(load(file = file.path(pApath)))
+      }
+
       
       # rank pathway activities
       # ranking = t-test / DA
@@ -109,7 +114,6 @@ fit.iDRWPClass <-
                 file=fname_rank, sep="\t", row.names=T, col.names=T)
     
     # perform 5-fold cross validation on logistic regression model
-    library(caret)
     
     Y <- rep(0,length(samples))
     Y[y[[1]]] <- 1
@@ -132,6 +136,6 @@ fit.iDRWPClass <-
     # rankn_feats <- names(stats_feats)[1:df$k[which.max(df$accuracy)]]
     # set.seed(111)
     rankn_feats <- names(stats_feats)[1:numTops]
-    return(train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter), method=classifier, family=binomial()))
+    return(train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial()))
     
   }
