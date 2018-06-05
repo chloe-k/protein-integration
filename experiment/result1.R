@@ -1,5 +1,5 @@
 # integrative DRW on combined feature data (updated in 2018/05/30)
-# concat directed pathway graphs within each profile (GM & GMR & GMP)
+# concat directed pathway graphs(or PPI graph) within each profile (GM & GMR & GMR_d & GMP)
 
 # edge direction
 # m -> g

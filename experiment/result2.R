@@ -1,15 +1,20 @@
-# DRW-based pathway profile on a single type of feature data (updated in 2018/05/31)
+# DRW-based single pathway profile on feature data (updated in 2018/05/31)
+# directed pathway graphs was used in (G, M, R) model and PPI graph was used in (P) model
 
-#--------------------------------------- RNAseq(pathway)
+# Classifier : glm(Generalized Linear Model)
+
+#------------------------- RNAseq(pathway) -------------------------#
 testStatistic <- c("DESeq2")
 profile_name <- c("rna")
 x=list(rnaseq)
 
-res_pa_G <- fit.iDRWPClass(x=x, y=y, globalGraph=g,
-                           testStatistic= testStatistic, profile_name = profile_name,
-                           datapath = datapath, respath = respath, pathSet=pathSet,
-                           method = "DRW", samples = samples, pranking = "t-test", mode = "G",
-                           nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
+fit.iDRWPClass(x=x, y=y, globalGraph=g, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
+               pranking = "t-test", mode = "G", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_G <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+                                   method = "DRW", pranking = "t-test", classifier = "glm",
+                                   nFolds = 5, numTops=50, iter = 50)
 
 save(res_pa_G, file=file.path('data/model/res_pa_G.RData'))
 
@@ -19,16 +24,19 @@ print(res_pa_G$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_G, profile_name=profile_name, method="DRW", respath=respath)
 
-#--------------------------------------- Methyl(pathway)
+#------------------------- Methyl(pathway) -------------------------#
 testStatistic <- c("t-test")
 profile_name <- c("meth")
 x=list(imputed_methyl)
 
-res_pa_M <- fit.iDRWPClass(x=x, y=y, globalGraph=m,
-                           testStatistic= testStatistic, profile_name = profile_name,
-                           datapath = datapath, respath = respath, pathSet=pathSet,
-                           method = "DRW", samples = samples, pranking = "t-test", mode = "M",
-                           nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=m, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
+               pranking = "t-test", mode = "M", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_M <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+                               method = "DRW", pranking = "t-test", classifier = "glm",
+                               nFolds = 5, numTops=50, iter = 50)
 
 save(res_pa_M, file=file.path('data/model/res_pa_M.RData'))
 
@@ -38,16 +46,19 @@ print(res_pa_M$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_M, profile_name=profile_name, method="DRW", respath=respath)
 
-#--------------------------------------- RPPA(pathway using Pathway Graph)
+#------------------------- RPPA(pathway using Pathway Graph) -------------------------#
 testStatistic <- c("t-test")
 profile_name <- c("rppa")
 x=list(rppa)
 
-res_pa_R <- fit.iDRWPClass(x=x, y=y, globalGraph=r,
-                           testStatistic= testStatistic, profile_name = profile_name,
-                           datapath = datapath, respath = respath, pathSet=pathSet,
-                           method = "DRW", samples = samples, pranking = "t-test", mode = "R",
-                           nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=r, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
+               pranking = "t-test", mode = "R", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_R <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+                               method = "DRW", pranking = "t-test", classifier = "glm",
+                               nFolds = 5, numTops=50, iter = 50)
 
 save(res_pa_R, file=file.path('data/model/res_pa_R.RData'))
 
@@ -57,16 +68,19 @@ print(res_pa_R$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_R, profile_name=profile_name, method="DRW", respath=respath)
 
-#--------------------------------------- RPPA(pathway using PPI Graph)
+#------------------------- RPPA(pathway using PPI Graph) -------------------------#
 testStatistic <- c("t-test")
 profile_name <- c("rppa")
 x=list(rppa)
 
-res_pa_P <- fit.iDRWPClass(x=x, y=y, globalGraph=p,
-                           testStatistic= testStatistic, profile_name = profile_name,
-                           datapath = datapath, respath = respath, pathSet=pathSet,
-                           method = "DRW", samples = samples, pranking = "t-test", mode = "P",
-                           nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=p, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
+               pranking = "t-test", mode = "P", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_P <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+                               method = "DRW", pranking = "t-test", classifier = "glm",
+                               nFolds = 5, numTops=50, iter = 50)
 
 save(res_pa_P, file=file.path('data/model/res_pa_P.RData'))
 
