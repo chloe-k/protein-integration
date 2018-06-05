@@ -7,6 +7,8 @@ library(annotate)
 library(org.Hs.eg.db)
 library(diffusr)
 library(Matrix)
+library(caret)
+library(randomForest)
 
 sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 
@@ -55,7 +57,7 @@ m <- directGraph
 V(m)$name <-paste("m",V(m)$name,sep="")
 
 r <- directGraph
-V(r)$name <-paste("r",V(r)$name,sep="")
+V(r)$name <-paste("p",V(r)$name,sep="")
 
 p <- DppiGraph
 V(p)$name <-paste("p",V(p)$name,sep="")
@@ -72,74 +74,4 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-# concat directed pathway graphs within each profile
 
-#--------------------------------------- RNAseq + Methyl
-gm <- g %du% m
-testStatistic <- c("DESeq2", "t-test")
-profile_name <- c("rna", "meth")
-x=list(rnaseq, imputed_methyl)
-
-res_pa_GM <- fit.iDRWPClass(x=x, y=y, globalGraph=gm,
-                               testStatistic= testStatistic, profile_name = profile_name,
-                               datapath = datapath, respath = respath, pathSet=pathSet,
-                               method = "DRW", samples = samples, pranking = "t-test", mode = "GM",
-                               nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
-
-save(res_pa_GM, file=file.path('data/model/res_pa_GM.RData'))
-
-summary(res_pa_GM)
-print(res_pa_GM$results)
-print(res_pa_GM$resample$Accuracy)
-
-write.SigFeatures(res_fit=res_pa_GM, profile_name=profile_name, method="DRW", respath=respath)
-
-
-#--------------------------------------- RNAseq + Methyl + RPPA(Pathway Graph)
-gmr <- g %du% m %du% r
-testStatistic <- c("DESeq2", "t-test", "t-test")
-profile_name <- c("rna", "meth", "rppa(Pathway_Graph)")
-x=list(rnaseq, imputed_methyl, rppa)
-
-res_pa_GMR <- fit.iDRWPClass(x=x, y=y, globalGraph=gmr,
-                            testStatistic= testStatistic, profile_name = profile_name,
-                            datapath = datapath, respath = respath, pathSet=pathSet,
-                            method = "DRW", samples = samples, pranking = "t-test", mode = "GMR",
-                            nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
-
-save(res_pa_GMR, file=file.path('data/model/res_pa_GMR.RData'))
-
-summary(res_pa_GMR)
-print(res_pa_GMR$results)
-print(res_pa_GMR$resample$Accuracy)
-
-write.SigFeatures(res_fit=res_pa_GMR, profile_name=profile_name, method="DRW", respath=respath)
-
-
-#--------------------------------------- RNAseq + Methyl + RPPA(PPI Graph)
-testStatistic <- c("DESeq2", "t-test", "t-test")
-profile_name <- c("rna", "meth", "rppa")
-gmp <- list(g, m, p)
-x=list(rnaseq, imputed_methyl, rppa) 
-
-res_pa_GMP <- fit.iDRWPClass(x=x, y=y, globalGraph=gmp,
-                             testStatistic= testStatistic, profile_name = profile_name,
-                             datapath = datapath, respath = respath, pathSet=pathSet,
-                             method = "DRW", samples = samples, pranking = "t-test", mode = "GMP",
-                             nFolds = 5, iter = 50, AntiCorr=FALSE, DEBUG=TRUE)
-
-
-save(res_pa_GMP, file=file.path('data/model/res_pa_GMP.RData'))
-
-summary(res_pa_GMP)
-print(res_pa_GMP$results)
-print(res_pa_GMP$resample$Accuracy)
-
-write.SigFeatures(res_fit=res_pa_GMP, profile_name=profile_name, method="DRW", respath=respath)
-
-
-# plot
-xlabs <- c("GM", "GMR", "GMP")
-res_models <- list(res_pa_GM, res_pa_GMR, res_pa_GMP)
-
-perf_boxplot(xlabs, res_models, perf_min = 0, perf_max = 1)
