@@ -1,4 +1,4 @@
-cons_graph <- function(datapath){
+cons_KEGGgraph <- function(datapath){
   
   # This code implements constructing global directed gene-gene graph from all kegg pathway(525 pathways)
   # 525 pathways -> 327 pathways(It is the number of existing kgml)
@@ -6,7 +6,6 @@ cons_graph <- function(datapath){
   # node : 7389
   # edge : 58399 
   
-  datapath <- file.path('data')
   kegg_db <- file.path(datapath,'KEGG_DB')
   
   if(!dir.exists(kegg_db)) {
@@ -33,16 +32,14 @@ cons_graph <- function(datapath){
     }
     
   } else{
-    cat("kgml files already exists")
-    kgml_list <- list.files(path=kegg_db, full.names=TRUE)
+    cat("kgml files already exists\n")
+    kgml_list <- list.files(path='data/KEGG_DB', full.names=TRUE)
   }
   
-  
   graphs <- list()
-  pathSet <- list()
+  pathSet<-list()
   
   for(kgml in kgml_list){
-    
     # parse kgml file
     k <- parseKGML(kgml)
     
@@ -57,11 +54,10 @@ cons_graph <- function(datapath){
     pathSet[[substring(getName(k),9)]] <- unique(node_names)
     
     # graph set
-    pathwayG <- parseKGML2Graph(k, expandGenes=TRUE)
+    pathwayG <- KEGGpathway2Graph(k, expandGenes=TRUE)
     graphs <- append(graphs, pathwayG)
   }
   
-  # make direct graph
   merged_G <- mergeGraphs(graphs)
   directGraph <- igraph.from.graphNEL(merged_G)
   
