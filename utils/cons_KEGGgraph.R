@@ -47,14 +47,17 @@ cons_graph <- function(datapath){
     k <- parseKGML(kgml)
     
     # pathway set
-    node_names <- unlist(lapply(X=nodes(k),
-                                FUN=function(x) {
-                                  ifelse(getType(x)=="gene", getSYMBOL(sapply( strsplit(getName(x),":"), '[[', 2 ), data='org.Hs.eg'), NA)
-                                }), use.names = F)
-    pathSet[[substring(getName(k),9)]] <- node_names[!is.na(node_names)]
+    node_names <- c()
+    for(node in nodes(k)) {
+      if(getType(node) == "gene") {
+        node_names <- c(node_names, getSYMBOL(sapply( strsplit(getName(node),":"), '[[', 2 ), data='org.Hs.eg'))
+      }
+    }
+    
+    pathSet[[substring(getName(k),9)]] <- unique(node_names)
     
     # graph set
-    pathwayG <- parseKGML2Graph(kgml, expandGenes=TRUE)
+    pathwayG <- parseKGML2Graph(k, expandGenes=TRUE)
     graphs <- append(graphs, pathwayG)
   }
   
