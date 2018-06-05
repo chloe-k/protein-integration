@@ -113,11 +113,13 @@ fit.iDRWPClass <-
     write.table(x=matrix(stats_feats, nrow=length(stats_feats), dimnames=list(names(stats_feats),"rank")),
                 file=fname_rank, sep="\t", row.names=T, col.names=T)
     
+    
+    #-----------------Classification-----------------#
     # perform 5-fold cross validation on logistic regression model
     
-    Y <- rep(0,length(samples))
-    Y[y[[1]]] <- 1
-    Y=as.factor(Y)
+    # Y <- rep(0,length(samples))
+    # Y[y[[1]]] <- 1
+    # Y=as.factor(Y)
     
     # classifier : glm / svmLinear
     
@@ -135,7 +137,7 @@ fit.iDRWPClass <-
     # 
     # rankn_feats <- names(stats_feats)[1:df$k[which.max(df$accuracy)]]
     # set.seed(111)
-    rankn_feats <- names(stats_feats)[1:numTops]
-    return(train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial()))
+    # rankn_feats <- names(stats_feats)[1:numTops]
+    # return(train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial()))
     
   }
