@@ -82,6 +82,8 @@ fit.iDRWPClass <-
       
       X <- t(x)
       
+      save(stats_feats, X, file=file.path(datapath, paste(c("gene_rank", profile_name, method, "RData"), collapse = '.')))
+      
     } else {
       
       # pathway activity inference method
@@ -107,13 +109,16 @@ fit.iDRWPClass <-
                                       ranking = pranking, fname=fname_rank)
       
       X <- t(pA$pathActivity)
+      
+      save(stats_feats, X, file=file.path(datapath, paste(c("pathway_rank", profile_name, method, "RData"), collapse = '.')))
     }
     
     # write pathway ranking
     write.table(x=matrix(stats_feats, nrow=length(stats_feats), dimnames=list(names(stats_feats),"rank")),
                 file=fname_rank, sep="\t", row.names=T, col.names=T)
+  
     
-    
+    cat('fit.iDRWPClass is done\n')
     #-----------------Classification-----------------#
     # perform 5-fold cross validation on logistic regression model
     

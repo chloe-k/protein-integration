@@ -3,11 +3,15 @@
 # Classifier : glm(Generalized Linear Model)
 
 #------------------------- mRNA expression gene profile -------------------------#
-fit.iDRWPClass(x=list(rnaseq), y=y, testStatistic= c('t-test'), profile_name = c('gf_rna'),
+testStatistic <- c("t-test")
+profile_name <- c('gf_rna')
+x=list(rnaseq)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name,
                              datapath=datapath, respath = respath, method = "gf", samples = samples)
 
-res_gf_G <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
-                               method = "DRW", pranking = "t-test", classifier = "glm",
+res_gf_G <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                               method = "gf", pranking = "t-test", classifier = "glm",
                                nFolds = 5, numTops=50, iter = 50)
 
 save(res_gf_G, file=file.path('data/model/res_gf_G.RData'))
@@ -18,11 +22,15 @@ print(res_gf_G$resample$Accuracy)
 
 
 #------------------------- methylation expression gene profile -------------------------#
-fit.iDRWPClass(x=list(imputed_methyl), y=y, testStatistic= c('t-test'), profile_name = c('gf_meth'),
+testStatistic <- c("t-test")
+profile_name <- c('gf_meth')
+x=list(imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name,
                            datapath=datapath, respath = respath, method = "gf", samples = samples)
 
-res_gf_M <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
-                               method = "DRW", pranking = "t-test", classifier = "glm",
+res_gf_M <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                               method = "gf", pranking = "t-test", classifier = "glm",
                                nFolds = 5, numTops=50, iter = 50)
 
 save(res_gf_M, file=file.path('data/model/res_gf_M.RData'))
@@ -33,11 +41,15 @@ print(res_gf_M$resample$Accuracy)
 
 
 #------------------------- RPPA expression gene profile -------------------------#
-fit.iDRWPClass(x=list(rppa), y=y, testStatistic= c('t-test'), profile_name = c('gf_rppa'),
+testStatistic <- c("t-test")
+profile_name <- c('gf_rppa')
+x=list(rppa)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name,
                            datapath=datapath, respath = respath, method = "gf", samples = samples)
 
-res_gf_P <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
-                               method = "DRW", pranking = "t-test", classifier = "glm",
+res_gf_P <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                               method = "gf", pranking = "t-test", classifier = "glm",
                                nFolds = 5, numTops=50, iter = 50)
 
 save(res_gf_P, file=file.path('data/model/res_gf_P.RData'))

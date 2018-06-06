@@ -19,8 +19,6 @@ fit.pa <- function(pathActivity, good, poor, profile_name, method, pranking, des
   print('rank pathway activities done..')
   
   # perform 5-fold cross validation on logistic regression model
-  library(caret)
-  
   X <- t(pathActivity)
   Y <- rep(0,length(colnames(pathActivity)))
   Y[y[[1]]] <- 1

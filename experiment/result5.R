@@ -17,7 +17,7 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_n
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
                pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GM_RF <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+res_pa_GM_RF <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                 method = "DRW", pranking = "t-test", classifier = "rf",
                                 nFolds = 5, numTops=50, iter = 50)
 
@@ -40,7 +40,7 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
                pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMR_RF <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+res_pa_GMR_RF <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                  method = "DRW", pranking = "t-test", classifier = "rf",
                                  nFolds = 5, numTops=50, iter = 50)
 
@@ -63,7 +63,7 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
                pranking = "t-test", mode = "GMP", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMR_d_RF <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+res_pa_GMR_d_RF <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                       method = "DRW", pranking = "t-test", classifier = "rf",
                                       nFolds = 5, numTops=50, iter = 50)
 
@@ -86,7 +86,7 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gmp, testStatistic= testStatistic, profile_
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, 
                pranking = "t-test", mode = "GMP", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMP_RF <- fit.classification(y=y, samples = samples, respath = respath, profile_name = profile_name,
+res_pa_GMP_RF <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                  method = "DRW", pranking = "t-test", classifier = "rf",
                                  nFolds = 5, numTops=50, iter = 50)
 
