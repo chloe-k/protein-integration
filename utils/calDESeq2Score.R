@@ -1,8 +1,6 @@
 calDESeq2Score <-
   function(x, normSample, diseaseSample){
     
-    library(DESeq2)
-    
     ret <- list()
     col.data <- data.frame(condition=rep("GOOD", length(normSample)), row.names = colnames(x[,normSample]))
     col.data <- rbind(col.data, data.frame(condition=rep("POOR", length(diseaseSample)), row.names=colnames(x[,diseaseSample])))
