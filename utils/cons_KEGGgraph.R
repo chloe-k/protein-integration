@@ -65,6 +65,6 @@ cons_KEGGgraph <- function(datapath){
   
   save(directGraph, file=file.path(datapath, paste(c("directGraph", "rda"), collapse='.')))
   save(pathSet, file=file.path(datapath, paste(c("pathSet", "rda"), collapse='.')))
-
+  
 }
 

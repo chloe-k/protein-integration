@@ -39,11 +39,11 @@ fit.iDRWPClass <-
         
         gmp <- gm %du% globalGraph[[3]]
         # get adjacency matrix of the (integrated) gene-gene graph
-        #wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
-        #if(!file.exists(wpath)){
+        wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+        if(!file.exists(wpath)){
           W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
-        #}
-        #W = get(load(wpath))
+        }
+        W = get(load(wpath))
       } 
       else{
         W0 <- getW0(gene_weight, globalGraph)

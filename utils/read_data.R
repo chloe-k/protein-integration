@@ -2,23 +2,45 @@ read_data <- function(year, datapath){
   
   gdacpath <- file.path(datapath, 'BRCA_GDAC')
   
+  # ------------------------------------- non-unified gene(HGNC gene symbol) was used --------------------------------------------#
   # read BRCA data
   methyl <- read.csv(file.path(gdacpath, 'brca_methylation.csv'), header=T, row.names=1)
-  
+
   # remove unknown gene name(row)
   rna_sample <- names(read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), nrows = 1))
-  rnaseq <- read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), header=F, row.names=1, col.names = rna_sample, skip=17) 
+  rnaseq <- read.csv(file.path(gdacpath, 'brca_rnaseq_qc.csv'), header=F, row.names=1, col.names = rna_sample, skip=17)
   rnaseq$gene_id <- c()
-  
+
   # imputation ppi node value by using RPPA data
   rppapath <- file.path(gdacpath, 'mean_imputed_rppa.csv')
   if(!file.exists(rppapath)) {
     print('preprocessed rppa profile does not exist, now preprocessing RPPA profile start')
     preprcs_rppa(gdacpath)
   }
-  
+
   # read rppa data (188*937)
   rppa <- read.csv(file.path(gdacpath, 'mean_imputed_rppa.csv'), header=T, row.names=1, stringsAsFactors = F)
+  # ------------------------------------- non-unified gene(HGNC gene symbol) was used --------------------------------------------#
+  
+  # ------------------------------------- unified gene(HGNC gene symbol) was used ------------------------------------------------#
+  # # read BRCA data
+  # methyl <- read.csv(file.path(gdacpath, 'HGNC_brca_methylation.csv'), header=T, row.names=1)
+  # 
+  # # remove unknown gene name(row)
+  # rna_sample <- names(read.csv(file.path(gdacpath, 'HGNC_brca_rnaseq_qc.csv'), nrows = 1))
+  # rnaseq <- read.csv(file.path(gdacpath, 'HGNC_brca_rnaseq_qc.csv'), header=F, row.names=1, col.names = rna_sample, skip=17)
+  # rnaseq$gene_id <- c()
+  # 
+  # # imputation ppi node value by using RPPA data
+  # rppapath <- file.path(gdacpath, 'HGNC_mean_imputed_rppa.csv')
+  # if(!file.exists(rppapath)) {
+  #   print('preprocessed rppa profile does not exist, now preprocessing RPPA profile start')
+  #   preprcs_rppa(gdacpath)
+  # }
+  # 
+  # # read rppa data (188*937)
+  # rppa <- read.csv(file.path(gdacpath, 'HGNC_mean_imputed_rppa.csv'), header=T, row.names=1, stringsAsFactors = F)
+  # ------------------------------------- unified gene(HGNC gene symbol) was used ------------------------------------------------#
   
   # differentiate RNAseq, methylation, RPPA genes
   row.names(rnaseq) <- paste("g", rownames(rnaseq), sep="")
@@ -82,6 +104,11 @@ read_data <- function(year, datapath){
   
   
   # save as RData
-  save(rnaseq, imputed_methyl, rppa, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'data.RData'))
+  
+  # non-unified gene symbol was used
+  #save(rnaseq, imputed_methyl, rppa, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'data.RData'))
+  
+  # unified gene symbol(HGNC gene symbol) was used
+  save(rnaseq, imputed_methyl, rppa, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'HGNC_unfy_data.RData'))
   
 }

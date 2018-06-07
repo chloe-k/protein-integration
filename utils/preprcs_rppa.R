@@ -1,10 +1,12 @@
 preprcs_rppa <- function(gdacpath){
-  rawrppapath <- file.path(gdacpath, 'brca_rppa.txt')
+  
+  # non-unified gene was used
+  #rawrppapath <- file.path(gdacpath, 'brca_rppa.txt')
+  rawrppapath <- file.path(gdacpath, 'HGNC_brca_rppa.txt')
   
   # read rppa data (226*937)
   rppa <- read.delim(rawrppapath, header = T, stringsAsFactors = F, row.names = 1)
   
-  #14
   multiGene <- vector()
   decomp_rppa <- rppa
   
@@ -30,16 +32,17 @@ preprcs_rppa <- function(gdacpath){
   tail(md.pattern(decomp_rppa))
   
   imputed_rppa <- data.frame(apply(X=decomp_rppa,
-                                    MARGIN = 1,
-                                    FUN=function(x) {
-                                      if(is.numeric(x))
-                                        ifelse(is.na(x),median(x,na.rm=T),x)
-                                      else x}))
+                                   MARGIN = 1,
+                                   FUN=function(x) {
+                                     if(is.numeric(x))
+                                       ifelse(is.na(x),median(x,na.rm=T),x)
+                                     else x}))
   imputed_rppa <- as.data.frame(t(imputed_rppa))
   row.names(imputed_rppa) <- rownames(decomp_rppa)
   tail(md.pattern(imputed_rppa))
   
-  write.csv(imputed_rppa, file.path(gdacpath,'decomposed_rppa.csv'))
+  #write.csv(imputed_rppa, file.path(gdacpath,'decomposed_rppa.csv'))
+  write.csv(imputed_rppa, file.path(gdacpath,'HGNC_decomposed_rppa.csv'))
   
   # mean expression by gene
   # Because row name can not be duplicated, process mean aggregate in first column.
@@ -52,6 +55,7 @@ preprcs_rppa <- function(gdacpath){
   row.names(mean_imputed_rppa) <- trimws(rownames(mean_imputed_rppa), "b")
   
   
-  write.csv(mean_imputed_rppa, file.path(gdacpath,'mean_imputed_rppa.csv'))
+  #write.csv(mean_imputed_rppa, file.path(gdacpath,'mean_imputed_rppa.csv'))
+  write.csv(mean_imputed_rppa, file.path(gdacpath,'HGNC_mean_imputed_rppa.csv'))
   
 }

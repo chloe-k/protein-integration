@@ -35,6 +35,8 @@ cons_ppi <- function(datapath, gdacpath){
   genepair <- ppi[!duplicated(ppi), ]
   dgenepair <- dppi[!duplicated(dppi),]
   
+  write.table(x=dgenepair, file=file.path(datapath,'dPPI_PathwayCommons9.sif'), sep="\t")
+  
   # undirected ppi
   ppiGraph <- graph.data.frame(genepair, directed=FALSE)
   
@@ -51,8 +53,8 @@ cons_ppi <- function(datapath, gdacpath){
   
   save(ppiGraph, file=file.path(datapath, paste(c("ppiGraph","rda"), collapse='.')))
   save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph","rda"), collapse='.')))
-
-########################################################################################  
+  
+  ########################################################################################  
   #plot the degree of the igraph(X:genes, Y:edge)
   #number of the Node degree > 2000 => 13
   ########LIST##########

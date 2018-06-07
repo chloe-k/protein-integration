@@ -7,8 +7,9 @@ write.SigFeatures <- function(res_fit, profile_name, method = "DRW", classifier 
   feats <- as.matrix(varImp(res_fit)$importance)
   feats <- feats[order(-feats[,1]),]
   
-  #p <- substring(names(feats),2,6)
-  p <- names(feats)
+  #p <- substring(rownames(feats),2,6) # glm classifier
+  #p <- rownames(feats) # SVMLinear classifier
+  p <- names(feats) # Random Forest
   
   pathway_name <- sapply(X = p, FUN = function(x) strsplit(keggGet(paste(c("hsa", x), collapse = ""))[[1]]$NAME, " - ")[[1]][1])
   
