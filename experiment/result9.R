@@ -34,6 +34,7 @@ print(res_pa_GM_RF_9$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_GM_RF_9, profile_name=profile_name, method="DRW", respath=respath)
 
+
 #------------------------- RNAseq + Methyl + RPPA(Pathway Graph) -------------------------#
 gmr <- g %du% m %du% r
 testStatistic <- c("DESeq2", "t-test", "t-test")
