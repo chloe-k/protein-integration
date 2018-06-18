@@ -7,6 +7,8 @@ write.SigFeatures <- function(res_fit, profile_name, method = "DRW", classifier 
   feats <- as.matrix(varImp(res_fit)$importance)
   feats <- feats[order(-feats[,1]),]
   
+  genemap <- get.geneMapTable()
+  
   #p <- substring(rownames(feats),2,6) # glm classifier
   #p <- rownames(feats) # SVMLinear classifier
   p <- names(feats) # Random Forest
@@ -18,8 +20,10 @@ write.SigFeatures <- function(res_fit, profile_name, method = "DRW", classifier 
   
   sink(fname_res)
   for (i in 1:length(p)) {
-    sigGenes <- unlist(sigGeneset[p[i]],use.names = T)
-    cat(p[i], ';', as.character(pathway_name[p[i]]), ';', length(pathSet[[p[i]]]), ';', writeGeneSymbol(substring(sigGenes,2),substring(sigGenes,1,1)), '\n')
+    # sigGenes <- unlist(sigGeneset[p[i]],use.names = T)
+    # cat(p[i], ';', as.character(pathway_name[p[i]]), ';', length(pathSet[[p[i]]]), ';', writeGeneSymbol(substring(sigGenes,2),substring(sigGenes,1,1)), '\n')
+    sigGenes <- unlist(sigGeneset[p[i]],use.names = F)
+    cat(p[i], ';', as.character(pathway_name[p[i]]), ';', length(pathSet[[p[i]]]), ';', writeGeneId(substring(sigGenes,2),genemap,substring(sigGenes,1,1)), '\n')
   }
   sink.reset()
 }
@@ -35,6 +39,16 @@ writeGeneSymbol <- function(symbol, gid) {
   return(symbol)
 }
 
+writeGeneId <- function(gene, genemap, gid){
+  symbol <- as.character(genemap[gene,])
+  for(i in 1:length(symbol)){
+    if(gid[i]=="g") symbol[i] <- paste(symbol[i], "(gene)",sep="")
+    else if(gid[i]=="m") symbol[i] <- paste(symbol[i], "(meth)", sep="")
+    else if(gid[i]=="p") symbol[i] <- paste(symbol[i], "(prot)", sep="")
+  }
+  return(symbol)
+}
+
 sink.reset <- function() {
   
   for (i in seq_len(sink.number())) {
@@ -42,4 +56,9 @@ sink.reset <- function() {
     sink(NULL, type = "message")
   }
   
+}
+
+get.geneMapTable <- function() {
+  genemap <- read.table('data/BRCA_GDAC/gene_name_id_map', sep = ',', row.names=2)
+  return(genemap)
 }
