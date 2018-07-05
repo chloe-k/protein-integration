@@ -90,6 +90,6 @@ getPathActivity <-
     
     # save pathway profile 
     write.table(x=t(pathActivity), file=fname, sep="\t", row.names=rows, col.names=T)
-    
+    cat('Pathway activity inference is done\n')
     return(list(pathActivity=pathActivity, sigGenes=sigGenes))	
   }

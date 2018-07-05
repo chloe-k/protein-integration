@@ -48,7 +48,7 @@ cons_KEGGgraph <- function(datapath){
     for(node in nodes(k)) {
       if(getType(node) == "gene") {
         #node_names <- c(node_names, getSYMBOL(sapply( strsplit(getName(node),":"), '[[', 2 ), data='org.Hs.eg'))
-        node_names <- sapply( strsplit(getName(node),":"), '[[', 2 )
+        node_names <- c(node_names, sapply( strsplit(getName(node),":"), '[[', 2 ))
       }
     }
     

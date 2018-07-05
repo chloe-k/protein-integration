@@ -2,7 +2,10 @@
 # concat directed pathway graphs within each profile (GM & GMR & GMR_d & GMP)
 
 # All gene symbols are converted to Entrez gene id
-# DppiGraph(Entrez).rda was used
+
+# Reduced PPI network are used
+# Extract the protein(node) which is corresponding to RPPA protein and its neighbor node
+# PPI relation : Interacts-with
 
 # edge direction
 # m -> g
@@ -20,17 +23,17 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_n
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
                pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GM_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GM_RF_10 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                      method = "DRW", pranking = "t-test", classifier = "rf",
                                      nFolds = 5, numTops=50, iter = 50)
 
-save(res_pa_GM_RF_9, file=file.path('data/model/res_pa_GM_RF_9.RData'))
+save(res_pa_GM_RF_10, file=file.path('data/model/res_pa_GM_RF_10.RData'))
 
-summary(res_pa_GM_RF_9)
-print(res_pa_GM_RF_9$results)
-print(res_pa_GM_RF_9$resample$Accuracy)
+summary(res_pa_GM_RF_10)
+print(res_pa_GM_RF_10$results)
+print(res_pa_GM_RF_10$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GM_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GM_RF_10, profile_name=profile_name, method="DRW", respath=respath)
 
 
 #------------------------- RNAseq + Methyl + RPPA(Pathway Graph) -------------------------#
@@ -43,17 +46,17 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
                pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMR_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GMR_RF_10 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                       method = "DRW", pranking = "t-test", classifier = "rf",
                                       nFolds = 5, numTops=50, iter = 50)
 
-save(res_pa_GMR_RF_9, file=file.path('data/model/res_pa_GMR_RF_9.RData'))
+save(res_pa_GMR_RF_10, file=file.path('data/model/res_pa_GMR_RF_10.RData'))
 
-summary(res_pa_GMR_RF_9)
-print(res_pa_GMR_RF_9$results)
-print(res_pa_GMR_RF_9$resample$Accuracy)
+summary(res_pa_GMR_RF_10)
+print(res_pa_GMR_RF_10$results)
+print(res_pa_GMR_RF_10$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GMR_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GMR_RF_10, profile_name=profile_name, method="DRW", respath=respath)
 
 
 #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) -------------------------#
@@ -66,17 +69,17 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
                pranking = "t-test", mode = "GMP", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMR_d_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GMR_d_RF_10 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                         method = "DRW", pranking = "t-test", classifier = "rf",
                                         nFolds = 5, numTops=50, iter = 50)
 
-save(res_pa_GMR_d_RF_9, file=file.path('data/model/res_pa_GMR_d_RF_9.RData'))
+save(res_pa_GMR_d_RF_10, file=file.path('data/model/res_pa_GMR_d_RF_10.RData'))
 
-summary(res_pa_GMR_d_RF_9)
-print(res_pa_GMR_d_RF_9$results)
-print(res_pa_GMR_d_RF_9$resample$Accuracy)
+summary(res_pa_GMR_d_RF_10)
+print(res_pa_GMR_d_RF_10$results)
+print(res_pa_GMR_d_RF_10$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GMR_d_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GMR_d_RF_10, profile_name=profile_name, method="DRW", respath=respath)
 
 
 #------------------------- RNAseq + Methyl + RPPA(PPI Graph) -------------------------#
@@ -89,23 +92,22 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gmp, testStatistic= testStatistic, profile_
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
                pranking = "t-test", mode = "GMP", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMP_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GMP_RF_10 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
                                       method = "DRW", pranking = "t-test", classifier = "rf",
                                       nFolds = 5, numTops=50, iter = 50)
 
 
-save(res_pa_GMP_RF_9, file=file.path('data/model/res_pa_GMP_RF_9.RData'))
+save(res_pa_GMP_RF_10, file=file.path('data/model/res_pa_GMP_RF_10.RData'))
 
-summary(res_pa_GMP_RF_9)
-print(res_pa_GMP_RF_9$results)
-print(res_pa_GMP_RF_9$resample$Accuracy)
+summary(res_pa_GMP_RF_10)
+print(res_pa_GMP_RF_10$results)
+print(res_pa_GMP_RF_10$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GMP_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GMP_RF_10, profile_name=profile_name, method="DRW", respath=respath)
 
 
 # plot
-title <- c("Result 9")
 xlabs <- c("GM", "GMR", "GMR_d", "GMP")
-res_models <- list(res_pa_GM_RF_9, res_pa_GMR_RF_9, res_pa_GMR_d_RF_9, res_pa_GMP_RF_9)
+res_models <- list(res_pa_GM_RF_10, res_pa_GMR_RF_10, res_pa_GMR_d_RF_10, res_pa_GMP_RF_10)
 
-perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, res_pa_GM_RF_9$results$Accuracy[1])
+perf_boxplot(xlabs, res_models, perf_min = 0.5, perf_max = 0.9, res_pa_GM_RF_10$results$Accuracy[1])

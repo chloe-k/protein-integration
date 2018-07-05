@@ -1,8 +1,8 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
            method = "DRW", samples, pranking = "t-test", mode = "GMP",
-           classifier = "glm", nFolds = 5, numTops=50, 
-           iter = 1, Gamma=0.7, AntiCorr = FALSE, DEBUG=TRUE) {
+           classifier = "glm", nFolds = 5, numTops=50, id="Result0",
+           iter = 1, Gamma=0.3, AntiCorr = FALSE, DEBUG=TRUE) {
     
     x_norm <- list(0)
     x_stats <- list(0)
@@ -73,7 +73,7 @@ fit.iDRWPClass <-
     
     if(method == "gf") {
       
-      fname_rank = file.path(respath, paste(c("gene_rank", testStatistic, desc), collapse = '.'))
+      fname_rank = file.path(respath, paste(c("gene_rank", id, testStatistic, desc), collapse = '.'))
       
       # rank genes by their scores
       stats_feats <- x_stats[ ,1]
@@ -82,14 +82,14 @@ fit.iDRWPClass <-
       
       X <- t(x)
       
-      save(stats_feats, X, file=file.path(datapath, paste(c("gene_rank", profile_name, method, "RData"), collapse = '.')))
+      save(stats_feats, X, file=file.path(datapath, paste(c("gene_rank", id, profile_name, method, "RData"), collapse = '.')))
       
     } else {
       
       # pathway activity inference method
       # method = DRW / mean / median
-      fname_profile = file.path(respath, paste(c("pathway_profile", desc), collapse = '.'))
-      pApath <- file.path(respath, paste(c("pA", profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))
+      fname_profile = file.path(respath, paste(c("pathway_profile", id, desc), collapse = '.'))
+      pApath <- file.path(respath, paste(c("pA", id, profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))
       
       # if(!file.exists(pApath)){
         pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
@@ -103,14 +103,14 @@ fit.iDRWPClass <-
       
       # rank pathway activities
       # ranking = t-test / DA
-      fname_rank = file.path(respath, paste(c("pathway_rank", pranking, desc), collapse = '.'))
+      fname_rank = file.path(respath, paste(c("pathway_rank", id, pranking, desc), collapse = '.'))
       
       stats_feats <- rankPathActivity(pathActivity = pA$pathActivity, y = y, 
                                       ranking = pranking, fname=fname_rank)
       
       X <- t(pA$pathActivity)
       
-      save(stats_feats, X, file=file.path(datapath, paste(c("pathway_rank", profile_name, method, "RData"), collapse = '.')))
+      save(stats_feats, X, file=file.path(datapath, paste(c("pathway_rank", id, profile_name, method, "RData"), collapse = '.')))
     }
     
     # write pathway ranking
