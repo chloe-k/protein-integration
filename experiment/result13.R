@@ -30,7 +30,6 @@ save(res_pa_GM_RF_13, file=file.path('data/model/res_pa_GM_RF_13.RData'))
 
 summary(res_pa_GM_RF_13)
 print(res_pa_GM_RF_13$results)
-print(res_pa_GM_RF_13$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_GM_RF_13, id = "result13", profile_name=profile_name, method="DRW", respath=respath)
 
@@ -53,7 +52,6 @@ save(res_pa_GMR_RF_13, file=file.path('data/model/res_pa_GMR_RF_13.RData'))
 
 summary(res_pa_GMR_RF_13)
 print(res_pa_GMR_RF_13$results)
-print(res_pa_GMR_RF_13$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_GMR_RF_13, id = "result13", profile_name=profile_name, method="DRW", respath=respath)
 
@@ -76,7 +74,6 @@ save(res_pa_GMR_d_RF_13, file=file.path('data/model/res_pa_GMR_d_RF_13.RData'))
 
 summary(res_pa_GMR_d_RF_13)
 print(res_pa_GMR_d_RF_13$results)
-print(res_pa_GMR_d_RF_13$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_GMR_d_RF_13, id = "result13", profile_name=profile_name, method="DRW", respath=respath)
 
@@ -100,7 +97,6 @@ save(res_pa_GMP_RF_13, file=file.path('data/model/res_pa_GMP_RF_13.RData'))
 
 summary(res_pa_GMP_RF_13)
 print(res_pa_GMP_RF_13$results)
-print(res_pa_GMP_RF_13$resample$Accuracy)
 
 write.SigFeatures(res_fit=res_pa_GMP_RF_13, id = "result13", profile_name=profile_name, method="DRW", respath=respath)
 

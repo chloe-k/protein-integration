@@ -1,7 +1,7 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
            method = "DRW", samples, pranking = "t-test", mode = "GMP",
-           classifier = "glm", nFolds = 5, numTops=50, id="Result0",
+           classifier = "glm", nFolds = 5, numTops=50, id="Result0", prob=0.8,
            iter = 1, Gamma=0.3, AntiCorr = FALSE, DEBUG=TRUE) {
     
     x_norm <- list(0)
@@ -31,7 +31,7 @@ fit.iDRWPClass <-
         W0 <- getW0(list(gene_weight[[1]], gene_weight[[2]]), gm)
         
         # get W0 of P
-        p_W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight[[3]], ppi = globalGraph[[3]])
+        p_W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight[[3]], ppi = globalGraph[[3]], prob = prob)
         
         # concatenate W0 and p_W0
         W0 <- c(W0, p_W0, use.names = TRUE)

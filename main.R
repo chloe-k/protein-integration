@@ -2,6 +2,22 @@
 ########################### package load ############################
 # source("https://bioconductor.org/biocLite.R")
 
+# biocLite("KEGGgraph")
+# biocLite("igraph")
+# install.packages("ggplot2")
+# biocLite("annotate")
+# biocLite("org.Hs.eg.db")
+# biocLite("diffusr")
+# biocLite("DESeq2")
+# biocLite("Matrix")
+# biocLite("stringr")
+# biocLite("caret")
+# biocLite("e1071")
+# biocLite("randomForest")
+# biocLite("KEGG.db")
+# biocLite("KEGGREST")
+# biocLite("biomaRt")
+
 library(KEGGgraph)
 library(igraph)
 library(ggplot2)
@@ -16,6 +32,7 @@ library(e1071)
 library(randomForest)
 library(KEGG.db)
 library(KEGGREST)
+library(biomaRt)
 
 ######################################################################
 
@@ -55,8 +72,10 @@ load(file.path(pathSetpath))
 
 
 # dppipath <- file.path(datapath, 'DppiGraph.rda')  # directed edge PPI
-# dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
-dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
+#ppipath <- file.path(datapath, 'ppiGraph(Entrez).rda')  # undirected edge PPI
+dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
+# dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
+
 if(!file.exists(dppipath)) {
   print('ppiGraph does not exist, now creating ppiGraph start')
   cons_ppi(datapath, gdacpath, rppa)
@@ -89,3 +108,4 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
+
