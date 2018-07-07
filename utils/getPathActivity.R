@@ -18,18 +18,26 @@ getPathActivity <-
           pathActivity_tmp <- matrix(nrow=1,ncol=dim(x)[2],data=0) 
           TValue.pathActivity_tmp <- 0
           sigGenesi <- c()
-          Idx_pathwayi <- c()   
+          Idx_pathwayi <- c()
           for (j in 1 : length(Vpathwayi)){
             Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
             if (length(Idx) > 0){
               if ( rownames(x)[Idx] %in% names(w)){
                 idx <- which(vertexZP[rownames(x)[Idx],"pvalue"] < 0.05)
                 if(length(idx) > 0){
+                  # for (k in 1:length(idx)) {
+                  #   pathActivity_tmp <- pathActivity_tmp + vertexZP[rownames(x)[Idx[idx[k]]],"score"] * w[rownames(x)[Idx[idx[k]]]] * x[Idx[idx[k]],]	
+                  #   n <- n + 1
+                  #   Idx_pathwayi <- rbind(Idx_pathwayi,Idx[idx[k]])	
+                  #   sigGenesi <- c(sigGenesi, rownames(x)[Idx[idx[k]]])
+                  # }
                   for (k in 1:length(idx)) {
-                    pathActivity_tmp <- pathActivity_tmp + vertexZP[rownames(x)[Idx[idx[k]]],"score"] * w[rownames(x)[Idx[idx[k]]]] * x[Idx[idx[k]],]	
-                    n <- n + 1
-                    Idx_pathwayi <- rbind(Idx_pathwayi,Idx[idx[k]])	
-                    sigGenesi <- c(sigGenesi, rownames(x)[Idx[idx[k]]])
+                    if(rownames(x)[Idx[idx[k]]] %in% names(w)){
+                      pathActivity_tmp <- pathActivity_tmp + vertexZP[rownames(x)[Idx[idx[k]]],"score"] * w[rownames(x)[Idx[idx[k]]]] * x[Idx[idx[k]],]	
+                      n <- n + 1
+                      Idx_pathwayi <- rbind(Idx_pathwayi,Idx[idx[k]])	
+                      sigGenesi <- c(sigGenesi, rownames(x)[Idx[idx[k]]])
+                    }
                   }
                 }
               }
