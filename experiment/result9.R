@@ -17,10 +17,10 @@ profile_name <- c("rna(Entrez)", "meth(Entrez)")
 x=list(rnaseq, imputed_methyl)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
-               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, id = "result9",
                pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GM_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GM_RF_9 <- fit.classification(y=y, samples = samples, id = "result9", datapath = datapath, respath = respath, profile_name = profile_name,
                                      method = "DRW", pranking = "t-test", classifier = "rf",
                                      nFolds = 5, numTops=50, iter = 50)
 
@@ -28,9 +28,8 @@ save(res_pa_GM_RF_9, file=file.path('data/model/res_pa_GM_RF_9.RData'))
 
 summary(res_pa_GM_RF_9)
 print(res_pa_GM_RF_9$results)
-print(res_pa_GM_RF_9$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GM_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GM_RF_9, id = "result9", profile_name=profile_name, method="DRW", respath=respath)
 
 
 #------------------------- RNAseq + Methyl + RPPA(Pathway Graph) -------------------------#
@@ -40,10 +39,10 @@ profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Pathway_Graph_Entrez)")
 x=list(rnaseq, imputed_methyl, rppa)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
-               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, id = "result9",
                pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMR_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GMR_RF_9 <- fit.classification(y=y, samples = samples, id = "result9", datapath = datapath, respath = respath, profile_name = profile_name,
                                       method = "DRW", pranking = "t-test", classifier = "rf",
                                       nFolds = 5, numTops=50, iter = 50)
 
@@ -51,9 +50,8 @@ save(res_pa_GMR_RF_9, file=file.path('data/model/res_pa_GMR_RF_9.RData'))
 
 summary(res_pa_GMR_RF_9)
 print(res_pa_GMR_RF_9$results)
-print(res_pa_GMR_RF_9$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GMR_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GMR_RF_9, id = "result9", profile_name=profile_name, method="DRW", respath=respath)
 
 
 #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) -------------------------#
@@ -63,10 +61,10 @@ profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(diffused_Pathway_Graph_En
 x=list(rnaseq, imputed_methyl, rppa)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
-               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, id = "result9",
                pranking = "t-test", mode = "GMP", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMR_d_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GMR_d_RF_9 <- fit.classification(y=y, samples = samples, id = "result9", datapath = datapath, respath = respath, profile_name = profile_name,
                                         method = "DRW", pranking = "t-test", classifier = "rf",
                                         nFolds = 5, numTops=50, iter = 50)
 
@@ -74,9 +72,8 @@ save(res_pa_GMR_d_RF_9, file=file.path('data/model/res_pa_GMR_d_RF_9.RData'))
 
 summary(res_pa_GMR_d_RF_9)
 print(res_pa_GMR_d_RF_9$results)
-print(res_pa_GMR_d_RF_9$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GMR_d_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GMR_d_RF_9, id = "result9", profile_name=profile_name, method="DRW", respath=respath)
 
 
 #------------------------- RNAseq + Methyl + RPPA(PPI Graph) -------------------------#
@@ -86,10 +83,10 @@ gmp <- list(g, m, p)
 x=list(rnaseq, imputed_methyl, rppa)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gmp, testStatistic= testStatistic, profile_name = profile_name,
-               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, id = "result9",
                pranking = "t-test", mode = "GMP", AntiCorr=FALSE, DEBUG=TRUE)
 
-res_pa_GMP_RF_9 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+res_pa_GMP_RF_9 <- fit.classification(y=y, samples = samples, id = "result9", datapath = datapath, respath = respath, profile_name = profile_name,
                                       method = "DRW", pranking = "t-test", classifier = "rf",
                                       nFolds = 5, numTops=50, iter = 50)
 
@@ -98,9 +95,8 @@ save(res_pa_GMP_RF_9, file=file.path('data/model/res_pa_GMP_RF_9.RData'))
 
 summary(res_pa_GMP_RF_9)
 print(res_pa_GMP_RF_9$results)
-print(res_pa_GMP_RF_9$resample$Accuracy)
 
-write.SigFeatures(res_fit=res_pa_GMP_RF_9, profile_name=profile_name, method="DRW", respath=respath)
+write.SigFeatures(res_fit=res_pa_GMP_RF_9, id = "result9", profile_name=profile_name, method="DRW", respath=respath)
 
 
 # plot
