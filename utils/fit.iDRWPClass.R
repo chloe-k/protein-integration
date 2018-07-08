@@ -1,7 +1,7 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
            method = "DRW", samples, pranking = "t-test", mode = "GMP",
-           classifier = "glm", nFolds = 5, numTops=50, id="Result0", prob,
+           classifier = "glm", nFolds = 5, numTops=50, id="Result0", prob=0.8,
            iter = 1, Gamma=0.3, AntiCorr = FALSE, DEBUG=TRUE) {
     
     x_norm <- list(0)

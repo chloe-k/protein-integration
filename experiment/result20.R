@@ -1,8 +1,8 @@
-# integrative DRW on combined feature data (updated in 2020/07/06)
+# integrative DRW on combined feature data (updated in 2018/07/06)
 # concat directed pathway graphs within each profile (GM & GMR & GMR_d & GMP)
 
 # In order to find optimized restart probability in DRW method.
-# Grid search was performed in [0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+# Grid search was performed in [0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 # p=0.3(gamma) had used in before
 
 # All gene symbols are converted to Entrez gene id
