@@ -187,3 +187,4 @@ res_models <- list(res_pa_G_18_2, res_pa_M_18_2, res_pa_R_18_2, res_pa_P_18_2)
 
 perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, res_pa_G_18_2$results$Accuracy[1])
 
+
