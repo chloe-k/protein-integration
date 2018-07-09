@@ -16,7 +16,6 @@
 
 # Classifier : rf(Random Forest)
 
-
 ###########################################################  Gamma = 0.01  #######################################################
 Gamma <- 0.01
 
@@ -267,7 +266,6 @@ summary(res_pa_GMR_d_20_0.1)
 print(res_pa_GMR_d_20_0.1$results)
 
 write.SigFeatures(res_fit=res_pa_GMR_d_20_0.1, id = "result20_0.1", profile_name=profile_name, method="DRW", respath=respath)
-
 
 #------------------------- RNAseq + Methyl + RPPA(PPI Graph) -------------------------#
 testStatistic <- c("DESeq2", "t-test", "t-test")
