@@ -181,10 +181,8 @@ print(res_pa_P_18_2$resample$Accuracy)
 write.SigFeatures(res_fit=res_pa_P_18_2, id="result18_2", profile_name=profile_name, method="DRW", respath=respath)
 
 # plot
-title <- c("Result 18_2")
+title <- c("Result 18_2(For comparison, non-diffused graphs were used)")
 xlabs <- c("G", "M", "R", "P")
 res_models <- list(res_pa_G_18_2, res_pa_M_18_2, res_pa_R_18_2, res_pa_P_18_2)
 
-perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, res_pa_G_18_2$results$Accuracy[1])
-
-
+perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, mean(res_pa_G_18_2$results$Accuracy))
