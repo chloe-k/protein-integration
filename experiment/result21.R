@@ -3,7 +3,7 @@
 
 # All gene symbols are converted to Entrez gene id
 # LOOCV was performed.
-# PPI was constructed by STRING database
+# unweighted PPI was constructed by STRING database
 
 # Dppigraph_str.rda was used
 # restart probability(in diffus_ppi.R) is 0.8
