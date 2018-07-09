@@ -2,7 +2,7 @@ fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
            method = "DRW", samples, pranking = "t-test", mode = "GMP",
            classifier = "glm", nFolds = 5, numTops=50, id="Result0", prob=0.8,
-           iter = 1, Gamma=0.3, AntiCorr = FALSE, DEBUG=TRUE) {
+           iter = 1, Gamma=0.1, AntiCorr = FALSE, DEBUG=TRUE) {
     
     x_norm <- list(0)
     x_stats <- list(0)
@@ -46,8 +46,8 @@ fit.iDRWPClass <-
         # W = get(load(wpath))
       } 
       else{
-        # W0 <- getW0(gene_weight, globalGraph)
-        W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight, ppi = globalGraph, prob = prob)
+        W0 <- getW0(gene_weight, globalGraph)
+        # W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight, ppi = globalGraph, prob = prob)
         if(DEBUG) cat('Getting W0 is done...')
         
         # get adjacency matrix of the (integrated) gene-gene graph

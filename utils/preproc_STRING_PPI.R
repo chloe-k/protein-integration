@@ -21,7 +21,12 @@ preproc_STRING_PPI <- function(datapath){
   ppi$protein1 <- ensembl_mapping[ppi$protein1,]
   ppi$protein2 <- ensembl_mapping[ppi$protein2,]
   
-  # Construct directed ppi
+  # Construct directed ppi(unweighted)
+  DppiGraph <- graph.data.frame(ppi[,1:2], directed=TRUE)
+  
+  save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph_str","rda"), collapse='.')))
+  
+  # Construct directed ppi(weighted)
   DppiGraph <- graph.data.frame(ppi, directed=TRUE)
 
   save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph_W_str","rda"), collapse='.')))

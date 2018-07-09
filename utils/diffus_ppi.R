@@ -3,8 +3,8 @@ diffus_ppi <- function(datapath, gene_weight = gene_weight, ppi, prob){
   # assign initial weights to the PPI graph
   W0 <- getW0(gene_weight, ppi)
   
-  # adj <- as.matrix(get.adjacency(ppi))
-  adj <- as.matrix(get.adjacency(ppi, attr = "combined_score"))/100
+  adj <- as.matrix(get.adjacency(ppi))
+  # adj <- as.matrix(get.adjacency(ppi, attr = "combined_score"))/100
   
   ##################### PPI graph diffusion using Markov Random Walk #########################
   # dfs_ppi <- random.walk(W0, adj, r=0.5, niter=5000, thresh=1e-05)
@@ -22,3 +22,7 @@ diffus_ppi <- function(datapath, gene_weight = gene_weight, ppi, prob){
   # print('PPI diffusion complete..')
   # return(dfs_ppi)
 }
+
+# weighted_kegg <- function(r, p){
+#   common_edge <- 
+# }
