@@ -14,9 +14,9 @@ diffus_ppi <- function(datapath, gene_weight = gene_weight, ppi, prob){
   #save(dfs_ppi, file=file.path(datapath, paste(c(name,"rda"), collapse='.')))
 
   return(dfs_ppi[[1]]) # return p.inf the stationary distribution of W0
-  
-  
-  ##################### PPI graph diffusion using Heat Diffusion Process on Laplacian Matrix #########################
+
+
+  # ##################### PPI graph diffusion using Heat Diffusion Process on Laplacian Matrix #########################
   # dfs_ppi <- heat.diffusion(W0, adj)
   # names(dfs_ppi) <- names(W0)
   # print('PPI diffusion complete..')
