@@ -112,7 +112,7 @@ write.SigFeatures(res_fit=res_pa_GMP_A, id = "result_A", profile_name=profile_na
 
 # plot
 title <- c("Result A")
-xlabs <- c("GM", "GMR", "GMR_d", "GMP")
-res_models <- list(res_pa_GM_A, res_pa_GMR_A, res_pa_GMR_d_A, res_pa_GMP_A)
+xlabs <- c("GM_0.2", "GMR_0.2", "GMR_d_0.2", "GMP_0.2")
+res_models <- list(res_pa_GM_20_0.7, res_pa_GMR_20_0.7, res_pa_GMR_d_20_0.7, res_pa_GMP_20_0.7)
 
-perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, res_pa_GM_A$results$Accuracy[1])
+perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, mean(res_pa_GM_20_0.7$results$Accuracy))
