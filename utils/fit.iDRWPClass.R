@@ -46,7 +46,8 @@ fit.iDRWPClass <-
         # W = get(load(wpath))
       } 
       else{
-        W0 <- getW0(gene_weight, globalGraph)
+        # W0 <- getW0(gene_weight, globalGraph)
+        W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight, ppi = globalGraph, prob = prob)
         if(DEBUG) cat('Getting W0 is done...')
         
         # get adjacency matrix of the (integrated) gene-gene graph

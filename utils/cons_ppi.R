@@ -126,8 +126,8 @@ cons_ppi <- function(datapath, gdacpath, rppa){
   # ppi_rppa_gene <- intersect(V(ppiGraph)$name, substring(rownames(rppa), 2))
   # ppiGraph <- induced_subgraph(ppiGraph, match(ppi_rppa_gene, V(ppiGraph)$name))
 
-  Dppi_rppa_gene <- intersect(V(DppiGraph)$name, substring(rownames(rppa), 2))
-  DppiGraph <- induced_subgraph(DppiGraph, match(Dppi_rppa_gene, V(DppiGraph)$name))
+  # Dppi_rppa_gene <- intersect(V(DppiGraph)$name, substring(rownames(rppa), 2))
+  # DppiGraph <- induced_subgraph(DppiGraph, match(Dppi_rppa_gene, V(DppiGraph)$name))
   
 
   #---------------result 1 ~ 8----------------------#  
@@ -152,8 +152,8 @@ cons_ppi <- function(datapath, gdacpath, rppa){
   
   # save(ppiGraph, file=file.path(datapath, paste(c("ppiGraph","rda"), collapse='.')))
   # save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph","rda"), collapse='.')))
-  # save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph(Entrez)","rda"), collapse='.')))
-   save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph_rdc","rda"), collapse='.')))
+   save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph(Entrez)","rda"), collapse='.')))
+  # save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph_rdc","rda"), collapse='.')))
   
   ########################################################################################  
   #plot the degree of the igraph(X:genes, Y:edge)
