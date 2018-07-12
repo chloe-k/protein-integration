@@ -3,7 +3,7 @@ fit.iDRWPClass <-
            method = "DRW", samples, pranking = "t-test", mode,
            classifier, nFolds, numTops, id, prob,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
-    
+
     x_norm <- list(0)
     x_stats <- list(0)
     gene_weight <- list(0)
