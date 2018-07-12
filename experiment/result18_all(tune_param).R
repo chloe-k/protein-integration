@@ -1445,33 +1445,36 @@ for(i in 1:length(res_models)){
     res_gmr_d <- c(res_gmr_d, list(res_models[[i]]))
   }
   if(i %% 4 == 0){
-    res_gmp <- c(rres_gmp, list(res_models[[i]]))
+    res_gmp <- c(res_gmp, list(res_models[[i]]))
   }
 }
 
+xlabs <- c("[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
 
 # Plot for GM models
 title <- c("Result 18_GM")
+res_gm <- res_gm[1:4]
 perf_min <- min(sapply(X = res_gm, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gm, FUN = function(x){mean(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.1, perf_max = perf_max+0.1)
+perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
 
 # Plot for GMR models
 title <- c("Result 18_GMR")
+res_gmr <- res_gmr[1:4]
 perf_min <- min(sapply(X = res_gmr, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmr, FUN = function(x){mean(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.1, perf_max = perf_max+0.1)
+perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+
+xlabs <- c("[p=0.2,g=0.2]", "[p=0.2,g=0.4]", "[p=0.2,g=0.6]", "[p=0.2,g=0.8]", "[p=0.4,g=0.2]", "[p=0.4,g=0.4]", "[p=0.4,g=0.6]", "[p=0.4,g=0.8]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
 
 # Plot for GMR_d models
 title <- c("Result 18_GMR_d")
 perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){mean(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.1, perf_max = perf_max+0.1)
+perf_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
 
 # Plot for GMP models
 title <- c("Result 18_GMP")
 perf_min <- min(sapply(X = res_gmp, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmp, FUN = function(x){mean(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmp, perf_min = perf_min-0.1, perf_max = perf_max+0.1)
-
-
+perf_boxplot(title, xlabs, res_gmp, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
