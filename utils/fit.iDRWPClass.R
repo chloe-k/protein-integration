@@ -1,8 +1,8 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
-           method = "DRW", samples, pranking = "t-test", mode = "GMP",
-           classifier = "glm", nFolds = 5, numTops=50, id="Result0", prob=0.8,
-           iter = 1, Gamma=0.3, AntiCorr = FALSE, DEBUG=TRUE) {
+           method = "DRW", samples, pranking = "t-test", mode,
+           classifier, nFolds, numTops, id, prob,
+           iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
     
     x_norm <- list(0)
     x_stats <- list(0)
@@ -39,23 +39,15 @@ fit.iDRWPClass <-
         
         gmp <- gm %du% globalGraph[[3]]
         # get adjacency matrix of the (integrated) gene-gene graph
-        # wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
-        # if(!file.exists(wpath)){
           W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
-        # }
-        # W = get(load(wpath))
       } 
       else{
-        # W0 <- getW0(gene_weight, globalGraph)
-        W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight, ppi = globalGraph, prob = prob)
+        W0 <- getW0(gene_weight, globalGraph)
+        # W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight, ppi = globalGraph, prob = prob)
         if(DEBUG) cat('Getting W0 is done...')
         
         # get adjacency matrix of the (integrated) gene-gene graph
-        # wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
-        # if(!file.exists(wpath)){
-          W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
-        # }
-        # W = get(load(wpath))
+        W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
       }
       
       # perform DRW on gene-gene graph
@@ -92,14 +84,10 @@ fit.iDRWPClass <-
       fname_profile = file.path(respath, paste(c("pathway_profile", id, desc), collapse = '.'))
       pApath <- file.path(respath, paste(c("pA", id, profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))
       
-      # if(!file.exists(pApath)){
         pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
                               method = method, fname = fname_profile, rows = samples)
         
         save(pA, file=pApath)
-      # }else{
-        # pA <- get(load(file = file.path(pApath)))
-      # }
 
       
       # rank pathway activities
