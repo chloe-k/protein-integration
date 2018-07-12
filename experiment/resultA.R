@@ -6,8 +6,12 @@
 # p=0.8 which is restart probability for network diffusion in diffus_ppi.R
 # Gamma= 0.1 which is restart probability for DRW in DRW.R
 
+<<<<<<< HEAD
 
 # Dppigraph(Entrez).rda was used for GMP
+=======
+# Dppigraph_str.rda was used for GMP
+>>>>>>> 9d0ea6f... Result A : baseline model
 
 # All gene symbols are converted to Entrez gene id
 # LOOCV was performed.
