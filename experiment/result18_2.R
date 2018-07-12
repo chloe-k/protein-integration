@@ -2,6 +2,7 @@
 # directed pathway graphs was used as (G, M, R) model and PPI graph(Pathway Commons) was used as (P) model
 
 # All KEGG graph/PPI graph was diffused by corresponding data
+# restart probability(in diffus_ppi.R) is 0.8
 
 # All gene symbols are converted to Entrez gene id
 # LOOCV was performed.

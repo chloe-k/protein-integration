@@ -16,12 +16,6 @@
 
 # Classifier : rf(Random Forest)
 
-
-res_models <- list()
-load('data/model/res_pa_GM_RF_13.RData')
-load('data/model/res_pa_GMR_RF_13.RData')
-res_models <- c(res_models, list(res_pa_GM_RF_13, res_pa_GMR_RF_13))
-
 ###########################################################  Gamma = 0.01  #######################################################
 Gamma <- 0.01
 
@@ -272,7 +266,6 @@ summary(res_pa_GMR_d_20_0.1)
 print(res_pa_GMR_d_20_0.1$results)
 
 write.SigFeatures(res_fit=res_pa_GMR_d_20_0.1, id = "result20_0.1", profile_name=profile_name, method="DRW", respath=respath)
-
 
 #------------------------- RNAseq + Methyl + RPPA(PPI Graph) -------------------------#
 testStatistic <- c("DESeq2", "t-test", "t-test")
@@ -852,7 +845,6 @@ write.SigFeatures(res_fit=res_pa_GMP_20_0.7, id = "result20_0.7", profile_name=p
 
 res_models <- c(res_models, list(res_pa_GM_20_0.7, res_pa_GMR_20_0.7, res_pa_GMR_d_20_0.7, res_pa_GMP_20_0.7))
 
-
 ###########################################################  Gamma = 0.8  #######################################################
 Gamma <- 0.8
 
@@ -1042,6 +1034,45 @@ res_models <- c(res_models, list(res_pa_GM_20_0.9, res_pa_GMR_20_0.9, res_pa_GMR
 # plot
 title <- c("Result 20")
 xlabs <- c("GM_0.01", "GMR_0.01", "GMR_d_0.01", "GMP_0.01", "GM_0.05", "GMR_0.05", "GMR_d_0.05", "GMP_0.05", "GM_0.1", "GMR_0.1", "GMR_d_0.1", "GMP_0.1", "GM_0.2", "GMR_0.2", "GMR_d_0.2", "GMP_0.2", "GM_0.3", "GMR_0.3", "GMR_d_0.3", "GMP_0.3","GM_0.4", "GMR_0.4", "GMR_d_0.4", "GMP_0.4", "GM_0.5", "GMR_0.5", "GMR_d_0.5", "GMP_0.5", "GM_0.6", "GMR_0.6", "GMR_d_0.6", "GMP_0.6", "GM_0.7", "GMR_0.7", "GMR_d_0.7", "GMP_0.7", "GM_0.8", "GMR_0.8", "GMR_d_0.8", "GMP_0.8", "GM_0.9", "GMR_0.9", "GMR_d_0.9", "GMP_0.9")
-#res_models <- list(res_pa_GM_13, res_pa_GMR_13, res_pa_GMR_d_20_0.01, res_pa_GMP_20_0.01, res_pa_GMR_d_20_0.05, res_pa_GMP_20_0.05, res_pa_GMR_d_20_0.1, res_pa_GMP_20_0.1)
 
-perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, res_pa_GM_20_0.01$results$Accuracy[1])
+perf_boxplot(title, xlabs, res_models, perf_min = 0.5, perf_max = 0.9, mean(res_pa_GM_20_0.01$results$Accuracy))
+
+# plot for each models
+res_gm <- list()
+res_gmr <- list()
+res_gmr_d <- list()
+res_gmp <- list()
+for(i in 1:length(res_models)){
+  if(i %% 4 == 1){
+    res_gm <- c(res_gm, list(res_models[[i]]))
+  }
+  if(i %% 4 == 2){
+    res_gmr <- c(res_gmr, list(res_models[[i]]))
+  }
+  if(i %% 4 == 3){
+    res_gmr_d <- c(res_gmr_d, list(res_models[[i]]))
+  }
+  if(i %% 4 == 0){
+    res_gmp <- c(res_gmp, list(res_models[[i]]))
+  }
+}
+
+# plot
+title <- c("Result GM")
+xlabs <- c("GM_0.01", "GM_0.05", "GM_0.1", "GM_0.2", "GM_0.3", "GM_0.4", "GM_0.5", "GM_0.6", "GM_0.7", "GM_0.8", "GM_0.9")
+perf_boxplot(title, xlabs, res_gm, perf_min = 0.5, perf_max = 0.9, mean(sapply(X = res_gm, FUN = function(x){x$results$Accuracy})))
+
+# plot
+title <- c("Result GMR")
+xlabs <- c("GMR_0.01", "GMR_0.05", "GMR_0.1", "GMR_0.2", "GMR_0.3", "GMR_0.4", "GMR_0.5", "GMR_0.6", "GMR_0.7", "GMR_0.8", "GMR_0.9")
+perf_boxplot(title, xlabs, res_gmr, perf_min = 0.5, perf_max = 0.9, mean(sapply(X = res_gmr, FUN = function(x){x$results$Accuracy})))
+
+# plot
+title <- c("Result GMR_d")
+xlabs <- c("GMR_d_0.01", "GMR_d_0.05", "GMR_d_0.1", "GMR_d_0.2", "GMR_d_0.3", "GMR_d_0.4", "GMR_d_0.5", "GMR_d_0.6", "GMR_d_0.7", "GMR_d_0.8", "GMR_d_0.9")
+perf_boxplot(title, xlabs, res_gmr_d, perf_min = 0.5, perf_max = 0.9, mean(sapply(X = res_gmr_d, FUN = function(x){x$results$Accuracy})))
+
+# plot
+title <- c("Result GMP")
+xlabs <- c("GMP_0.01", "GMP_0.05", "GMP_0.1", "GMP_0.2", "GMP_0.3", "GMP_0.4", "GMP_0.5", "GMP_0.6", "GMP_0.7", "GMP_0.8", "GMP_0.9")
+perf_boxplot(title, xlabs, res_gmp, perf_min = 0.5, perf_max = 0.9, mean(sapply(X = res_gmp, FUN = function(x){x$results$Accuracy})))
