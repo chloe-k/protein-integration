@@ -31,7 +31,7 @@ fit.iDRWPClass <-
         W0 <- getW0(list(gene_weight[[1]], gene_weight[[2]]), gm)
         
         # get W0 of P
-        p_W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight[[3]], ppi = globalGraph[[3]], prob = prob)
+        p_W0 <- diffus_ppi(datapath = datapath, gene_weight = list(gene_weight[[3]]), ppi = globalGraph[[3]], prob = prob)
         
         # concatenate W0 and p_W0
         W0 <- c(W0, p_W0, use.names = TRUE)
