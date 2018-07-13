@@ -14,7 +14,8 @@ getW0 <- function(gene_weight, globalGraph){
     }
   }
   
-  W0 <- W0/sum(W0)
+  # W0 <- W0/sum(W0)
+  if(sum(W0)!=0) W0 <- W0 / sum(W0)
   W0[is.na(W0)] <- 0
   
   return(W0)
