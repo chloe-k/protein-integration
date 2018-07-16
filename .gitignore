@@ -32,11 +32,15 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# except data folder
+# data folder
 data/
 
-# except result folder
+# result folder
 result/
+
+# R data/object
+*.rda
+*.RData
 
 # jupyter notebook
 *.ipynb_checkpoints

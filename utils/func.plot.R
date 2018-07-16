@@ -14,8 +14,12 @@ perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=
     scale_y_continuous(limits=c(perf_min,perf_max)) +
     # geom_jitter(alpha=0.4, size=0.6, position=position_jitter(width=0.1,height=0)) +
     theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
-    geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
-    theme(plot.title = element_text(hjust = 0.5))
+    #geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
+    theme(plot.title = element_text(hjust = 0.5)) 
+    # scale_x_continuous(name = 'restart prob(p-prob, g-Gamma)', 
+    #                    breaks = c('p=0.2', 'p=0.2', 'p=0.2', 'p=0.2', 'p=0.4', 'p=0.4', 'p=0.4', 'p=0.4', 'p=0.6', 'p=0.6', 'p=0.6', 'p=0.6', 'p=0.8', 'p=0.8', 'p=0.8', 'p=0.8'), 
+    #                    labels = c('p=0.2\ng=0.2', 'p=0.2\ng=0.4', 'p=0.2\ng=0.6', 'p=0.2\ng=0.8', 'p=0.4\ng=0.2', 'p=0.4\ng=0.4', 'p=0.4\ng=0.6', 'p=0.4\ng=0.8',
+    #                               'p=0.6\ng=0.2', 'p=0.6\ng=0.4', 'p=0.6\ng=0.6', 'p=0.6\ng=0.8', 'p=0.8\ng=0.2', 'p=0.8\ng=0.4', 'p=0.8\ng=0.6', 'p=0.8\ng=0.8'))
   
   print(p + ggtitle(title))
 }

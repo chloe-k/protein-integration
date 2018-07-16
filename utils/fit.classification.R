@@ -1,4 +1,4 @@
-fit.classification <- function(y, samples, id = "result0", datapath, respath, profile_name, method = "DRW", pranking = "t-test", classifier = "rf", nFolds = 5, numTops=50, iter = 1){
+fit.classification <- function(y, samples, id, datapath, respath, profile_name, method = "DRW", pranking = "t-test", classifier = "rf", nFolds = 5, numTops=50, iter = 1){
   
   if(method == 'DRW'){
     
@@ -18,8 +18,8 @@ fit.classification <- function(y, samples, id = "result0", datapath, respath, pr
   Y=as.factor(Y)
   
   rankn_feats <- names(stats_feats)[1:numTops]
-  #result <- train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial())
-  result <- train(X[,rankn_feats], Y, trControl=trainControl(method="LOOCV"), method=classifier, family=binomial())
+  result <- train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial())
+  # result <- train(X[,rankn_feats], Y, trControl=trainControl(method="LOOCV"), method=classifier, family=binomial())
   
   return(result)
   
