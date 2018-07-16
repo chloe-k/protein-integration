@@ -1,4 +1,4 @@
-getW <- function(datapath, G, gene_weight, mode="GMP"){
+getW <- function(datapath, G, gene_weight, mode){
   print('getting adjacency matrix starts(getW)..')
   len <- length(gene_weight)
   if(len > 1){
@@ -18,8 +18,8 @@ getW <- function(datapath, G, gene_weight, mode="GMP"){
       
     } else if(mode == "GMR"){
       # make Global Graph(RNAseq+Mehtyl+RPPA(Pathway Graph))
-      intersect_gm <- intersect(names(substring(gene_weight[[1]], 2)), names(substring(gene_weight[[2]], 2)))
-      intersect_gr <- intersect(names(substring(gene_weight[[1]], 2)), names(substring(gene_weight[[3]], 2)))
+      intersect_gm <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[2]]),2))
+      intersect_gr <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2))
       
       # create Global Graph's adjacency matrix
       W <- as.matrix(get.adjacency(G)) 
@@ -40,14 +40,14 @@ getW <- function(datapath, G, gene_weight, mode="GMP"){
         }
       }
       
-    } else if(mode == "GMP"){
+    } else if(mode == "GMP" | mode == "GMR_d"){
       # make Global Graph(RNAseq+Methyl+RPPA)
       # gene_weight[[1]] : RNAseq(G)
       # gene_weight[[2]] : Methyl(M)
       # gene_weight[[3]] : RPPA(P)
       
-      intersect_gm <- intersect(names(substring(gene_weight[[1]], 2)), names(substring(gene_weight[[2]], 2))) 
-      intersect_gp <- intersect(names(substring(gene_weight[[1]], 2)), names(substring(gene_weight[[3]], 2))) 
+      intersect_gm <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[2]]),2))
+      intersect_gp <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2)) 
       
       # create Global Graph's adjacency matrix
       W <- as.matrix(get.adjacency(G)) 

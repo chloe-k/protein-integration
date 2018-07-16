@@ -24,7 +24,7 @@ fit.iDRWPClass <-
     
     if(method == "DRW") {
       # assign initial weights to the pathway graph
-      if(mode == "GMP"){
+      if(mode == "GMP" | mode == "GMR_d"){
         
         # get W0 of G & M 
         gm <- globalGraph[[1]] %du% globalGraph[[2]]
@@ -38,8 +38,14 @@ fit.iDRWPClass <-
         if(DEBUG) cat('Getting W0 is done...')
         
         gmp <- gm %du% globalGraph[[3]]
+        
         # get adjacency matrix of the (integrated) gene-gene graph
+        wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+        if(!file.exists(wpath)){
           W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
+        }
+        W = get(load(wpath))
+          
       } 
       else{
         W0 <- getW0(gene_weight, globalGraph)
@@ -47,7 +53,12 @@ fit.iDRWPClass <-
         if(DEBUG) cat('Getting W0 is done...')
         
         # get adjacency matrix of the (integrated) gene-gene graph
-        W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
+        wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+        if(!file.exists(wpath)){
+          W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
+        }
+        W = get(load(wpath))
+        
       }
       
       # perform DRW on gene-gene graph
