@@ -4,7 +4,7 @@ diffus_ppi <- function(datapath, gene_weight = gene_weight, ppi, prob){
   W0 <- getW0(gene_weight, ppi)
   
   adj <- as.matrix(get.adjacency(ppi))
-# adj <- as.matrix(get.adjacency(ppi, attr = "combined_score"))/1000
+  # adj <- as.matrix(get.adjacency(ppi, attr = "combined_score"))/1000
 
   ##################### PPI graph diffusion using Markov Random Walk #########################
   # dfs_ppi <- random.walk(W0, adj, r=0.5, niter=5000, thresh=1e-05)
