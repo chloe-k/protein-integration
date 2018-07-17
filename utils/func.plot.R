@@ -16,11 +16,6 @@ perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=
     theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
     #geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
     theme(plot.title = element_text(hjust = 0.5)) 
-    # scale_x_continuous(name = 'restart prob(p-prob, g-Gamma)', 
-    #                    breaks = c('p=0.2', 'p=0.2', 'p=0.2', 'p=0.2', 'p=0.4', 'p=0.4', 'p=0.4', 'p=0.4', 'p=0.6', 'p=0.6', 'p=0.6', 'p=0.6', 'p=0.8', 'p=0.8', 'p=0.8', 'p=0.8'), 
-    #                    labels = c('p=0.2\ng=0.2', 'p=0.2\ng=0.4', 'p=0.2\ng=0.6', 'p=0.2\ng=0.8', 'p=0.4\ng=0.2', 'p=0.4\ng=0.4', 'p=0.4\ng=0.6', 'p=0.4\ng=0.8',
-    #                               'p=0.6\ng=0.2', 'p=0.6\ng=0.4', 'p=0.6\ng=0.6', 'p=0.6\ng=0.8', 'p=0.8\ng=0.2', 'p=0.8\ng=0.4', 'p=0.8\ng=0.6', 'p=0.8\ng=0.8'))
-  
   print(p + ggtitle(title))
 }
 
@@ -49,4 +44,38 @@ perf_lineplot <- function(fname_res, perf_min, perf_max) {
   
   print(p)
   
+}
+
+perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL) {
+  df_list = list()
+  for(i in 1:length(xlabs)) {
+    p <- -1
+    g <- -1
+    if(i%%5 == 1) g <- 0
+    else if(i%%5 == 2) g <- 0.2
+    else if(i%%5 == 3) g <- 0.4
+    else if(i%%5 == 4) g <- 0.6
+    else if(i%%5 == 0) g <- 0.8
+    
+    if(i%/%6 == 0) p <- 0.001
+    else if(i%/%6 == 1) p <- 0.01
+    else if(i%/%6 == 2) p <- 0.2
+    else if(i%/%6 == 3) p <- 0.4
+    else if(i%/%6 == 4) p <- 0.6
+    else if(i%/%6 == 5) p <- 0.8
+    
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$results$Accuracy, P=p, Gamma=g)
+  }
+  df = Reduce(rbind, df_list)
+  
+  facet_p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=Gamma)) +
+    geom_boxplot(aes(fill=model)) +
+    xlab('Gamma') +
+    ylab('Accuracy') +
+    #scale_color_brewer(palette="Dark2") +
+    scale_y_continuous(limits=c(perf_min,perf_max)) +
+    #theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
+    theme(plot.title = element_text(hjust = 0.5))
+  facet_p + facet_grid(P ~ Accuracy)
+  print(facet_p + ggtitle(title))
 }

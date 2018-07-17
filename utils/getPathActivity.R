@@ -2,7 +2,7 @@ getPathActivity <-
   function(x, pathSet, w, vertexZP, method = "DRW", fname, rows){
     
     # infer pathway expression profile
-    
+    cat('Pathway activity inference start\n')
     pathActivity <- c()
     sigGenes <- vector("list", length = length(pathSet))  # The differential genes to construct pathActivity
     names(sigGenes) <- names(pathSet)
@@ -20,8 +20,9 @@ getPathActivity <-
           sigGenesi <- c()
           Idx_pathwayi <- c()
           for (j in 1 : length(Vpathwayi)){
-            # Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
-            Idx <- which(substring(rownames(x),1,1) == 'g' & substring(rownames(x),2)==Vpathwayi[j])
+            Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
+            # Idx <- which((substring(rownames(x),1,1) == 'm' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j])
+            print(rownames(x)[Idx])
             if (length(Idx) > 0){
               if ( rownames(x)[Idx] %in% names(w)){
                 idx <- which(vertexZP[rownames(x)[Idx],"pvalue"] < 0.05)
