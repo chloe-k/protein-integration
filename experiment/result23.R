@@ -166,7 +166,9 @@ write.SigFeatures(res_fit=res_pa_MR_23, id = "result23_MR", profile_name=profile
 
 res_models <- c(res_models, list(res_pa_MR_23))
 
-
+##############################################################
+load('data/model/res_pa_GMR_d_20.RData')
+res_models <- c(res_models, list(res_pa_GMR_d_20))
 
 #########################################################################################################################################
 # plot

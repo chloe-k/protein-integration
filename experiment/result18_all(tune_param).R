@@ -1740,10 +1740,10 @@ xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.
 title <- c("Result 18_GMR_d")
 perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){mean(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.01, perf_max = perf_max+0.01, perf_max)
 
 # Plot for GMP models
 title <- c("Result 18_GMP")
 perf_min <- min(sapply(X = res_gmp, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmp, FUN = function(x){mean(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmp, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+perf_facet_boxplot(title, xlabs, res_gmp, perf_min = perf_min-0.01, perf_max = perf_max+0.01, perf_max)
