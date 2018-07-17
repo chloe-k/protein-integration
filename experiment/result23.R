@@ -3,7 +3,7 @@
 
 # p=0.4, g=0.2 was used for restart probability
 # When pathway activity score was calculated, each type of weight was used.
-# This experiment is based on GMR_d model
+# This experiment is based on GM or GMR_d model
 # G -> perform GMR_d model and only 'g' type weight is included for pathwway activity score calculation 
 
 # All gene symbols are converted to Entrez gene id
@@ -20,7 +20,8 @@ res_models <- list()
 
 ################################## Result 23 in GM ############################################################
 
-#------------------------- RNAseq + Methyl -------------------------#
+#------------------------- RNAseq + Methyl - G -------------------------#
+sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 gm <- g %du% m
 testStatistic <- c("DESeq2", "t-test")
 profile_name <- c("rna(Entrez)", "meth(Entrez)")
@@ -32,15 +33,33 @@ fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_n
 
 res_pa_GM_23_G <- fit.classification(y=y, samples = samples, id = "result23_G_GM", datapath = datapath, respath = respath,
                                        profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
-                                       nFolds = 5, numTops=50, iter = 20)
+                                       numTops=50)
 
 save(res_pa_GM_23_G, file=file.path('data/model/res_pa_GM_23_G.RData'))
+
+#------------------------- RNAseq + Methyl - M -------------------------#
+sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result23_M_GM", prob = 0.4, Gamma = 0.2, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_23_M <- fit.classification(y=y, samples = samples, id = "result23_M_GM", datapath = datapath, respath = respath,
+                                     profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                     numTops=50)
+
+save(res_pa_GM_23_M, file=file.path('data/model/res_pa_GM_23_M.RData'))
 
 
 ################################################### Result23 in GMR_d #################################################
 
 
 #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) - G -------------------------#
+sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
 gmr <- list(g, m, r)
 testStatistic <- c("DESeq2", "t-test", "t-test")
 profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(diffused_Pathway_Graph_Entrez)")
@@ -189,7 +208,16 @@ res_models <- c(res_models, list(res_pa_GMR_d_20))
 #########################################################################################################################################
 # plot
 
-title <- c("Result 23")
+# GM
+title <- c("Result 23_GM")
+xlabs <- c("G", "M")
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){mean(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+
+#GMR_d
+title <- c("Result 23_GMR_d")
 xlabs <- c("G", "M", "R", "GM", "GR", "MR", "GMR")
 
 perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$results$Accuracy)}))
