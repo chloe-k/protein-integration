@@ -13,7 +13,13 @@ getPathActivity <-
       # vertex is weighted with DRW method
       for (i in 1 : length(pathSet)){
         Vpathwayi <- pathSet[[i]]
-        if (length(Vpathwayi) > 0){
+        ##############################################################################
+        com_rna <- which(substring(rownames(x),1,1) == 'g' & substring(rownames(x),2) %in% Vpathwayi)
+        com_met <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2) %in% Vpathwayi)
+        com_pro <- which(substring(rownames(x),1,1) == 'p' & substring(rownames(x),2) %in% Vpathwayi)
+        flag <- length(com_rna)>=5 & length(com_met)>=5 & length(com_pro)>=5
+        ##############################################################################
+        if (length(Vpathwayi) > 0 & flag){
           n <- 0    # the number of differential genes in ith pathway 			
           pathActivity_tmp <- matrix(nrow=1,ncol=dim(x)[2],data=0) 
           TValue.pathActivity_tmp <- 0
@@ -21,18 +27,14 @@ getPathActivity <-
           Idx_pathwayi <- c()
           for (j in 1 : length(Vpathwayi)){
             Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
+            # Idx <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2)==Vpathwayi[j])
             # Idx <- which((substring(rownames(x),1,1) == 'm' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j])
+            
             print(rownames(x)[Idx])
             if (length(Idx) > 0){
               if ( rownames(x)[Idx] %in% names(w)){
                 idx <- which(vertexZP[rownames(x)[Idx],"pvalue"] < 0.05)
                 if(length(idx) > 0){
-                  # for (k in 1:length(idx)) {
-                  #   pathActivity_tmp <- pathActivity_tmp + vertexZP[rownames(x)[Idx[idx[k]]],"score"] * w[rownames(x)[Idx[idx[k]]]] * x[Idx[idx[k]],]	
-                  #   n <- n + 1
-                  #   Idx_pathwayi <- rbind(Idx_pathwayi,Idx[idx[k]])	
-                  #   sigGenesi <- c(sigGenesi, rownames(x)[Idx[idx[k]]])
-                  # }
                   for (k in 1:length(idx)) {
                     if(rownames(x)[Idx[idx[k]]] %in% names(w)){
                       pathActivity_tmp <- pathActivity_tmp + vertexZP[rownames(x)[Idx[idx[k]]],"score"] * w[rownames(x)[Idx[idx[k]]]] * x[Idx[idx[k]],]	
