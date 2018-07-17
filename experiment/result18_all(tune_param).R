@@ -6,6 +6,8 @@
 # Grid search was performed about combination of p=[0.001, 0.01, 0.2, 0.4, 0.6, 0.8] and Gamma=[0, 0.2, 0.4, 0.6, 0.8]
 # p=0.5 had used in before
 
+# parameter tuning for GM model, extra experiment was performed by adding Gamma = [0.7, 0.75, 0.85, 0.9, 0.95]
+
 # All gene symbols are converted to Entrez gene id
 # 5-fold CV(20 iters) was performed.
 
@@ -483,6 +485,91 @@ summary(res_pa_GMP_18_5)
 write.SigFeatures(res_fit=res_pa_GMP_18_5, id = "result18_5_GMP", profile_name=profile_name, method="DRW", respath=respath)
 
 res_gmp <- c(res_gmp, list(res_pa_GMP_18_5))
+
+
+################################## Parameter Tuning for GM by adding [0.7, 0.75, 0.85, 0.9, 0.95] ########################################
+#------------------------- RNAseq + Methyl -------------------------#
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result18_4.5_GM", prob = 0.001, Gamma = 0.7, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_18_4.5 <- fit.classification(y=y, samples = samples, id = "result18_4.5_GM", datapath = datapath, respath = respath,
+                                        profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                        nFolds = 5, numTops=50, iter = 20)
+
+save(res_pa_GM_18_4.5, file=file.path('data/model/res_pa_GM_18_4.5.RData'))
+
+#------------------------- RNAseq + Methyl -------------------------#
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result18_0.75_GM", prob = 0.001, Gamma = 0.75, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_18_0.75 <- fit.classification(y=y, samples = samples, id = "result18_0.75_GM", datapath = datapath, respath = respath,
+                                        profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                        nFolds = 5, numTops=50, iter = 20)
+
+save(res_pa_GM_18_0.75, file=file.path('data/model/res_pa_GM_18_0.75.RData'))
+
+#------------------------- RNAseq + Methyl -------------------------#
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result18_0.85_GM", prob = 0.001, Gamma = 0.85, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_18_0.85 <- fit.classification(y=y, samples = samples, id = "result18_0.85_GM", datapath = datapath, respath = respath,
+                                        profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                        nFolds = 5, numTops=50, iter = 20)
+
+save(res_pa_GM_18_0.85, file=file.path('data/model/res_pa_GM_18_0.85.RData'))
+
+#------------------------- RNAseq + Methyl -------------------------#
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result18_0.9_GM", prob = 0.001, Gamma = 0.9, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_18_0.9 <- fit.classification(y=y, samples = samples, id = "result18_0.9_GM", datapath = datapath, respath = respath,
+                                       profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                       nFolds = 5, numTops=50, iter = 20)
+
+save(res_pa_GM_18_0.9, file=file.path('data/model/res_pa_GM_18_0.9.RData'))
+
+
+#------------------------- RNAseq + Methyl -------------------------#
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result18_0.95_GM", prob = 0.001, Gamma = 0.95, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_18_0.95 <- fit.classification(y=y, samples = samples, id = "result18_0.95_GM", datapath = datapath, respath = respath,
+                                        profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                        nFolds = 5, numTops=50, iter = 20)
+
+save(res_pa_GM_18_0.95, file=file.path('data/model/res_pa_GM_18_0.95.RData'))
+
+##############################################################################################################################
 
 
 ################################################### Result18_6: prob = 0.01, Gamma = 0  #################################################
@@ -1715,13 +1802,15 @@ res_gmp <- c(res_gmp, list(res_pa_GMP_18_30))
 # plot
 
 
-xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
-
 # Plot for GM models
 title <- c("Result 18_GM")
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.7]", "[g=0.75]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
+
 perf_min <- min(sapply(X = res_gm, FUN = function(x){mean(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gm, FUN = function(x){mean(x$results$Accuracy)}))
 perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
 
 # Plot for GMR models
 title <- c("Result 18_GMR")

@@ -16,12 +16,28 @@
 
 # Classifier : rf(Random Forest)
 
-################################## Result 23 ############################################################
-
 res_models <- list()
 
+################################## Result 23 in GM ############################################################
 
-################################################### Result23 #################################################
+#------------------------- RNAseq + Methyl -------------------------#
+gm <- g %du% m
+testStatistic <- c("DESeq2", "t-test")
+profile_name <- c("rna(Entrez)", "meth(Entrez)")
+x=list(rnaseq, imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+               id = "result23_G_GM", prob = 0.4, Gamma = 0.2, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+
+res_pa_GM_23_G <- fit.classification(y=y, samples = samples, id = "result23_G_GM", datapath = datapath, respath = respath,
+                                       profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                       nFolds = 5, numTops=50, iter = 20)
+
+save(res_pa_GM_23_G, file=file.path('data/model/res_pa_GM_23_G.RData'))
+
+
+################################################### Result23 in GMR_d #################################################
 
 
 #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) - G -------------------------#
