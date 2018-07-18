@@ -120,4 +120,12 @@ read_data <- function(year, datapath){
   # gene id(Entrez ID) was used
   save(rnaseq, imputed_methyl, rppa, gene_name_id_map, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'Entrez_data.RData'))
   
+  # RNAseq, Methyl have only intersect genes with RPPA genes
+  rppa_gene <- substring(rownames(rppa),2)
+  rnaseq <- rnaseq[which(substring(rownames(rnaseq),2) %in% rppa_gene),]
+  imputed_methyl <- imputed_methyl[which(substring(rownames(imputed_methyl),2) %in% rppa_gene),]
+  
+  save(rnaseq, imputed_methyl, rppa, gene_name_id_map, clinical, samples, good_samples, poor_samples, file = file.path(datapath, 'Dup_rppa_data.RData'))
+  
+  
 }
