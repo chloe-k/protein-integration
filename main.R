@@ -104,9 +104,9 @@ testStatistic <- c("DESeq2", "t-test", "t-test")
 profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Pathway_Graph_Entrez)")
 x=list(rnaseq, imputed_methyl, rppa)
 
-fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
-               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
-               id = "result25_GMR", prob = 0.4, Gamma = 0.2, pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
+# fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
+#                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+#                id = "result25_GMR", prob = 0.4, Gamma = 0.2, pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
 
 res_pa_GMR_25 <- fit.classification(y=y, samples = samples, id = "result25_GMR", datapath = datapath, respath = respath,
                                     profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
@@ -141,9 +141,9 @@ res_models <- c(res_models, list(res_pa_GMR_d_25))
 # plot
 
 # GM
-title <- c("Result 25")
+title <- c("Result 25(15 intersect genes)")
 xlabs <- c("GMR", "GMR_d")
 
-perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){mean(x$results$Accuracy)}))
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.02, perf_max = perf_max+0.02)

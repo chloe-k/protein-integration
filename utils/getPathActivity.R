@@ -17,7 +17,7 @@ getPathActivity <-
         com_rna <- which(substring(rownames(x),1,1) == 'g' & substring(rownames(x),2) %in% Vpathwayi)
         com_met <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2) %in% Vpathwayi)
         com_pro <- which(substring(rownames(x),1,1) == 'p' & substring(rownames(x),2) %in% Vpathwayi)
-        flag <- length(com_rna)>=5 & length(com_met)>=5 & length(com_pro)>=5
+        flag <- length(com_rna)>=15 & length(com_met)>=15 & length(com_pro)>=15
         ##############################################################################
         if (length(Vpathwayi) > 0 & flag){
           n <- 0    # the number of differential genes in ith pathway 			
