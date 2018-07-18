@@ -9,7 +9,9 @@
 # parameter tuning for GM model, extra experiment was performed by adding Gamma = [0.7, 0.75, 0.85, 0.9, 0.95]
 
 # All gene symbols are converted to Entrez gene id
-# 5-fold CV(20 iters) was performed.
+# 5-fold CV(10 iters) was performed for tuning parameter in Random Forest.
+# 5-fold CV(10 iters) was performed for get top N pathways.
+# LOOCV was performed for model evaluation
 
 # Dppigraph(Entrez).rda was used
 

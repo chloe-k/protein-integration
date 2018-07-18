@@ -123,9 +123,9 @@ testStatistic <- c("DESeq2", "t-test", "t-test")
 profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(diffused_Pathway_Graph_Entrez)")
 x=list(rnaseq, imputed_methyl, rppa)
 
-fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
-               datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
-               id = "result25_GMR_d", prob = 0.4, Gamma = 0.2, pranking = "t-test", mode = "GMR_d", AntiCorr=FALSE, DEBUG=TRUE)
+# fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
+#                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
+#                id = "result25_GMR_d", prob = 0.4, Gamma = 0.2, pranking = "t-test", mode = "GMR_d", AntiCorr=FALSE, DEBUG=TRUE)
 
 res_pa_GMR_d_25 <- fit.classification(y=y, samples = samples, id = "result25_GMR_d", datapath = datapath, respath = respath,
                                       profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
