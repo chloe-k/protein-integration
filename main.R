@@ -97,7 +97,7 @@ y=list(good_samples, poor_samples)
 
 
 ################################################### Result25  #################################################
-res_models <- list()
+res_models2 <- list()
 #------------------------- RNAseq + Methyl + RPPA(Pathway Graph) -------------------------#
 gmr <- g %du% m %du% r
 testStatistic <- c("DESeq2", "t-test", "t-test")
@@ -114,7 +114,7 @@ res_pa_GMR_25 <- fit.classification(y=y, samples = samples, id = "result25_GMR",
 
 save(res_pa_GMR_25, file=file.path('data/model/res_pa_GMR_25.RData'))
 
-res_models <- c(res_models, list(res_pa_GMR_25))
+res_models2 <- c(res_models2, list(res_pa_GMR_25))
 
 
 #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) -------------------------#
@@ -133,7 +133,7 @@ res_pa_GMR_d_25 <- fit.classification(y=y, samples = samples, id = "result25_GMR
 
 save(res_pa_GMR_d_25, file=file.path('data/model/res_pa_GMR_d_25.RData'))
 
-res_models <- c(res_models, list(res_pa_GMR_d_25))
+res_models2 <- c(res_models2, list(res_pa_GMR_d_25))
 
 
 
@@ -141,9 +141,9 @@ res_models <- c(res_models, list(res_pa_GMR_d_25))
 # plot
 
 # GM
-title <- c("Result 25(15 intersect genes)")
+title <- c("Result 25(10 intersect genes)")
 xlabs <- c("GMR", "GMR_d")
 
-perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+perf_min <- min(sapply(X = res_models2, FUN = function(x){x$results$Accuracy}))
+perf_max <- max(sapply(X = res_models2, FUN = function(x){x$results$Accuracy}))
+perf_boxplot(title, xlabs, res_models2, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
