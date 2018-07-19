@@ -19,17 +19,7 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   set.seed(111)
   
   # dim(X)[2] - The number of pathway
-  # numTops = 100
-  # if(dim(X)[2] < 100)
-  #   numTops = dim(X)[2]
-  numTops = dim(X)[2]
-  
-  # 5-Fold CV with 10 iters
-  # trControl <- trainControl(method = "cv", number = nFolds, search = "grid", repeats = iter)
-  
-  # LOOCV
-  # trControl <- trainControl(method="LOOCV", repeats = iter)
-  
+  numTops = dim(X)[2]/2
   
   # Search for Top N pathway
   acc <- c()
@@ -49,12 +39,15 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   df <- data.frame(k=seq(5,numTops,by=5), accuracy=acc)
   write.table(x=df,file = file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.')), row.names = F,quote = F)
   
+  cat('Getting top N pathways is done..\n')
   
   # Model evaluation with top N pathway
   set.seed(111)
   rankn_feats <- names(stats_feats)[1:df$k[which.max(df$accuracy)]]
+  nFolds = 5
+  iter = 10
   
-  trControl <- trainControl(method = "LOOCV")
+  trControl <- trainControl(method = "repeatedcv", number = nFolds, repeats = iter)
   
   # result <- train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial())
   # result <- train(X[,rankn_feats], Y, trControl=trainControl(method="LOOCV"), method=classifier, family=binomial())
