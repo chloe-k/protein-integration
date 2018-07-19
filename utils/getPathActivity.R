@@ -26,12 +26,12 @@ getPathActivity <-
           TValue.pathActivity_tmp <- 0
           sigGenesi <- c()
           Idx_pathwayi <- c()
+          print(names(Vpathwayi))
           for (j in 1 : length(Vpathwayi)){
             Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
             # Idx <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2)==Vpathwayi[j])
             # Idx <- which((substring(rownames(x),1,1) == 'm' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j])
             
-            print(rownames(x)[Idx])
             if (length(Idx) > 0){
               if ( rownames(x)[Idx] %in% names(w)){
                 idx <- which(vertexZP[rownames(x)[Idx],"pvalue"] < 0.05)
