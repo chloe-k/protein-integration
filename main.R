@@ -99,9 +99,10 @@ y=list(good_samples, poor_samples)
 num_cores <- detectCores()/2
 registerDoParallel(cores = num_cores)
 
-make_GMR_d_model(id="18_15")
 
-id_list <- c("18_15",
+id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
+             "18_6", "18_7", "18_8", "18_9", "18_10",
+             "18_11", "18_12", "18_13", "18_14", "18_15",
              "18_16", "18_17", "18_18", "18_19", "18_20",
              "18_21", "18_22", "18_23", "18_24", "18_25",
              "18_26", "18_27", "18_28", "18_29", "18_30")
@@ -112,6 +113,7 @@ pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.d
 res_gmr_d <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_d_model(id=id_list[i])
 }
+
 
 res_models <- list(res_pa_GMR_d_18_1, res_pa_GMR_d_18_2, res_pa_GMR_d_18_3, res_pa_GMR_d_18_4, res_pa_GMR_d_18_5,
                   res_pa_GMR_d_18_6, res_pa_GMR_d_18_7, res_pa_GMR_d_18_8, res_pa_GMR_d_18_9, res_pa_GMR_d_18_10,
@@ -134,4 +136,3 @@ res_models <- list(res_pa_GMR_d_18_1, res_pa_GMR_d_18_2, res_pa_GMR_d_18_3, res_
 # perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
 # perf_max <- max(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
 # perf_facet_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
-

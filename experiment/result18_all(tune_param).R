@@ -1535,17 +1535,19 @@ res_gmp <- c(res_gmp, list(res_pa_GMP_18_30))
 
 
 # Plot for GM models
+res_gm <- list(res_pa_GM_18_1, res_pa_GM_18_2, res_pa_GM_18_3, res_pa_GM_18_4, res_pa_GM_18_4.5,
+               res_pa_GM_18_0.75, res_pa_GM_18_5, res_pa_GM_18_0.85, res_pa_GM_18_0.9, res_pa_GM_18_0.95)
+
 title <- c("Result 18_GM")
 xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.7]", "[g=0.75]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
 
-perf_min <- min(sapply(X = res_gm, FUN = function(x){x$results$Accuracy}))
-perf_max <- max(sapply(X = res_gm, FUN = function(x){x$results$Accuracy}))
-perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
-
-xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
+perf_min <- min(sapply(X = res_gm, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_max <- max(sapply(X = res_gm, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.2, perf_max = perf_max+0.2)
 
 # Plot for GMR models
 title <- c("Result 18_GMR")
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
 perf_min <- min(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
 perf_max <- max(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
 perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
@@ -1559,12 +1561,13 @@ xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.
 
 # Plot for GMR_d models
 title <- c("Result 18_GMR_d")
-perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){x$results$Accuracy}))
-perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){x$results$Accuracy}))
-perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.01, perf_max = perf_max+0.01, perf_max)
+perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
 
 # Plot for GMP models
 title <- c("Result 18_GMP")
-perf_min <- min(sapply(X = res_gmp, FUN = function(x){x$results$Accuracy}))
-perf_max <- max(sapply(X = res_gmp, FUN = function(x){x$results$Accuracy}))
-perf_facet_boxplot(title, xlabs, res_gmp, perf_min = perf_min-0.01, perf_max = perf_max+0.01, perf_max)
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_facet_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
