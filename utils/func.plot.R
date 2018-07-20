@@ -1,8 +1,8 @@
 perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL) {
   df_list = list()
   for(i in 1:length(xlabs)) {
-    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
-    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$results$Accuracy)
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
   }
   df = Reduce(rbind, df_list)
   
