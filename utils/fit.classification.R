@@ -1,5 +1,7 @@
 fit.classification <- function(y, samples, id, datapath, respath, profile_name, method = "DRW", pranking = "t-test", classifier = "rf", nFolds = 5, numTops=50, iter = 10){
   
+  desc <- c(profile_name, method, "txt")
+  
   if(method == 'DRW'){
     
     load(file.path(datapath, paste(c("pathway_rank", id, profile_name, method, "RData"), collapse = '.')))
@@ -9,7 +11,8 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
     load(file.path(datapath, paste(c("gene_rank", id, profile_name, method, "RData"), collapse = '.')))
     
   }
-  
+  msg <- paste(c("GMP_",id," classification start!"), collapse = '')
+  print(msg)
   
   Y <- rep(0,length(samples))
   Y[y[[1]]] <- 1
@@ -36,10 +39,11 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
     acc <- c(acc, max(model$results$Accuracy))
   }
   
+  
   df <- data.frame(k=seq(5,numTops,by=5), accuracy=acc)
   write.table(x=df,file = file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.')), row.names = F,quote = F)
   
-  cat('Getting top N pathways is done..\n')
+  print('Getting top N pathways is done..')
   
   # Model evaluation with top N pathway
   set.seed(111)
@@ -53,6 +57,8 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   # result <- train(X[,rankn_feats], Y, trControl=trainControl(method="LOOCV"), method=classifier, family=binomial())
   result <- train(x = X[,rankn_feats], y = Y, method=classifier, metric = "Accuracy", 
                   trControl=trControl, importance = TRUE)
+  
+  print('classification is done')
   
   return(result)
   
