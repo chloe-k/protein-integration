@@ -87,7 +87,12 @@
    
    model_path <- paste(c('data/model/res_pa_GMP_',id,'.RData'), collapse = '')
    
-   save(model, file=file.path(model_path))
+   name <- paste(c('res_pa_GMP_', id), collapse='')
+   assign(x = name, value = model)
+   
+   save(list=name, file=file.path(model_path))
+   msg <- paste(c(result_name,' is done'), collapse = '')
+   print(msg)
    
    return(model)
  }
