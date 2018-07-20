@@ -11,7 +11,7 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
     load(file.path(datapath, paste(c("gene_rank", id, profile_name, method, "RData"), collapse = '.')))
     
   }
-  msg <- paste(c("GMP_",id," classification start!"), collapse = '')
+  msg <- paste(c(id," classification start!"), collapse = '')
   print(msg)
   
   Y <- rep(0,length(samples))

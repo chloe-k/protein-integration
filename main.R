@@ -115,24 +115,31 @@ res_gmr_d <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
 }
 
 
-res_models <- list(res_pa_GMR_d_18_1, res_pa_GMR_d_18_2, res_pa_GMR_d_18_3, res_pa_GMR_d_18_4, res_pa_GMR_d_18_5,
+#########################################################################################################################################
+# Plot for GMR_d models
+res_gmr_d <- list(res_pa_GMR_d_18_1, res_pa_GMR_d_18_2, res_pa_GMR_d_18_3, res_pa_GMR_d_18_4, res_pa_GMR_d_18_5,
                   res_pa_GMR_d_18_6, res_pa_GMR_d_18_7, res_pa_GMR_d_18_8, res_pa_GMR_d_18_9, res_pa_GMR_d_18_10,
                   res_pa_GMR_d_18_11, res_pa_GMR_d_18_12, res_pa_GMR_d_18_13, res_pa_GMR_d_18_14, res_pa_GMR_d_18_15,
                   res_pa_GMR_d_18_16, res_pa_GMR_d_18_17, res_pa_GMR_d_18_18, res_pa_GMR_d_18_19, res_pa_GMR_d_18_20,
                   res_pa_GMR_d_18_21, res_pa_GMR_d_18_22, res_pa_GMR_d_18_23, res_pa_GMR_d_18_24, res_pa_GMR_d_18_25,
                   res_pa_GMR_d_18_26, res_pa_GMR_d_18_27, res_pa_GMR_d_18_28, res_pa_GMR_d_18_29, res_pa_GMR_d_18_30)
-#########################################################################################################################################
-# plot
-# 
-# xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.6]", "[p=0.001,g=0.8]",
-#            "[p=0.01,g=0]", "[p=0.01,g=0.2]", "[p=0.01,g=0.4]", "[p=0.01,g=0.6]", "[p=0.01,g=0.8]",
-#            "[p=0.2,g=0]", "[p=0.2,g=0.2]", "[p=0.2,g=0.4]", "[p=0.2,g=0.6]", "[p=0.2,g=0.8]",
-#            "[p=0.4,g=0]", "[p=0.4,g=0.2]", "[p=0.4,g=0.4]", "[p=0.4,g=0.6]", "[p=0.4,g=0.8]",
-#            "[p=0.6,g=0]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
-#            "[p=0.8,g=0]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
-# 
-# # Plot for GMP models
-# title <- c("Result 18_GMR_d")
-# perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
-# perf_max <- max(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
-# perf_facet_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
+
+title <- c("Result 18_GMR_d")
+xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.6]", "[p=0.001,g=0.8]",
+           "[p=0.01,g=0]", "[p=0.01,g=0.2]", "[p=0.01,g=0.4]", "[p=0.01,g=0.6]", "[p=0.01,g=0.8]",
+           "[p=0.2,g=0]", "[p=0.2,g=0.2]", "[p=0.2,g=0.4]", "[p=0.2,g=0.6]", "[p=0.2,g=0.8]",
+           "[p=0.4,g=0]", "[p=0.4,g=0.2]", "[p=0.4,g=0.4]", "[p=0.4,g=0.6]", "[p=0.4,g=0.8]",
+           "[p=0.6,g=0]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
+           "[p=0.8,g=0]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
+
+perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
+
+# Accuracy((A+D)/(A+B+C+D))
+i=0
+for(model in res_gmr_d){
+  print(i)
+  print(confusionMatrix(model, "none"))
+  i <- i+1
+}
