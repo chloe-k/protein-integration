@@ -219,6 +219,14 @@ perf_min <- min(sapply(X = res_gm, FUN = function(x){mean(x$resample$Accuracy)})
 perf_max <- max(sapply(X = res_gm, FUN = function(x){mean(x$resample$Accuracy)}))
 perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.2, perf_max = perf_max+0.2)
 
+# Accuracy((A+D)/(A+B+C+D))
+i=0
+for(model in res_gm){
+  print(i)
+  print(confusionMatrix(model, "none"))
+  i <- i+1
+}
+
 
 ##############################################################################################################################
 
@@ -318,7 +326,8 @@ save(res_pa_GMR_18_5, file=file.path('data/model/res_pa_GMR_18_5.RData'))
 
 # Plot for GMR models
 
-res_gmr <- list(res_pa_GMR_18_1, res_pa_GMR_18_2, res_pa_GMR_18_3, res_pa_GMR_18_4, res_pa_GMR_18_5)
+res_gmr <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, 
+                res_pa_GMR_18_4_LOOCV, res_pa_GMR_)
 
 title <- c("Result 18_GMR")
 xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
@@ -911,8 +920,8 @@ xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.
            "[p=0.6,g=0]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
            "[p=0.8,g=0]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
 
-perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){max(x$results$Accuracy)}))
 perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
 
 ##################################################################################################################
@@ -1491,7 +1500,7 @@ save(res_pa_GMP_18_30, file=file.path('data/model/res_pa_GMP_18_30.RData'))
 ############################################## plot #######################################
 # plot
 
-res_models <- list(res_pa_GMP_18_1, res_pa_GMP_18_2, res_pa_GMP_18_3, res_pa_GMP_18_4, res_pa_GMP_18_5,
+res_gmp <- list(res_pa_GMP_18_1, res_pa_GMP_18_2, res_pa_GMP_18_3, res_pa_GMP_18_4, res_pa_GMP_18_5,
                    res_pa_GMP_18_6, res_pa_GMP_18_7, res_pa_GMP_18_8, res_pa_GMP_18_9, res_pa_GMP_18_10,
                    res_pa_GMP_18_11, res_pa_GMP_18_12, res_pa_GMP_18_13, res_pa_GMP_18_14, res_pa_GMP_18_15,
                    res_pa_GMP_18_16, res_pa_GMP_18_17, res_pa_GMP_18_18, res_pa_GMP_18_19, res_pa_GMP_18_20,
@@ -1508,11 +1517,26 @@ xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.
            "[p=0.6,g=0]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
            "[p=0.8,g=0]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
 
-perf_min <- min(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_facet_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
+perf_min <- min(sapply(X = res_gmp, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_max <- max(sapply(X = res_gmp, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_facet_boxplot(title, xlabs, res_gmp, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max)
+
+# Accuracy((A+D)/(A+B+C+D))
+i=0
+for(model in res_gmp){
+  print(i)
+  print(confusionMatrix(model, "none"))
+  i <- i+1
+}
 
 
+####################### LOOCV ###################################
 
+#----------------------- GMR --------------------------------#
+res_gmr_LOOCV <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, res_pa_GMR_18_4_LOOCV, res_pa_GMR_18_5_LOOCV)
 
-
+title <- c("Result 18_GMR_LOOCV")
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
+perf_min <- min(sapply(X = res_gmr_LOOCV, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr_LOOCV, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_gmr_LOOCV, perf_min = perf_min-0.05, perf_max = perf_max+0.05)

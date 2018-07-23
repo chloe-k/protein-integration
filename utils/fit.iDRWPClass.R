@@ -1,7 +1,7 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
-           method = "DRW", samples, pranking = "t-test", mode,
-           classifier, nFolds, numTops, id, prob,
+           method = "DRW", samples, pranking = "t-test", mode, lim = NULL,
+           classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
 
     x_norm <- list(0)
@@ -95,8 +95,8 @@ fit.iDRWPClass <-
       fname_profile = file.path(respath, paste(c("pathway_profile", id, desc), collapse = '.'))
       pApath <- file.path(respath, paste(c("pA", id, profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))
       
-        pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
-                              method = method, fname = fname_profile, rows = samples)
+        pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, lim=lim,
+                              method = method, fname = fname_profile, rows = samples, type_used = type_used)
         
         save(pA, file=pApath)
 

@@ -25,31 +25,38 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   numTops = dim(X)[2]/2
   
   # Search for Top N pathway
-  acc <- c()
-  trControl <- trainControl(method = "repeatedcv", number = nFolds, repeats = iter)
+  toppath <- file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.'))
   
-  for(k in seq(5,numTops,by=5)) {
-    rankn_feats <- names(stats_feats)[1:k]
-    set.seed(111)
+  if(!file.exists(toppath)){
+    acc <- c()
+    trControl <- trainControl(method = "repeatedcv", number = nFolds, repeats = iter)
     
-    model <- train(x = X[,rankn_feats], y = Y, method=classifier, metric = "Accuracy", 
-                   trControl=trControl, importance = TRUE)
+    for(k in seq(5,numTops,by=5)) {
+      rankn_feats <- names(stats_feats)[1:k]
+      set.seed(111)
+      
+      model <- train(x = X[,rankn_feats], y = Y, method=classifier, metric = "Accuracy", 
+                     trControl=trControl, importance = TRUE)
+      
+      
+      acc <- c(acc, max(model$results$Accuracy))
+    }
     
     
-    acc <- c(acc, max(model$results$Accuracy))
+    df <- data.frame(k=seq(5,numTops,by=5), accuracy=acc)
+    write.table(x=df,file = toppath, row.names = F,quote = F)
   }
-  
-  
-  df <- data.frame(k=seq(5,numTops,by=5), accuracy=acc)
-  write.table(x=df,file = file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.')), row.names = F,quote = F)
+  else{
+    df <- read.delim(file = toppath, header = T, sep = '')
+  }
   
   print('Getting top N pathways is done..')
   
   # Model evaluation with top N pathway
   set.seed(111)
   rankn_feats <- names(stats_feats)[1:df$k[which.max(df$accuracy)]]
-  # nFolds = 5
-  # iter = 10
+  nFolds = 5
+  iter = 10
   
   # trControl <- trainControl(method = "repeatedcv", number = nFolds, repeats = iter)
   trControl <- trainControl(method = "LOOCV")
