@@ -1,9 +1,9 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
            method = "DRW", samples, pranking = "t-test", mode,
-           classifier, nFolds, numTops, id, prob,
+           classifier, nFolds, numTops, id, prob, lim=NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
-
+    
     x_norm <- list(0)
     x_stats <- list(0)
     gene_weight <- list(0)
@@ -45,7 +45,7 @@ fit.iDRWPClass <-
           W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
         }
         W = get(load(wpath))
-          
+        
       } 
       else{
         W0 <- getW0(gene_weight, globalGraph)
@@ -95,11 +95,11 @@ fit.iDRWPClass <-
       fname_profile = file.path(respath, paste(c("pathway_profile", id, desc), collapse = '.'))
       pApath <- file.path(respath, paste(c("pA", id, profile_name, method, if(AntiCorr) "anticorr", "RData"), collapse = '.'))
       
-        pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
-                              method = method, fname = fname_profile, rows = samples)
-        
-        save(pA, file=pApath)
-
+      pA <- getPathActivity(x = x, pathSet = pathSet, w = vertexWeight, vertexZP = x_stats, 
+                            method = method, fname = fname_profile, rows = samples, lim = lim)
+      
+      save(pA, file=pApath)
+      
       
       # rank pathway activities
       # ranking = t-test / DA
@@ -116,7 +116,7 @@ fit.iDRWPClass <-
     # write pathway ranking
     write.table(x=matrix(stats_feats, nrow=length(stats_feats), dimnames=list(names(stats_feats),"rank")),
                 file=fname_rank, sep="\t", row.names=T, col.names=T)
-  
+    
     
     cat('fit.iDRWPClass is done\n')
     #-----------------Classification-----------------#

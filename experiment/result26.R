@@ -1,100 +1,31 @@
+# integrative DRW on combined feature data (updated in 2018/07/20)
+# concat directed pathway graphs within each profile (GMR)
 
-########################### package load ############################
-# source("https://bioconductor.org/biocLite.R")
+# All gene symbols are converted to Entrez gene id
+# 5-fold CV(10 iters) was performed for tuning parameter in Random Forest.
+# 5-fold CV(10 iters) was performed for get top N pathways.
+# LOOCV was performed for model evaluation
 
-library(KEGGgraph)
-library(igraph)
-library(ggplot2)
-library(annotate)
-library(org.Hs.eg.db)
-library(diffusr)
-library(DESeq2)
-library(Matrix)
-library(stringr)
-library(caret)
-library(e1071)
-library(randomForest)
-library(KEGG.db)
-library(KEGGREST)
-library(biomaRt)
-library(doParallel)
+# Dppigraph(Entrez).rda was used
+# Dup_rppa_data.RData was used -> unmapped genes with rppa proteins are removed in rnaseq, imputed_methyl profiles
 
-######################################################################
+# Gamma = 0.8 was used
 
-sapply(file.path("utils",list.files("utils", pattern="*.R")),source)
+# data dimension
+# rnaseq - 183 genes, 376 samples
+# imputed_methyl - 176 genes, 376 samples
+# rppa - 184 genes, 376 samples
 
-# make directory
-datapath <- file.path('data')
-if(!dir.exists(datapath)) dir.create(datapath)
+# edge direction
+# m -> g
+# p -> g
 
-gdacpath <- file.path(datapath, 'BRCA_GDAC')
-
-respath <- file.path('result')
-if(!dir.exists(respath)) dir.create(respath)
-
-
-# read RNAseq, Methylation data, RPPA data
-#data_all_path <- file.path(datapath, "data.RData")
-data_all_path <- file.path(datapath, "Entrez_data.RData")
-# data_all_path <- file.path(datapath, "Dup_rppa_data.RData")
-if(!file.exists(data_all_path)) {
-  year <- 3
-  read_data(year, datapath)
-}
-load(data_all_path)
-
-
-# read rda data
-# graphpath <- file.path(datapath,'directGraph.rda')
-# pathSetpath <- file.path(datapath,'pathSet.rda')
-graphpath <- file.path(datapath,'directGraph(Entrez).rda')
-pathSetpath <- file.path(datapath,'pathSet(Entrez).rda')
-if(!(file.exists(graphpath) && file.exists(pathSetpath))) {
-  print('directGraph and pathSet do not exist, now creating directGraph and pathSet is start')
-  cons_KEGGgraph(datapath)
-}
-load(file.path(graphpath))
-load(file.path(pathSetpath))
+# Classifier : rf(Random Forest)
 
 
 
-dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
-# dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
-# dppipath <- file.path(datapath, 'DppiGraph_W_str.rda')
 
-if(!file.exists(dppipath)) {
-  print('ppiGraph does not exist, now creating ppiGraph start')
-  cons_ppi(datapath, gdacpath, rppa)
-}
-load(file.path(dppipath))
-
-
-# directed pathway graph provided in DRWPClass
-g <- directGraph 
-V(g)$name <- paste("g",V(g)$name,sep="")
-
-m <- directGraph
-V(m)$name <-paste("m",V(m)$name,sep="")
-
-r <- directGraph
-V(r)$name <-paste("p",V(r)$name,sep="")
-
-p <- DppiGraph
-V(p)$name <-paste("p",V(p)$name,sep="")
-
-y=list(good_samples, poor_samples)
-#---------------DRW---------------#
-# RNAseq pathway profile
-
-
-# Methylation pathway profile
-
-
-# RPPA pathway profile
-
-
-#----------------------------------------iDRW-----------------------------------------------------------#
-
+########################################### Result26 #######################################
 res_models <- list()
 #------------------------- RNAseq + Methyl -------------------------#
 gm <- g %du% m
@@ -131,7 +62,6 @@ res_pa_GMR_26 <- fit.classification(y=y, samples = samples, id = "result26_GMR",
                                     nFolds = 5, numTops=50, iter = 10)
 
 save(res_pa_GMR_26, file=file.path('data/model/res_pa_GMR_26.RData'))
-
 write.SigFeatures(res_fit=res_pa_GMR_26, id="result26_GMR", profile_name=profile_name, method="DRW", respath=respath)
 
 res_models <- c(res_models, list(res_pa_GMR_26))
@@ -151,8 +81,8 @@ res_pa_GM_26_base <- fit.classification(y=y, samples = samples, id = "result26_b
                                         nFolds = 5, numTops=50, iter = 10)
 
 save(res_pa_GM_26_base, file=file.path('data/model/res_pa_GM_26_base.RData'))
-write.SigFeatures(res_fit=res_pa_GM_26_base, id="result26_base_GM", profile_name=profile_name, method="DRW", respath=respath)
 
+write.SigFeatures(res_fit=res_pa_GM_26_base, id="result26_base_GM", profile_name=profile_name, method="DRW", respath=respath)
 
 baseline <- max(res_pa_GM_26_base$results$Accuracy)
 
