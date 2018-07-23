@@ -69,7 +69,7 @@ make_GMR_d_model <- function(id, lim){
   #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) -------------------------#
   gmr <- list(g, m, r)
   testStatistic <- c("DESeq2", "t-test", "t-test")
-  profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(diffused_Pathway_Graph_Entrez)")
+  profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
   x=list(rnaseq, imputed_methyl, rppa)
   
   # model_name -> res_pa_GMR_d_18_28.RData

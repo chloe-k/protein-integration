@@ -6,8 +6,9 @@
 # 5-fold CV(10 iters) was performed for get top N pathways.
 # LOOCV was performed for model evaluation
 
-# Dppigraph(Entrez).rda was used
-# Dup_rppa_data.RData was used -> unmapped genes with rppa proteins are removed in rnaseq, imputed_methyl profiles
+# Dppigraph(Entrez).rda was used 
+# Dup_rppa_data.RData was used in GM, GMR -> unmapped genes with rppa proteins are removed in rnaseq, imputed_methyl profiles
+# Entrez_data.RData was used in GM_base
 
 # Gamma = 0.8 was used
 
@@ -62,6 +63,7 @@ res_pa_GMR_26 <- fit.classification(y=y, samples = samples, id = "result26_GMR",
                                     nFolds = 5, numTops=50, iter = 10)
 
 save(res_pa_GMR_26, file=file.path('data/model/res_pa_GMR_26.RData'))
+
 write.SigFeatures(res_fit=res_pa_GMR_26, id="result26_GMR", profile_name=profile_name, method="DRW", respath=respath)
 
 res_models <- c(res_models, list(res_pa_GMR_26))
