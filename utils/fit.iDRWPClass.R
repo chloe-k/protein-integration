@@ -3,7 +3,7 @@ fit.iDRWPClass <-
            method = "DRW", samples, pranking = "t-test", mode, lim = NULL,
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
-
+    
     x_norm <- list(0)
     x_stats <- list(0)
     gene_weight <- list(0)
@@ -45,7 +45,7 @@ fit.iDRWPClass <-
           W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
         }
         W = get(load(wpath))
-          
+        
       } 
       else{
         W0 <- getW0(gene_weight, globalGraph)
@@ -116,7 +116,7 @@ fit.iDRWPClass <-
     # write pathway ranking
     write.table(x=matrix(stats_feats, nrow=length(stats_feats), dimnames=list(names(stats_feats),"rank")),
                 file=fname_rank, sep="\t", row.names=T, col.names=T)
-  
+    
     
     cat('fit.iDRWPClass is done\n')
     #-----------------Classification-----------------#

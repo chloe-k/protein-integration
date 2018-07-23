@@ -14,7 +14,7 @@ perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=
     scale_y_continuous(limits=c(perf_min,perf_max)) +
     # geom_jitter(alpha=0.4, size=0.6, position=position_jitter(width=0.1,height=0)) +
     theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
-    #geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
+    geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
     theme(plot.title = element_text(hjust = 0.5)) 
   print(p + ggtitle(title))
 }

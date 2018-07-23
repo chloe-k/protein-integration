@@ -79,6 +79,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
                  datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
                  id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GMR_d", AntiCorr=FALSE, DEBUG=TRUE)
+
   
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
                               profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
@@ -86,6 +87,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   
   
   model_path <- paste(c('data/model/res_pa_GMR_d_',id,'_LOOCV.RData'), collapse = '')
+
   
   name <- paste(c('res_pa_GMR_d_', id, '_LOOCV'), collapse='')
   assign(x = name, value = model)

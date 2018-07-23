@@ -184,6 +184,9 @@ id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
              "18_21", "18_22", "18_23", "18_24", "18_25",
              "18_26", "18_27", "18_28", "18_29", "18_30")
 
+res_pa_GM_26 <- fit.classification(y=y, samples = samples, id = "result26_GM", datapath = datapath, respath = respath,
+                                   profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                                   nFolds = 5, numTops=50, iter = 10)
 
 prob_list <- c(0.001, 0.001, 0.001, 0.001, 0.001,
                0.01, 0.01, 0.01, 0.01, 0.01,
