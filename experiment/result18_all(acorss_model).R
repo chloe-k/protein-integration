@@ -326,13 +326,13 @@ save(res_pa_GMR_18_5, file=file.path('data/model/res_pa_GMR_18_5.RData'))
 
 # Plot for GMR models
 
-res_gmr <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, 
-                res_pa_GMR_18_4_LOOCV, res_pa_GMR_)
+res_gmr <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, res_pa_GMR_18_4_LOOCV, res_pa_GMR_18_5_LOOCV,
+                res_pa_GMR_18_6_LOOCV, res_pa_GMR_18_7_LOOCV, res_pa_GMR_18_8_LOOCV)
 
 title <- c("Result 18_GMR")
-xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
-perf_min <- min(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
+perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
 perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
 
 

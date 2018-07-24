@@ -1,21 +1,70 @@
+################################## Result 18 in GM ############################################################
+num_cores <- detectCores()/2
+registerDoParallel(cores = 4)
+
+id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
+             "18_6", "18_7", "18_8", "18_9", "18_10")
+
+Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
+
+pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
+          "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
+
+res_gm_18 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+  make_GM_model(id=id_list[i], type_used = "gmp", prob = 0.001, Gamma = Gamma_list[i])
+}
+
+for(i in 1:length(id_list)){
+  load(paste(c('data/model/res_pa_GM_18_', i, '_LOOCV.RData'), collapse = ''))
+}
+
+# Plot for GM models
+res_gm <- list(res_pa_GM_18_1_LOOCV, res_pa_GM_18_2_LOOCV, res_pa_GM_18_3_LOOCV, res_pa_GM_18_4_LOOCV, res_pa_GM_18_5_LOOCV,
+               res_pa_GM_18_6_LOOCV, res_pa_GM_18_7_LOOCV, res_pa_GM_18_8_LOOCV, res_pa_GM_18_9_LOOCV, res_pa_GM_18_10_LOOCV)
+
+title <- c("Result 18_GM")
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.7]", "[g=0.75]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
+
+perf_min <- min(sapply(X = res_gm, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gm, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_gm, perf_min = perf_min-0.01, perf_max = perf_max+0.01, NULL)
+
+
+
+
 ################################## Result 18 in GMR ############################################################
 num_cores <- detectCores()/2
 registerDoParallel(cores = num_cores)
 
-id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5")
+id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
+             "18_6", "18_7", "18_8")
 
-Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8)
+Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8,
+                0.85, 0.9, 0.95)
 
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
 res_gmr_18 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-  make_GMR_model(id=id_list[i], type_used = "gmp", prob = "0.001", Gamma = Gamma_list[i])
+  make_GMR_model(id=id_list[i], type_used = "gmp", prob = 0.001, Gamma = Gamma_list[i])
 }
 
 for(i in 1:length(id_list)){
   load(paste(c('data/model/res_pa_GMR_18_', i, '_LOOCV.RData'), collapse = ''))
 }
+
+############################################## plot #######################################
+
+# Plot for GMR models
+
+res_gmr <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, res_pa_GMR_18_4_LOOCV, res_pa_GMR_18_5_LOOCV,
+                res_pa_GMR_18_6_LOOCV, res_pa_GMR_18_7_LOOCV, res_pa_GMR_18_8_LOOCV)
+
+title <- c("Result 18_GMR")
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
+perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
 
 
 ################################## Result 18 in GMR_d ############################################################

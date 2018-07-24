@@ -1,8 +1,7 @@
 ################################## Result 25 ############################################################
 
-num_cores <- detectCores()/3
-num_cores <- floor(num_cores*2)
-registerDoParallel(cores = num_cores)
+num_cores <- detectCores()/2
+registerDoParallel(cores = 4)
 
 
 id_list <- c("25_5", "25_10", "25_15")
@@ -34,6 +33,14 @@ res_gmr_d_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
 # perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 # perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 # perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+
+for(i in 1:length(id_list)){
+  load(paste(c('data/model/res_pa_GMR_', id_list[i], '_LOOCV.RData'), collapse = ''))
+}
+
+for(i in 1:length(id_list)){
+  load(paste(c('data/model/res_pa_GMR_d_', id_list[i], '_LOOCV.RData'), collapse = ''))
+}
 
 res_model_25_5 <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV)
 res_model_25_10 <- list(res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV)

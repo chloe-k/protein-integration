@@ -94,148 +94,101 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-# ################################## Result 23 in GMR_d ############################################################
-# num_cores <- detectCores()/2
-# registerDoParallel(cores = num_cores)
-# 
-# id_list <- c("23_G", "23_M", "23_P", "23_GM", "23_GP", "23_MP", "23_GMP")
-# type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
-# 
-# 
-# pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-#           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-# 
-# res_gmr_d_23 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-#   make_GMR_d_model(id=id_list[i], type_used = type_list[i], prob = 0.4, Gamma = 0.2)
-# }
-
-
-# ################################## Result 18 in GMR ############################################################
-# num_cores <- detectCores()/2
-# registerDoParallel(cores = 4)
-# 
-# id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5")
-# 
-# Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8)
-# # make_GMR_model(id=id_list[1], type_used = "gmp", prob = 0.001, Gamma = Gamma_list[1])
-# 
-# 
-# # make_GMR_model(id="18_1", type_used = "gmp", prob = 0.001, Gamma = 0)
-# 
-# pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-#           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-# 
-# res_gmr_18 <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-#   make_GMR_model(id=id_list[i], type_used = "gmp", prob = 0.001, Gamma = Gamma_list[i])
-# }
-# 
-# for(i in 1:length(id_list)){
-#   load(paste(c('data/model/res_pa_GMR_18_', i, '_LOOCV.RData'), collapse = ''))
-# }
-# 
-# 
-# # Plot for GMR models
-# 
-# res_gmr <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, 
-#                 res_pa_GMR_18_4_LOOCV, res_pa_GMR_18_5_LOOCV)
-# 
-# title <- c("Result 18_GMR")
-# xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
-# perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
-# perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
-# perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
-# 
-# 
-# #########################################################################################################################################
-# # plot
-# 
-# # GM
-# res_gm_23 <- list(res_pa_GM_23_G, res_pa_GM_23_M)
-# 
-# title <- c("Result 23_GM")
-# xlabs <- c("G", "M")
-# 
-# perf_min <- min(sapply(X = res_gm_23, FUN = function(x){max(x$results$Accuracy)}))
-# perf_max <- max(sapply(X = res_gm_23, FUN = function(x){max(x$results$Accuracy)}))
-# perf_boxplot(title, xlabs, res_gm_23, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
-# 
-# #GMR_d
-# res_gmr_d_23 <- list(res_pa_GMR_d_23_G_LOOCV, res_pa_GMR_d_23_M_LOOCV, res_pa_GMR_d_23_P_LOOCV, 
-#                      res_pa_GMR_d_23_GM_LOOCV, res_pa_GMR_d_23_GP_LOOCV, res_pa_GMR_d_23_MP_LOOCV, 
-#                      res_pa_GMR_d_23_GMP_LOOCV)
-# 
-# title <- c("Result 23_GMR_d")
-# xlabs <- c("G", "M", "P", "GM", "GP", "MP", "GMP")
-# 
-# perf_min <- min(sapply(X = res_gmr_d_23, FUN = function(x){max(x$results$Accuracy)}))
-# perf_max <- max(sapply(X = res_gmr_d_23, FUN = function(x){max(x$results$Accuracy)}))
-# perf_boxplot(title, xlabs, res_gmr_d_23, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
-# 
-
-################################## Result 18_GMR_d ############################################################
+################################## Result 18 in GMR ############################################################
 num_cores <- detectCores()/2
 registerDoParallel(cores = 4)
 
-
 id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
-             "18_6", "18_7", "18_8", "18_9", "18_10",
-             "18_11", "18_12", "18_13", "18_14", "18_15",
-             "18_16", "18_17", "18_18", "18_19", "18_20",
-             "18_21", "18_22", "18_23", "18_24", "18_25",
-             "18_26", "18_27", "18_28", "18_29", "18_30")
+             "18_6", "18_7", "18_8")
 
-res_pa_GM_26 <- fit.classification(y=y, samples = samples, id = "result26_GM", datapath = datapath, respath = respath,
-                                   profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
-                                   nFolds = 5, numTops=50, iter = 10)
-
-prob_list <- c(0.001, 0.001, 0.001, 0.001, 0.001,
-               0.01, 0.01, 0.01, 0.01, 0.01,
-               0.2, 0.2, 0.2, 0.2, 0.2,
-               0.4, 0.4, 0.4, 0.4, 0.4,
-               0.6, 0.6, 0.6, 0.6, 0.6,
-               0.8, 0.8, 0.8, 0.8, 0.8)
-
-Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8)
-
-make_GMR_d_model(id=id_list[1], type_used = "gmp", prob = prob_list[1], Gamma = Gamma_list[1])
+Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8, 0.85, 0.9, 0.95)
 
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
-res_gmr_d_LOOCV <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GMR_d_model(id=id_list[i], type_used = "gmp", prob = prob_list[i], Gamma = Gamma_list[i])
+res_gmr_18 <- foreach(i=6:length(id_list), .packages = pack) %dopar%{
+  make_GMR_model(id=id_list[i], type_used = "gmp", prob = 0.001, Gamma = Gamma_list[i])
 }
 
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_d_18_', i, '_LOOCV.RData'), collapse = ''))
+  load(paste(c('data/model/res_pa_GMR_18_', i, '_LOOCV.RData'), collapse = ''))
 }
 
-##########################################################################################
-# Plot for GMR_d models
+# Plot for GMR models
 
+res_gmr <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, res_pa_GMR_18_4_LOOCV, res_pa_GMR_18_5_LOOCV,
+                res_pa_GMR_18_6_LOOCV, res_pa_GMR_18_7_LOOCV, res_pa_GMR_18_8_LOOCV)
 
+title <- c("Result 18_GMR")
+xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
+perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
 
-res_gmr_d_LOOCV <- list(res_pa_GMR_d_18_1_LOOCV, res_pa_GMR_d_18_2_LOOCV, res_pa_GMR_d_18_3_LOOCV, res_pa_GMR_d_18_4_LOOCV, res_pa_GMR_d_18_5_LOOCV,
-                  res_pa_GMR_d_18_6_LOOCV, res_pa_GMR_d_18_7_LOOCV, res_pa_GMR_d_18_8_LOOCV, res_pa_GMR_d_18_9_LOOCV, res_pa_GMR_d_18_10_LOOCV,
-                  res_pa_GMR_d_18_11_LOOCV, res_pa_GMR_d_18_12_LOOCV, res_pa_GMR_d_18_13_LOOCV, res_pa_GMR_d_18_14_LOOCV, res_pa_GMR_d_18_15_LOOCV,
-                  res_pa_GMR_d_18_16_LOOCV, res_pa_GMR_d_18_17_LOOCV, res_pa_GMR_d_18_18_LOOCV, res_pa_GMR_d_18_19_LOOCV, res_pa_GMR_d_18_20_LOOCV,
-                  res_pa_GMR_d_18_21_LOOCV, res_pa_GMR_d_18_22_LOOCV, res_pa_GMR_d_18_23_LOOCV, res_pa_GMR_d_18_24_LOOCV, res_pa_GMR_d_18_25_LOOCV,
-                  res_pa_GMR_d_18_26_LOOCV, res_pa_GMR_d_18_27_LOOCV, res_pa_GMR_d_18_28_LOOCV, res_pa_GMR_d_18_29_LOOCV, res_pa_GMR_d_18_30_LOOCV)
-
-title <- c("Result 18_GMR_d_LOOCV")
-xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.6]", "[p=0.001,g=0.8]",
-           "[p=0.01,g=0]", "[p=0.01,g=0.2]", "[p=0.01,g=0.4]", "[p=0.01,g=0.6]", "[p=0.01,g=0.8]",
-           "[p=0.2,g=0]", "[p=0.2,g=0.2]", "[p=0.2,g=0.4]", "[p=0.2,g=0.6]", "[p=0.2,g=0.8]",
-           "[p=0.4,g=0]", "[p=0.4,g=0.2]", "[p=0.4,g=0.4]", "[p=0.4,g=0.6]", "[p=0.4,g=0.8]",
-           "[p=0.6,g=0]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
-           "[p=0.8,g=0]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
-
-perf_min <- min(sapply(X = res_gmr_d_LOOCV, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr_d_LOOCV, FUN = function(x){max(x$results$Accuracy)}))
-perf_facet_boxplot(title, xlabs, res_gmr_d_LOOCV, perf_min = perf_min-0.05, perf_max = perf_max+0.05, perf_max)
-
+# ################################## Result 25 ############################################################
+# 
+# num_cores <- detectCores()/2
+# registerDoParallel(cores = 4)
+# 
+# 
+# id_list <- c("25_5", "25_10", "25_15")
+# lim_list <- c(5, 10, 15)
+# 
+# 
+# pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
+#           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
+# res_gmr_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+#   make_GMR_model(id=id_list[i], lim=lim_list[i], type_used = "gmp", prob = )
+# }
+# 
+# res_gmr_d_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+#   make_GMR_d_model(id=id_list[i], lim = lim_list[i])
+# }
+# 
+# 
+# 
+# 
+# #########################################################################################################################################
+# # Plot for Result 25
+# 
+# # res_models <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV, 
+# #                    res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV,
+# #                    res_pa_GMR_25_15_LOOCV, res_pa_GMR_d_25_15_LOOCV)
+# # 
+# # title <- c("Result 25")
+# # xlabs <- c("GMR_5", "GMR_d_5", "GMR_10", "GMR_d_10", "GMR_15", "GMR_d_15")
+# # perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+# # perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+# # perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+# 
+# for(i in 1:length(id_list)){
+#   load(paste(c('data/model/res_pa_GMR_', id_list[i], '_LOOCV.RData'), collapse = ''))
+# }
+# 
+# for(i in 1:length(id_list)){
+#   load(paste(c('data/model/res_pa_GMR_d_', id_list[i], '_LOOCV.RData'), collapse = ''))
+# }
+# 
+# res_model_25_5 <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV)
+# res_model_25_10 <- list(res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV)
+# res_model_25_15 <- list(res_pa_GMR_25_15_LOOCV, res_pa_GMR_d_25_15_LOOCV)
+# 
+# title <- c("Result 25_5")
+# xlabs <- c("GMR", "GMR_d")
+# perf_min <- min(sapply(X = res_model_25_5, FUN = function(x){max(x$results$Accuracy)}))
+# perf_max <- max(sapply(X = res_model_25_5, FUN = function(x){max(x$results$Accuracy)}))
+# perf_boxplot(title, xlabs, res_model_25_5, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+# 
+# 
+# title <- c("Result 25_10")
+# xlabs <- c("GMR", "GMR_d")
+# perf_min <- min(sapply(X = res_model_25_10, FUN = function(x){max(x$results$Accuracy)}))
+# perf_max <- max(sapply(X = res_model_25_10, FUN = function(x){max(x$results$Accuracy)}))
+# perf_boxplot(title, xlabs, res_model_25_10, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+# 
+# 
+# title <- c("Result 25_15")
+# xlabs <- c("GMR", "GMR_d")
+# perf_min <- min(sapply(X = res_model_25_15, FUN = function(x){max(x$results$Accuracy)}))
+# perf_max <- max(sapply(X = res_model_25_15, FUN = function(x){max(x$results$Accuracy)}))
+# perf_boxplot(title, xlabs, res_model_25_15, perf_min = perf_min-0.15, perf_max = perf_max+0.15)

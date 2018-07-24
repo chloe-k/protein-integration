@@ -1,4 +1,4 @@
-make_GM_model <- function(id){
+make_GM_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
   # id - 18_28
   
   msg <- paste(c("id is : ",id), collapse = '')
@@ -76,9 +76,9 @@ make_GM_model <- function(id){
   # id -> result18_28_GM
   result_name <- paste(c('result',id,'_GM'), collapse = '')
   
-  # fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
-  #                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
-  #                id = "result18_0.85_GM", prob = 0.001, Gamma = 0.85, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+  fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
+                 datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
+                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
   
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
                               profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
