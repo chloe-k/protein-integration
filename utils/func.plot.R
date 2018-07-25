@@ -14,7 +14,7 @@ perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=
     scale_y_continuous(limits=c(perf_min,perf_max)) +
     # geom_jitter(alpha=0.4, size=0.6, position=position_jitter(width=0.1,height=0)) +
     theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
-    geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
+    # geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
     theme(plot.title = element_text(hjust = 0.5)) 
   print(p + ggtitle(title))
 }
@@ -80,4 +80,46 @@ perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, bas
     theme(plot.title = element_text(hjust = 0.5))
   facet_p <- facet_p + facet_grid(Gamma ~ .)
   print(facet_p + ggtitle(title))
+}
+
+perf_heatmap <- function(title, xlabs, res_models) {
+  df_list = list()
+  
+  for(i in 1:length(xlabs)) {
+    p <- -1
+    g <- -1
+    if(i%%5 == 1) g <- "0"
+    else if(i%%5 == 2) g <- "0.2"
+    else if(i%%5 == 3) g <- "0.4"
+    else if(i%%5 == 4) g <- "0.6"
+    else if(i%%5 == 0) g <- "0.8"
+    
+    if((i-1)%/%5 == 0) p <- "0.001"
+    else if((i-1)%/%5 == 1) p <- "0.01"
+    else if((i-1)%/%5 == 2) p <- "0.2"
+    else if((i-1)%/%5 == 3) p <- "0.4"
+    else if((i-1)%/%5 == 4) p <- "0.6"
+    else if((i-1)%/%5 == 5) p <- "0.8"
+    
+    # df_list[[i]] = data.frame(Accuracy=max(res_models[[i]]$results$Accuracy), P=p, Gamma=g, stringsAsFactors = F)
+    df_list[[i]] = max(res_models[[i]]$results$Accuracy)
+  }
+  # df = Reduce(rbind, df_list)
+  p_range <- c("0.001", "0.01", "0.2", "0.4", "0.6", "0.8")
+  g_range <- c("0", "0.2", "0.4", "0.6", "0.8")
+  
+  # df <- data.frame(matrix(unlist(df_list), nrow=6, byrow = TRUE, dimnames = list(p_range, g_range)), stringsAsFactors = F)
+  df <- data.frame(P = p_range, matrix(unlist(df_list), nrow = 6, ncol = 5, byrow = TRUE))
+  names(df)[2:6] <- g_range
+  df_heatmap <- melt(df, id.vars="P")
+  names(df_heatmap)[2:3] <- c("Gamma", "Accuracy")
+  
+  heatP <- ggplot(df_heatmap, aes(Gamma, P)) + 
+    geom_tile(aes(fill = Accuracy), color = "white") +
+    scale_fill_gradient(low = "white", high = "steelblue") +
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    ylab("P") +
+    xlab("Gamma")
+  
+  print(heatP + ggtitle(title))
 }
