@@ -93,6 +93,8 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   assign(x = name, value = model)
   
   save(list=name, file=file.path(model_path))
+  write.SigFeatures(res_fit=model, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+  
   msg <- paste(c(result_name,' is done'), collapse = '')
   print(msg)
   
