@@ -94,44 +94,63 @@ y=list(good_samples, poor_samples)
 
 #----------------------------------------iDRW-----------------------------------------------------------#
 
-################################## Result 18_GMR ############################################################
+################################## Result 25 ############################################################
 
 num_cores <- detectCores()/2
 registerDoParallel(cores = num_cores)
 
 
-id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5")
+id_list <- c("25_10", "25_15")
+lim_list <- c(10, 15)
 
 
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-res_gmr_LOOCV <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-  make_GMR_model(id=id_list[i])
+# res_gmr_25 <- foreach(i=1:1, .packages = pack) %dopar%{
+#   make_GMR_model(id="25_10", lim=10)
+# }
+
+res_gmr_d_25 <- foreach(i=1:1, .packages = pack) %dopar%{
+  make_GMR_d_model(id="25_15", lim = 15)
 }
 
-res_gmr_LOOCV <- list(res_pa_GMR_18_1_LOOCV, res_pa_GMR_18_2_LOOCV, res_pa_GMR_18_3_LOOCV, res_pa_GMR_18_4_LOOCV, res_pa_GMR_18_5_LOOCV)
 
-title <- c("Result 18_GMR_LOOCV")
-xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
-perf_min <- min(sapply(X = res_gmr_LOOCV, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr_LOOCV, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr_LOOCV, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+
 
 #########################################################################################################################################
-# Plot for GMR models
+# Plot for Result 25
 
-res_gmr <- list(res_pa_GMR_18_1, res_pa_GMR_18_2, res_pa_GMR_18_3, res_pa_GMR_18_4, res_pa_GMR_18_5)
+res_models <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV, 
+                   res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV,
+                   res_pa_GMR_25_15_LOOCV, res_pa_GMR_d_25_15_LOOCV)
 
-title <- c("Result 18_GMR")
-xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]")
-perf_min <- min(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+title <- c("Result 25")
+xlabs <- c("GMR_5", "GMR_d_5", "GMR_10", "GMR_d_10", "GMR_15", "GMR_d_15")
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
 
-# Accuracy((A+D)/(A+B+C+D))
-i=0
-for(model in res_gmr){
-  print(i)
-  print(confusionMatrix(model, "none"))
-  i <- i+1
-}
+
+res_model_25_5 <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV)
+res_model_25_10 <- list(res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV)
+res_model_25_15 <- list(res_pa_GMR_25_15_LOOCV, res_pa_GMR_d_25_15_LOOCV)
+
+title <- c("Result 25")
+xlabs <- c("GMR_5", "GMR_d_5")
+perf_min <- min(sapply(X = res_model_25_5, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_model_25_5, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_model_25_5, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+
+
+title <- c("Result 25_10")
+xlabs <- c("GMR_10", "GMR_d_10")
+perf_min <- min(sapply(X = res_model_25_10, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_model_25_10, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_model_25_10, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
+
+
+title <- c("Result 25_15")
+xlabs <- c("GMR_15", "GMR_d_15")
+perf_min <- min(sapply(X = res_model_25_15, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_model_25_15, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_model_25_15, perf_min = perf_min-0.15, perf_max = perf_max+0.15)

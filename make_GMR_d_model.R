@@ -1,4 +1,4 @@
-make_GMR_model <- function(id, lim){
+make_GMR_d_model <- function(id, lim){
   # id - 18_28
   
   msg <- paste(c("id is : ",id), collapse = '')
@@ -66,28 +66,28 @@ make_GMR_model <- function(id, lim){
   
   y=list(good_samples, poor_samples)
   
-  #------------------------- RNAseq + Methyl + RPPA(Pathway Graph) -------------------------#
-  gmr <- g %du% m %du% r
+  #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) -------------------------#
+  gmr <- list(g, m, r)
   testStatistic <- c("DESeq2", "t-test", "t-test")
-  profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Pathway_Graph_Entrez)")
+  profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(diffused_Pathway_Graph_Entrez)")
   x=list(rnaseq, imputed_methyl, rppa)
   
-  # model_name -> res_pa_GMR_18_28.RData
-  # id -> result18_28_GMR
-  result_name <- paste(c('result',id,'_GMR'), collapse = '')
+  # model_name -> res_pa_GMR_d_18_28.RData
+  # id -> result18_28_GMR_d
+  result_name <- paste(c('result',id,'_GMR_d'), collapse = '')
   
   fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
                  datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim,
-                 id = result_name, prob = 0.001, Gamma = 0.4, pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
-
+                 id = result_name, prob = 0.4, Gamma = 0.4, pranking = "t-test", mode = "GMR_d", AntiCorr=FALSE, DEBUG=TRUE)
+  
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
                               profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
                               nFolds = 5, numTops=50, iter = 10)
   
   
-  model_path <- paste(c('data/model/res_pa_GMR_',id,'_LOOCV.RData'), collapse = '')
+  model_path <- paste(c('data/model/res_pa_GMR_d_',id,'_LOOCV.RData'), collapse = '')
   
-  name <- paste(c('res_pa_GMR_', id, '_LOOCV'), collapse='')
+  name <- paste(c('res_pa_GMR_d_', id, '_LOOCV'), collapse='')
   assign(x = name, value = model)
   
   save(list=name, file=file.path(model_path))
