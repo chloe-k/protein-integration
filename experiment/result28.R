@@ -11,6 +11,6 @@ pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.d
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
 
-res_gmr_28 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+res_gr_28 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GR_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i])
 }
