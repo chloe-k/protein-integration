@@ -85,9 +85,9 @@
                                           nFolds = 5, numTops=50, iter = 10)
    
    
-   model_path <- paste(c('data/model/res_pa_GMP_',id,'.RData'), collapse = '')
+   model_path <- paste(c('data/model/res_pa_GMP_',id,'_LOOCV.RData'), collapse = '')
    
-   name <- paste(c('res_pa_GMP_', id), collapse='')
+   name <- paste(c('res_pa_GMP_', id, '_LOOCV'), collapse='')
    assign(x = name, value = model)
    
    save(list=name, file=file.path(model_path))

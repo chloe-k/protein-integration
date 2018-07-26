@@ -36,6 +36,7 @@ if(!dir.exists(respath)) dir.create(respath)
 # read RNAseq, Methylation data, RPPA data
 #data_all_path <- file.path(datapath, "data.RData")
 data_all_path <- file.path(datapath, "Entrez_data.RData")
+# data_all_path <- file.path(datapath, "Dup_rppa_data.RData")
 if(!file.exists(data_all_path)) {
   year <- 3
   read_data(year, datapath)
@@ -94,63 +95,16 @@ y=list(good_samples, poor_samples)
 
 #----------------------------------------iDRW-----------------------------------------------------------#
 
-################################## Result 25 ############################################################
+################################## Result 27 in GMR ############################################################
+registerDoParallel(cores = 4)
 
-num_cores <- detectCores()/2
-registerDoParallel(cores = num_cores)
-
-
-id_list <- c("25_10", "25_15")
-lim_list <- c(10, 15)
-
+id_list <- c("27_0.2_G", "27_0.2_M", "27_0.2_R", "27_0.2_GM", "27_0.2_GP", "27_0.2_MP", "27_0.2_GMP")
+type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
 
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-# res_gmr_25 <- foreach(i=1:1, .packages = pack) %dopar%{
-#   make_GMR_model(id="25_10", lim=10)
-# }
 
-res_gmr_d_25 <- foreach(i=1:1, .packages = pack) %dopar%{
-  make_GMR_d_model(id="25_15", lim = 15)
+
+res_gmr_27_0.2 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+  make_GMR_model(id=id_list[i], prob = 0.001, Gamma = 0.2, type_used = type_list[i])
 }
-
-
-
-
-#########################################################################################################################################
-# Plot for Result 25
-
-res_models <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV, 
-                   res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV,
-                   res_pa_GMR_25_15_LOOCV, res_pa_GMR_d_25_15_LOOCV)
-
-title <- c("Result 25")
-xlabs <- c("GMR_5", "GMR_d_5", "GMR_10", "GMR_d_10", "GMR_15", "GMR_d_15")
-perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
-
-
-res_model_25_5 <- list(res_pa_GMR_25_5_LOOCV, res_pa_GMR_d_25_5_LOOCV)
-res_model_25_10 <- list(res_pa_GMR_25_10_LOOCV, res_pa_GMR_d_25_10_LOOCV)
-res_model_25_15 <- list(res_pa_GMR_25_15_LOOCV, res_pa_GMR_d_25_15_LOOCV)
-
-title <- c("Result 25")
-xlabs <- c("GMR_5", "GMR_d_5")
-perf_min <- min(sapply(X = res_model_25_5, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_model_25_5, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_model_25_5, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
-
-
-title <- c("Result 25_10")
-xlabs <- c("GMR_10", "GMR_d_10")
-perf_min <- min(sapply(X = res_model_25_10, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_model_25_10, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_model_25_10, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
-
-
-title <- c("Result 25_15")
-xlabs <- c("GMR_15", "GMR_d_15")
-perf_min <- min(sapply(X = res_model_25_15, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_model_25_15, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_model_25_15, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
