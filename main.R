@@ -79,8 +79,8 @@ V(m)$name <-paste("m",V(m)$name,sep="")
 r <- directGraph
 V(r)$name <-paste("p",V(r)$name,sep="")
 
-p <- DppiGraph
-V(p)$name <-paste("p",V(p)$name,sep="")
+# p <- DppiGraph
+# V(p)$name <-paste("p",V(p)$name,sep="")
 
 y=list(good_samples, poor_samples)
 #---------------DRW---------------#
