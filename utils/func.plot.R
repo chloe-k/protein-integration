@@ -31,22 +31,26 @@ perf_barplot <- function(xlabs, res_models, perf_min, perf_max, baseline=NULL) {
   
 }
 
-perf_lineplot <- function(title, xlabs, res_models, perf_min, perf_max) {
+perf_lineplot <- function(title, xlabs, res_models, perf_min, perf_max, Gamma_list) {
   
   df_list = list()
   for(i in 1:length(res_models)) {
-    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=mean(res_models[[i]]$resample$Accuracy), Gamma = Gamma_list[i], sd=sd(res_models[[i]]$resample$Accuracy), stringsAsFactors = F)
     # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
   }
   df = Reduce(rbind, df_list)
   
-  p <- ggplot(df, aes(x=model, y=Accuracy, fill=model)) +
+  # p <- ggplot(df, aes(x=model, y=Accuracy, fill=model)) +
+    p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=model, color=model)) +
     geom_line() +
-    # scale_y_continuous(limits=c(perf_min,perf_max)) +
-    scale_color_brewer(palette="Dark2") +
+    geom_point() +
+    # scale_y_continuous(limits=c(perf_min, perf_max)) +
+    # scale_color_brewer(palette="Dark2") +
+    # scale_x_discrete() +
     # scale_x_continuous(breaks=seq(5,100,by=10)) +
-    geom_point(aes(shape=model), size=1.5) +
-    geom_errorbar(aes(ymin=perf_min, ymax=perf_max), width=.2,
+    # geom_point(aes(shape=model), size=1.5) +
+    # geom_pointrange(aes(ymin=Accuracy-sd, ymax=Accuracy+sd)) +
+    geom_errorbar(aes(ymin=Accuracy, ymax=Accuracy), width=.2,
                   position=position_dodge(0.05)) +
     theme(plot.title = element_text(hjust = 0.5)) 
   print(p + ggtitle(title))

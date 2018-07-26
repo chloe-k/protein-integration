@@ -94,6 +94,7 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
+perf_lineplot(title, xlabs, res_gmr, perf_min, perf_max, Gamma_list)
 
 ################################## Result 27 in GMR ############################################################
 registerDoParallel(cores = 4)
@@ -117,21 +118,34 @@ for(i in 1:length(id_list)){
   load(paste(c('data/model/res_pa_GMR_', id_list[i], '.RData'), collapse = ''))
 }
 
-res_gmr_27_0.6 <- list(res_pa_GMR_27_0.6_G, res_pa_GMR_27_0.6_M, res_pa_GMR_27_0.6_R,
-                       res_pa_GMR_27_0.6_GM, res_pa_GMR_27_0.6_GP, res_pa_GMR_27_0.6_MP,
-                       res_pa_GMR_27_0.6_GMP)
+res_gmr_27 <- list(res_pa_GMR_27_0.9_G, res_pa_GMR_27_0.9_M, res_pa_GMR_27_0.9_R,
+                       res_pa_GMR_27_0.9_GM, res_pa_GMR_27_0.9_GP, res_pa_GMR_27_0.9_MP,
+                       res_pa_GMR_27_0.9_GMP)
 
 profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
 for(i in 1:length(id_list)){
   result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
-  write.SigFeatures(res_fit=res_gmr_27_0.6[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+  write.SigFeatures(res_fit=res_gmr_27[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
 }
 
-#GMR
-title <- c("Result 27 GMR(Gamma = 0.2) ")
-xlabs <- c("G", "M", "R", "GM", "GR", "MR", "GMR")
+# Plot GMR
+title <- c("Result 27 GMR")
+xlabs <- rep(c("G", "M", "R", "GM", "GR", "MR", "GMR"), 5)
+Gamma_list <- rep(c("0.2", "0.4", "0.6", "0.8", "0.9"), each=7)
 
-perf_min <- min(sapply(X = res_gmr_27_0.2, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr_27_0.2, FUN = function(x){max(x$results$Accuracy)}))
+id_list <- c("27_0.2_G", "27_0.2_M", "27_0.2_R", "27_0.2_GM", "27_0.2_GP", "27_0.2_MP", "27_0.2_GMP")
+id_list <- c("27_0.4_G", "27_0.4_M", "27_0.4_R", "27_0.4_GM", "27_0.4_GP", "27_0.4_MP", "27_0.4_GMP")
+id_list <- c("27_0.6_G", "27_0.6_M", "27_0.6_R", "27_0.6_GM", "27_0.6_GP", "27_0.6_MP", "27_0.6_GMP")
+id_list <- c("27_0.8_G", "27_0.8_M", "27_0.8_R", "27_0.8_GM", "27_0.8_GP", "27_0.8_MP", "27_0.8_GMP")
+id_list <- c("27_0.9_G", "27_0.9_M", "27_0.9_R", "27_0.9_GM", "27_0.9_GP", "27_0.9_MP", "27_0.9_GMP")
+
+res_gmr <- list()
+for(i in 1:length(id_list)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_list[i], '.RData'), collapse = '')))
+  res_gmr <- c(res_gmr, list(model))
+}
+
+perf_min <- min(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
 # perf_boxplot(title, xlabs, res_gmr_27_0.2, perf_min = perf_min-0.01, perf_max = perf_max+0.01)
-perf_lineplot(title, xlabs, res_gmr_27_0.2, perf_min=55, perf_max=95)
+perf_lineplot(title, xlabs, res_gmr, perf_min, perf_max, Gamma_list)
