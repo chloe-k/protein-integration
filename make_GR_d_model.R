@@ -1,4 +1,4 @@
-make_GMR_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
+make_GR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
   # id - 18_28
   
   msg <- paste(c("id is : ",id), collapse = '')
@@ -61,42 +61,44 @@ make_GMR_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
   r <- directGraph
   V(r)$name <-paste("p",V(r)$name,sep="")
   
-  p <- DppiGraph
-  V(p)$name <-paste("p",V(p)$name,sep="")
+  # p <- DppiGraph
+  # V(p)$name <-paste("p",V(p)$name,sep="")
   
   y=list(good_samples, poor_samples)
   
-  #------------------------- RNAseq + Methyl + RPPA(Pathway Graph) -------------------------#
-  gmr <- g %du% m %du% r
-  testStatistic <- c("DESeq2", "t-test", "t-test")
-  profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
-  x=list(rnaseq, imputed_methyl, rppa)
+  #------------------------- RNAseq + Methyl + RPPA(diffused Pathway Graph) -------------------------#
+  gr <- list(g, r)
+  testStatistic <- c("DESeq2", "t-test")
+  profile_name <- c("rna(Entrez)", "rppa(Entrez)")
+  x=list(rnaseq, rppa)
   
-  # model_name -> res_pa_GMR_18_28.RData
-  # id -> result18_28_GMR
-  result_name <- paste(c('result',id,'_GMR'), collapse = '')
+  # model_name -> res_pa_GR_d_18_28.RData
+  # id -> result18_28_GR_d
+  result_name <- paste(c('result',id,'_GR_d'), collapse = '')
   
-  fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
+  fit.iDRWPClass(x=x, y=y, globalGraph=gr, testStatistic= testStatistic, profile_name = profile_name,
                  datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
-                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
-
+                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GR_d", AntiCorr=FALSE, DEBUG=TRUE)
+  
+  
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
                               profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
                               nFolds = 5, numTops=50, iter = 10)
-
-
-  # model_path <- paste(c('data/model/res_pa_GMR_',id,'_LOOCV.RData'), collapse = '')
-  model_path <- paste(c('data/model/res_pa_GMR_',id,'.RData'), collapse = '')
-
-  # name <- paste(c('res_pa_GMR_', id, '_LOOCV'), collapse='')
-  name <- paste(c('res_pa_GMR_', id), collapse='')
+  
+  
+  model_path <- paste(c('data/model/res_pa_GR_d_',id,'_LOOCV.RData'), collapse = '')
+  # model_path <- paste(c('data/model/res_pa_GR_d_',id,'.RData'), collapse = '')
+  
+  name <- paste(c('res_pa_GR_d_', id, '_LOOCV'), collapse='')
+  # name <- paste(c('res_pa_GR_d_', id), collapse='')
   assign(x = name, value = model)
-
+  
   save(list=name, file=file.path(model_path))
+  
   # write.SigFeatures(res_fit=model, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
-
+  
   msg <- paste(c(result_name,' is done'), collapse = '')
   print(msg)
-
+  
   return(model)
 }
