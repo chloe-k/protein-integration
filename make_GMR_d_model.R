@@ -84,19 +84,22 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
                               profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
                               nFolds = 5, numTops=50, iter = 10)
+
   
-  
+  # model_path <- paste(c('data/model/res_pa_GMR_d_',id,'_LOOCV.RData'), collapse = '')
   model_path <- paste(c('data/model/res_pa_GMR_d_',id,'.RData'), collapse = '')
-  
+
+
+  # name <- paste(c('res_pa_GMR_d_', id, '_LOOCV'), collapse='')
   name <- paste(c('res_pa_GMR_d_', id), collapse='')
   assign(x = name, value = model)
-  
+
   save(list=name, file=file.path(model_path))
 
   # write.SigFeatures(res_fit=model, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
   
   msg <- paste(c(result_name,' is done'), collapse = '')
   print(msg)
-  
+
   return(model)
 }

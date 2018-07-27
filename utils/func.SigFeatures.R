@@ -9,9 +9,9 @@ write.SigFeatures <- function(res_fit, id, profile_name, method = "DRW", classif
   
   genemap <- get.geneMapTable()
   
-  #p <- substring(rownames(feats),2,6) # glm classifier
-  p <- rownames(feats) # SVMLinear classifier
-  # p <- names(feats) # Random Forest
+  #p <- substring(rownames(feats),2,6) 
+  p <- rownames(feats) 
+  # p <- names(feats) 
   
   pathway_name <- sapply(X = p, FUN = function(x) strsplit(keggGet(paste(c("hsa", x), collapse = ""))[[1]]$NAME, " - ")[[1]][1])
   

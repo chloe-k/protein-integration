@@ -59,8 +59,8 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   nFolds = 5
   iter = 10
   
-  # trControl <- trainControl(method = "repeatedcv", number = nFolds, repeats = iter)
-  trControl <- trainControl(method = "LOOCV")
+  trControl <- trainControl(method = "repeatedcv", number = nFolds, repeats = iter)
+  # trControl <- trainControl(method = "LOOCV")
   
   # result <- train(X[,rankn_feats], Y, trControl=trainControl(method="repeatedcv", number=nFolds, repeats = iter, returnResamp = "all"), method=classifier, family=binomial())
   # result <- train(X[,rankn_feats], Y, trControl=trainControl(method="LOOCV"), method=classifier, family=binomial())

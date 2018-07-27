@@ -31,63 +31,48 @@ perf_barplot <- function(xlabs, res_models, perf_min, perf_max, baseline=NULL) {
   
 }
 
-perf_lineplot <- function(title, xlabs, res_models, perf_min, perf_max) {
+perf_lineplot <- function(title, xlabs, res_models, perf_min, perf_max, Gamma_list) {
   
   df_list = list()
   for(i in 1:length(res_models)) {
-    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=mean(res_models[[i]]$resample$Accuracy), Gamma = Gamma_list[i], sd=sd(res_models[[i]]$resample$Accuracy))
     # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
   }
-  df = Reduce(rbind, df_list)
+  df_tot = Reduce(rbind, df_list)
+  df <- df_tot[order(df_tot$Gamma, -df_tot$Accuracy),]
+  model_order <- unique(df$model)
+  df$model <- factor(df$model, levels = model_order)
   
-  p <- ggplot(df, aes(x=model, y=Accuracy, fill=model)) +
+  p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=model, color=model)) +
     geom_line() +
-    # scale_y_continuous(limits=c(perf_min,perf_max)) +
-    scale_color_brewer(palette="Dark2") +
-    # scale_x_continuous(breaks=seq(5,100,by=10)) +
-    geom_point(aes(shape=model), size=1.5) +
-    geom_errorbar(aes(ymin=perf_min, ymax=perf_max), width=.2,
-                  position=position_dodge(0.05)) +
+    geom_point() +
     theme(plot.title = element_text(hjust = 0.5)) 
   print(p + ggtitle(title))
 }
 
+perf_lineplot_d <- function(title, xlabs, res_models, perf_min, perf_max, prob_list) {
+  
+  df_list = list()
+  for(i in 1:length(res_models)) {
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=mean(res_models[[i]]$resample$Accuracy), Prob = prob_list[i], sd=sd(res_models[[i]]$resample$Accuracy))
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
+  }
+  df_tot = Reduce(rbind, df_list)
+  df <- df_tot[order(df_tot$Prob, -df_tot$Accuracy),]
+  model_order <- unique(df$model)
+  df$model <- factor(df$model, levels = model_order)
+  
+  p <- ggplot(df, aes(x=Prob, y=Accuracy, group=model, color=model)) +
+    geom_line() +
+    geom_point() +
+    theme(plot.title = element_text(hjust = 0.5)) 
+  print(p + ggtitle(title))
+}
 
-# perf_lineplot_tuneK <- function(fname_res, perf_min, perf_max) {
-#   
-#   res <- read.table(file = fname_res,header = T)
-#   
-#   p <- ggplot(data=res, aes(x=k, y=Accuracy, group=model, colour=model)) +
-#     geom_line() +
-#     scale_y_continuous(limits=c(perf_min,perf_max)) +
-#     scale_color_brewer(palette="Dark2") +
-#     scale_x_continuous(breaks=seq(5,100,by=10)) +
-#     geom_point(aes(shape=model), size=1.5)
-#   
-#   print(p)
-#   
-# }
-
-perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL) {
+perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL, prob_list, Gamma_list) {
   df_list = list()
   for(i in 1:length(xlabs)) {
-    p <- -1
-    g <- -1
-    if(i%%5 == 1) g <- "0"
-    else if(i%%5 == 2) g <- "0.2"
-    else if(i%%5 == 3) g <- "0.4"
-    else if(i%%5 == 4) g <- "0.6"
-    else if(i%%5 == 0) g <- "0.8"
-    
-    if((i-1)%/%5 == 0) p <- "0.001"
-    else if((i-1)%/%5 == 1) p <- "0.01"
-    else if((i-1)%/%5 == 2) p <- "0.2"
-    else if((i-1)%/%5 == 3) p <- "0.4"
-    else if((i-1)%/%5 == 4) p <- "0.6"
-    else if((i-1)%/%5 == 5) p <- "0.8"
-    
-    # df_list[[i]] = data.frame(Accuracy=res_models[[i]]$resample$Accuracy, P=p, Gamma=g)
-    df_list[[i]] = data.frame(Accuracy=max(res_models[[i]]$results$Accuracy), P=p, Gamma=g)
+    df_list[[i]] = data.frame(Accuracy=max(res_models[[i]]$results$Accuracy), P=prob_list[i], Gamma=Gamma_list[i])
   }
   df = Reduce(rbind, df_list)
   
@@ -102,4 +87,26 @@ perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, bas
     theme(plot.title = element_text(hjust = 0.5))
   facet_p <- facet_p + facet_grid(Gamma ~ .)
   print(facet_p + ggtitle(title))
+}
+
+perf_heatmap <- function(title, res_models, prob_list, Gamma_list){
+  df_list = list()
+  for(i in 1:length(res_models)) {
+    df_list[[i]] = data.frame(Accuracy=mean(res_models[[i]]$resample$Accuracy, prob = prob_list[i], Gamma = Gamma_list[i]))
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=mean(res_models[[i]]$resample$Accuracy))
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
+  }
+  df = Reduce(rbind, df_list)
+  mat <- matrix(df$Accuracy, 4, 4, byrow = TRUE)
+  rownames(mat) <- sprintf("p = %.1f", c(0.2, 0.4, 0.6, 0.8))
+  colnames(mat) <- sprintf("g = %.1f", c(0.2, 0.4, 0.6, 0.8))
+  mat_breaks <- seq(min(mat), max(mat), length.out = 16) 
+  
+  pheatmap(mat, display_numbers = TRUE, number_format = "%.3f",
+           main = title, cluster_cols = FALSE, cluster_rows = FALSE,
+           legend = TRUE, cellwidth = 50, cellheight = 50, breaks = mat_breaks,
+           color =  colorRampPalette(c("yellow", "red"))(16))
+           # color = inferno(16))
+  
+  
 }
