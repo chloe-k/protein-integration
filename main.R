@@ -5,6 +5,10 @@
 library(KEGGgraph)
 library(igraph)
 library(ggplot2)
+library(pheatmap)
+library(RColorBrewer)
+library(viridis)
+library(reshape2)
 library(annotate)
 library(org.Hs.eg.db)
 library(diffusr)
@@ -103,31 +107,32 @@ id_list <- c("29_1", "29_2", "29_3", "29_4",
              "29_13", "29_14", "29_15", "29_16")
 
 
-prob_list <- c(0.2, 0.2, 0.2, 0.2,
-               0.4, 0.4, 0.4, 0.4,
-               0.6, 0.6, 0.6, 0.6,
-               0.8, 0.8, 0.8, 0.8)
-
-Gamma_list <- c(0.2, 0.4, 0.6, 0.8,
-                0.2, 0.4, 0.6, 0.8,
-                0.2, 0.4, 0.6, 0.8,
-                0.2, 0.4, 0.6, 0.8)
-
-make_GR_d_model(id=id_list[1], prob = prob_list[1], Gamma = Gamma_list[1])
+id_list <- c("28_0.2", "28_0.4", "28_0.6", "28_0.8", "28_0.9")
+Gamma_list <- c(0.2, 0.4, 0.6, 0.8, 0.9)
+make_GR_model(id=id_list[1], prob = 0.001, Gamma = Gamma_list[1])
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
-res_gr_d <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GR_d_model(id=id_list[i], prob = prob_list[i], Gamma = Gamma_list[i])
+
+res_gr_28 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+  make_GR_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i])
 }
 
 
 res_models <- list()
 for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GR_d_', id_list[i], '_LOOCV.RData'), collapse = '')))
-  res_models <- c(res_models, list(model))
+
+  load(paste(c('data/model/res_pa_GR_', id_list[i], '_LOOCV.RData'), collapse = ''))
 }
 
+res_gr_28 <- list(res_pa_GR_28_0.2_LOOCV, res_pa_GR_28_0.4_LOOCV, res_pa_GR_28_0.6_LOOCV,
+                  res_pa_GR_28_0.8_LOOCV, res_pa_GR_28_0.9_LOOCV)
+
+# profile_name <- c("rna(Entrez)", "rppa(Entrez)")
+# for(i in 1:length(id_list)){
+#   result_name <- paste(c('result',id_list[i],'_GR'), collapse = '')
+#   write.SigFeatures(res_fit=res_gr_28[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+# }
 
 #########################################################################
 # Plot GR_d
@@ -139,9 +144,10 @@ xlabs <- c("[p=0.2,g=0.2]", "[p=0.2,g=0.4]", "[p=0.2,g=0.6]", "[p=0.2,g=0.8]",
 prob_list <- rep(c(0.2, 0.4, 0.6, 0.8), 4)
 Gamma_list <- rep(c(0.2, 0.4, 0.6, 0.8), each=4)
 
-perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-# perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.1, perf_max = perf_max+0.1)
+
+perf_min <- min(sapply(X = res_gr_28, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gr_28, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_gr_28, perf_min = perf_min-0.05, perf_max = perf_max+0.05)
 # perf_lineplot(title, xlabs, res_gr_28, perf_min=55, perf_max=95)
 perf_facet_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max, prob_list = prob_list, Gamma_list = Gamma_list)
 perf_heatmap(title, xlabs, res_models)
