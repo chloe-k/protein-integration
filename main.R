@@ -5,6 +5,9 @@
 library(KEGGgraph)
 library(igraph)
 library(ggplot2)
+library(pheatmap)
+library(RColorBrewer)
+library(viridis)
 library(reshape2)
 library(annotate)
 library(org.Hs.eg.db)
@@ -95,40 +98,6 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-title <- c("Result 18 GMR_d")
-perf_heatmap(title, xlabs, res_gmr_d)
 
-################################## Result 23 in GMR_d ############################################################
+registerDoParallel(cores = 10)
 
-num_cores <- detectCores()/2
-registerDoParallel(cores = 4)
-
-id_list <- c("23_1", "23_2", "23_3", "23_4", "23_5", "23_6", "23_7")
-type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
-
-
-make_GMR_d_model(id=id_list[1], type_used = type_list[1], prob = 0.4, Gamma = 0.2)
-
-pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-          "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-
-res_gmr_d_23 <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GMR_d_model(id=id_list[i], type_used = type_list[i], prob = 0.4, Gamma = 0.2)
-}
-
-
-for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_d_23_', i, '_LOOCV.RData'), collapse = ''))
-}
-
-res_gmr_d <- list(res_pa_GMR_d_23_1_LOOCV, res_pa_GMR_d_23_2_LOOCV, res_pa_GMR_d_23_3_LOOCV, res_pa_GMR_d_23_4_LOOCV, 
-                  res_pa_GMR_d_23_5_LOOCV, res_pa_GMR_d_23_6_LOOCV, res_pa_GMR_d_23_7_LOOCV)
-
-# Plot for GMR_d model
-title <- c("Result 23_GMR_d")
-xlabs <- c("G", "M", "R", "GM", "GR", "MR", "GMR")
-
-perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.005, perf_max = perf_max+0.005)
- 

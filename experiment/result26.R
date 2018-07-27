@@ -36,7 +36,7 @@ x=list(rnaseq, imputed_methyl)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
-               id = "result26_GM", prob = 0.001, Gamma = 0.8, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+               id = "result26_GM", prob = 0.001, Gamma = 0.4, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
 
 res_pa_GM_26 <- fit.classification(y=y, samples = samples, id = "result26_GM", datapath = datapath, respath = respath,
                                    profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
@@ -56,7 +56,7 @@ x=list(rnaseq, imputed_methyl, rppa)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
-               id = "result26_GMR", prob = 0.001, Gamma = 0.8, pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
+               id = "result26_GMR", prob = 0.001, Gamma = 0.9, pranking = "t-test", mode = "GMR", AntiCorr=FALSE, DEBUG=TRUE)
 
 res_pa_GMR_26 <- fit.classification(y=y, samples = samples, id = "result26_GMR", datapath = datapath, respath = respath,
                                     profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
@@ -76,7 +76,7 @@ x=list(rnaseq, imputed_methyl)
 
 fit.iDRWPClass(x=x, y=y, globalGraph=gm, testStatistic= testStatistic, profile_name = profile_name,
                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples,
-               id = "result26_base_GM", prob = 0.001, Gamma = 0.8, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
+               id = "result26_base_GM", prob = 0.001, Gamma = 0.4, pranking = "t-test", mode = "GM", AntiCorr=FALSE, DEBUG=TRUE)
 
 res_pa_GM_26_base <- fit.classification(y=y, samples = samples, id = "result26_base_GM", datapath = datapath, respath = respath,
                                         profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
