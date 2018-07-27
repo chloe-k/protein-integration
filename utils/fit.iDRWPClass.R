@@ -4,9 +4,9 @@ fit.iDRWPClass <-
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
     
-    if(mode == 'GMR' | mode == 'GM'){
+    if(mode == 'GMR' | mode == 'GM' | mode == 'GR'){
       subId <- paste(c(mode,'_g',Gamma), collapse = '')
-    }else if(mode == 'GMR_d'){
+    }else if(mode == 'GMR_d' | mode == 'GR_d'){
       subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
     }
     pathAct_param_path <- file.path(datapath, paste(c("pathAct_param_", subId, ".RData"), collapse = ''))
@@ -57,7 +57,29 @@ fit.iDRWPClass <-
           }
           W = get(load(wpath))
           
-        } 
+        }
+        else if(mode == 'GR_d'){
+          # get W0 of G & M 
+          g <- globalGraph[[1]]
+          p <- globalGraph[[2]]
+          W0 <- getW0(list(gene_weight[[1]]), g)
+          
+          # get W0 of P
+          p_W0 <- diffus_ppi(datapath = datapath, gene_weight = list(gene_weight[[2]]), ppi = p, prob = prob)
+          
+          # concatenate W0 and p_W0
+          W0 <- c(W0, p_W0, use.names = TRUE)
+          if(DEBUG) cat('Getting W0 is done...')
+          
+          gp <- g %du% p
+          
+          # get adjacency matrix of the (integrated) gene-gene graph
+          wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+          if(!file.exists(wpath)){
+            W = getW(datapath = datapath, G = gp, gene_weight = gene_weight, mode = mode)
+          }
+          W = get(load(wpath))
+        }
         else{
           W0 <- getW0(gene_weight, globalGraph)
           # W0 <- diffus_ppi(datapath = datapath, gene_weight = gene_weight, ppi = globalGraph, prob = prob)

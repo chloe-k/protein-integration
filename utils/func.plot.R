@@ -69,8 +69,6 @@ perf_lineplot_d <- function(title, xlabs, res_models, perf_min, perf_max, prob_l
   print(p + ggtitle(title))
 }
 
-
-
 perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL, prob_list, Gamma_list) {
   df_list = list()
   for(i in 1:length(xlabs)) {
