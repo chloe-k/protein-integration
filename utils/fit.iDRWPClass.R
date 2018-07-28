@@ -3,7 +3,7 @@ fit.iDRWPClass <-
            method = "DRW", samples, pranking = "t-test", mode=mode, lim = NULL,
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
-    
+
     if(mode == 'GMR' | mode == 'GM' | mode == 'GR' | mode == 'GMR_1' | mode == 'GMR_bidir'){
       subId <- paste(c(mode,'_g',Gamma), collapse = '')
     }else if(mode == 'GMR_d' | mode == 'GR_d'){

@@ -66,7 +66,7 @@ perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.02, perf_max = perf_ma
 num_cores <- detectCores()/2
 registerDoParallel(cores = 4)
 
-id_list <- c("23_1", "23_2", "23_3", "23_4", "23_5", "23_6", "23_7")
+id_list <- c("23_G", "23_M", "23_P", "23_GM", "23_GP", "23_MP", "23_GMP")
 type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
 
 
@@ -79,11 +79,12 @@ res_gmr_d_23 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
 
 
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_d_23_', i, '_LOOCV.RData'), collapse = ''))
+  load(paste(c('data/model/res_pa_GMR_d_', id_list[i], '_LOOCV.RData'), collapse = ''))
 }
 
-res_gmr_d <- list(res_pa_GMR_d_23_1_LOOCV, res_pa_GMR_d_23_2_LOOCV, res_pa_GMR_d_23_3_LOOCV, res_pa_GMR_d_23_4_LOOCV, 
-                res_pa_GMR_d_23_5_LOOCV, res_pa_GMR_d_23_6_LOOCV, res_pa_GMR_d_23_7_LOOCV)
+res_gmr_d <- list(res_pa_GMR_d_23_G_LOOCV, res_pa_GMR_d_23_M_LOOCV, res_pa_GMR_d_23_P_LOOCV,
+                  res_pa_GMR_d_23_GM_LOOCV, res_pa_GMR_d_23_GP_LOOCV, res_pa_GMR_d_23_MP_LOOCV,
+                  res_pa_GMR_d_23_GMP_LOOCV)
 
 
 for(i in 1:length(id_list)){

@@ -32,14 +32,26 @@ preproc_STRING_PPI <- function(datapath){
   save(DppiGraph, file=file.path(datapath, paste(c("DppiGraph_W_str","rda"), collapse='.')))
   
   # Construct weighted directGraph(25792 edges have weight)
-  df_directGraph <- as.data.frame(x = get.edgelist(directGraph))
-  colnames(df_directGraph) <- c("protein1", "protein2")
-  merged_directGraph <- merge(df_directGraph, ppi, all.x = TRUE)
-  merged_directGraph$combined_score[is.na(merged_directGraph$combined_score)] <- 0
+  # df_directGraph <- as.data.frame(x = get.edgelist(directGraph))
+  # colnames(df_directGraph) <- c("protein1", "protein2")
+  # merged_directGraph <- merge(df_directGraph, ppi, all.x = TRUE)
+  # merged_directGraph$combined_score[is.na(merged_directGraph$combined_score)] <- 0
+  pathgraph <- get.data.frame(x = directGraph, what = "both")
   
-  directGraph <- graph.data.frame(merged_directGraph, directed = TRUE)
+  dppiedge <- get.edgelist(DppiGraph)
+  dppiatt <- get.edge.attribute(DppiGraph)
+  dppi <- cbind(dppiedge, dppiatt$combined_score)
+  dppi_df <- as.data.frame(dppi)
+  dppi_rdc <- dppi[-which(!(dppi_df$V1 %in% pathgraph$vertices[[1]] | dppi_df$V2 %in% pathgraph$vertices[[1]])),]
   
-  save(directGraph, file=file.path(datapath, paste(c("directGraph_W_str","rda"), collapse='.')))
+  merge_weight <- merge(x = as.data.frame(pathgraph$edges), y = dppi_rdc, all.x = TRUE)
+
+  directGraph_w <- directGraph
+  directGraph_w <- set_edge_attr(directGraph_w, "combined_score", )
+  
+  # directGraph <- graph.data.frame(merged_directGraph, directed = TRUE)
+  
+  # save(directGraph, file=file.path(datapath, paste(c("directGraph_W_str","rda"), collapse='.')))
   
   ###############################################################################################################
   # For extracting subgraph which contains only specific interaction type

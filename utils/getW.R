@@ -53,7 +53,6 @@ getW <- function(G, gene_weight, x, datapath, mode, EdgeWeight=FALSE, AntiCorr=F
             W[paste("p",intersect_gr[i],sep=""),paste("g",intersect_gr[i],sep="")] <- 1
           }
         }
-        
       } else if(mode == "GMR_1"){
         # make Global Graph(RNAseq+Mehtyl+RPPA(Pathway Graph))
         intersect_mr <- intersect(substring(names(gene_weight[[2]]),2), substring(names(gene_weight[[3]]),2))
@@ -126,13 +125,15 @@ getW <- function(G, gene_weight, x, datapath, mode, EdgeWeight=FALSE, AntiCorr=F
           }
         }
       } else if(mode == 'GMR' | mode == 'GMR_d' | mode == 'GMR_1'){
-        W <- as.matrix(get.adjacency(G))
+        # W <- as.matrix(get.adjacency(G))
+        
+        # Wpath <- 
         xG <- x[[1]]
         xM <- x[[2]]
         xP <- x[[3]]
         
         intersect_gm <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[2]]),2))
-        intersect_gp <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2)) 
+        intersect_gr <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2)) 
         
         
         for(i in 1:length(intersect_gm)){
@@ -149,17 +150,12 @@ getW <- function(G, gene_weight, x, datapath, mode, EdgeWeight=FALSE, AntiCorr=F
           }
         }
         
-        for(i in 1:length(intersect_gp)){
-          idx=which(paste("g",intersect_gp[i],sep="")==rownames(W))
-          if(length(idx)>0) {
-            if(cor(t(xG[paste("g",intersect_gp[i],sep=""),]),
-                   t(xP[paste("p",intersect_gp[i],sep=""),])) < 0 &
-               cor.test(t(xG[paste("g",intersect_gp[i],sep=""),]),
-                        t(xP[paste("p",intersect_gp[i],sep=""),]),
-                        method = "pearson", alternative = "less")$p.value <= 0.05) {
-              # W[paste("g",intersect_gp[i],sep=""),paste("p",intersect_gp[i],sep="")] <- 1
-              W[paste("p",intersect_gp[i],sep=""),paste("g",intersect_gp[i],sep="")] <- 1
-            }
+        # add edges (RPPA->RNAseq)
+        for(i in 1:length(intersect_gr)){
+          idx <- which(paste("g", intersect_gr[i], sep="") == rownames(W))
+          if(length(idx) > 0){
+            W[paste("p",intersect_gr[i],sep=""),paste("g",intersect_gr[i],sep="")] <- 1
+            W[paste("g",intersect_gr[i],sep=""),paste("p",intersect_gr[i],sep="")] <- 1
           }
         }
       }

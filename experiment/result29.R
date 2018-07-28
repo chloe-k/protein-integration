@@ -24,7 +24,9 @@ res_gr_d <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GR_d_model(id=id_list[i], prob = prob_list[i], Gamma = Gamma_list[i])
 }
 
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GR_d_', id_list[i], '_LOOCV.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GR_d_', id_list[i], '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
 
