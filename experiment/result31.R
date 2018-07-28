@@ -5,7 +5,7 @@
 # LOOCV was performed.
 
 
-# edge direction
+# edge direction (GMR_1)
 # p -> m
 # p -> g
 
