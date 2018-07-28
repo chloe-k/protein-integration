@@ -3,10 +3,10 @@ preproc_STRING_PPI <- function(datapath){
   # Convert Ensembl ID to Entrez gene ID(NCBI gene ID)
   STR_ppi <- read.delim(file = 'data/PPI_DB/9606.protein.links.v10.5.txt', sep = ' ', header = T, stringsAsFactors = F)
   ensembl_mapping <- read.delim(file = 'data/PPI_DB/ensemblTogeneId.tsv', header = T, stringsAsFactors = F, row.names = 2)
-  STR_act <- read.delim(file = 'data/PPI_DB/9606.protein.actions.v10.5.txt', header = T, stringsAsFactors = F)
-  colnames(STR_act) <- c("protein1", "protein2", "mode", "action", "is_directional", "a_is_acting", "score")
-  STR_ppi <- merge(STR_ppi, STR_act)
-  STR_ppi <- STR_ppi[,1:3]
+  # STR_act <- read.delim(file = 'data/PPI_DB/9606.protein.actions.v10.5.txt', header = T, stringsAsFactors = F)
+  # colnames(STR_act) <- c("protein1", "protein2", "mode", "action", "is_directional", "a_is_acting", "score")
+  # STR_ppi <- merge(STR, STR_act)
+  # STR_ppi <- STR_ppi[,1:3]
   
   # Check unmapped ensembl ID
   protein_A <- ensembl_mapping[STR_ppi$protein1,]
