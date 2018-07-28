@@ -4,7 +4,7 @@ fit.iDRWPClass <-
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
     
-    if(mode == 'GMR' | mode == 'GM' | mode == 'GR'){
+    if(mode == 'GMR' | mode == 'GM' | mode == 'GR' | mode == 'GMR_1'){
       subId <- paste(c(mode,'_g',Gamma), collapse = '')
     }else if(mode == 'GMR_d' | mode == 'GR_d'){
       subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
