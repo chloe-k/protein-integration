@@ -36,14 +36,15 @@ preproc_STRING_PPI <- function(datapath){
   # colnames(df_directGraph) <- c("protein1", "protein2")
   # merged_directGraph <- merge(df_directGraph, ppi, all.x = TRUE)
   # merged_directGraph$combined_score[is.na(merged_directGraph$combined_score)] <- 0
-  pathedge_id <- as_ids(E(directGraph))
-  pathedge <- sapply(X = pathedge_id, FUN = function(x){})
+  pathgraph <- get.data.frame(x = directGraph, what = "both")
   
   dppiedge <- get.edgelist(DppiGraph)
   dppiatt <- get.edge.attribute(DppiGraph)
   dppi <- cbind(dppiedge, dppiatt$combined_score)
+  dppi_df <- as.data.frame(dppi)
+  dppi_rdc <- dppi[-which(!(dppi_df$V1 %in% pathgraph$vertices[[1]] | dppi_df$V2 %in% pathgraph$vertices[[1]])),]
   
-  merge_weight <- merge(x = pathedge, y = dppi, all.x = TRUE)
+  merge_weight <- merge(x = as.data.frame(pathgraph$edges), y = dppi_rdc, all.x = TRUE)
 
   directGraph_w <- directGraph
   directGraph_w <- set_edge_attr(directGraph_w, "combined_score", )
