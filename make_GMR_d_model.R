@@ -1,4 +1,4 @@
-make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
+make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL, mode=NULL){
   # id - 18_28
   
   msg <- paste(c("id is : ",id), collapse = '')
@@ -78,7 +78,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   
   fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
                  datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
-                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GMR_d", AntiCorr=FALSE, DEBUG=TRUE)
+                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = mode, AntiCorr=FALSE, DEBUG=TRUE)
 
   
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
