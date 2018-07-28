@@ -18,8 +18,8 @@ getPathActivity <-
         # prot <- get(load('data/t-test.rppa(Entrez).RData')) # for result25_GM
         # com_rna <- which(substring(rownames(x),1,1) == 'g' & substring(rownames(x),2) %in% Vpathwayi)
         # com_met <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2) %in% Vpathwayi)
-        # # com_pro <- which(substring(rownames(x),1,1) == 'p' & substring(rownames(x),2) %in% Vpathwayi)
-        # com_pro <- which(substring(rownames(prot),1,1) == 'p' & substring(rownames(prot),2) %in% Vpathwayi)
+        # com_pro <- which(substring(rownames(x),1,1) == 'p' & substring(rownames(x),2) %in% Vpathwayi)
+        # # com_pro <- which(substring(rownames(prot),1,1) == 'p' & substring(rownames(prot),2) %in% Vpathwayi)
         # flag <- length(com_rna)>=lim & length(com_met)>=lim & length(com_pro)>=lim
         ##############################################################################
         if (length(Vpathwayi) > 0 & flag){

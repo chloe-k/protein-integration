@@ -1,10 +1,10 @@
 fit.iDRWPClass <-
   function(x, y, testStatistic, profile_name, globalGraph = NULL, datapath, respath, pathSet,
-           method = "DRW", samples, pranking = "t-test", mode, lim = NULL,
+           method = "DRW", samples, pranking = "t-test", mode=mode, lim = NULL,
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
-    
-    if(mode == 'GMR' | mode == 'GM' | mode == 'GR' | mode == 'GMR_1'){
+
+    if(mode == 'GMR' | mode == 'GM' | mode == 'GR' | mode == 'GMR_1' | mode == 'GMR_bidir'){
       subId <- paste(c(mode,'_g',Gamma), collapse = '')
     }else if(mode == 'GMR_d' | mode == 'GR_d'){
       subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
@@ -51,9 +51,9 @@ fit.iDRWPClass <-
           gmp <- gm %du% globalGraph[[3]]
           
           # get adjacency matrix of the (integrated) gene-gene graph
-          wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+          wpath <- file.path(datapath, paste(c(mode, if(AntiCorr) "anticorr","W","RData"), collapse = '.'))
           if(!file.exists(wpath)){
-            W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode)
+            W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode, x = x_norm, AntiCorr = AntiCorr, EdgeWeight = FALSE)
           }
           W = get(load(wpath))
           
@@ -74,9 +74,9 @@ fit.iDRWPClass <-
           gp <- g %du% p
           
           # get adjacency matrix of the (integrated) gene-gene graph
-          wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+          wpath <- file.path(datapath, paste(c(mode, if(AntiCorr) "anticorr", "W","RData"), collapse = '.'))
           if(!file.exists(wpath)){
-            W = getW(datapath = datapath, G = gp, gene_weight = gene_weight, mode = mode)
+            W = getW(datapath = datapath, G = gp, gene_weight = gene_weight, mode = mode, x = x_norm, AntiCorr = AntiCorr, EdgeWeight = FALSE)
           }
           W = get(load(wpath))
         }
@@ -86,9 +86,9 @@ fit.iDRWPClass <-
           if(DEBUG) cat('Getting W0 is done...')
           
           # get adjacency matrix of the (integrated) gene-gene graph
-          wpath <- file.path(datapath, paste(c(mode,"W","RData"), collapse = '.'))
+          wpath <- file.path(datapath, paste(c(mode, if(AntiCorr) "anticorr", "W","RData"), collapse = '.'))
           if(!file.exists(wpath)){
-            W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode)
+            W = getW(datapath = datapath, G = globalGraph, gene_weight = gene_weight, mode = mode, x = x_norm, AntiCorr = AntiCorr, EdgeWeight = FALSE)
           }
           W = get(load(wpath))
           
