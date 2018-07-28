@@ -52,7 +52,31 @@ getW <- function(datapath, G, gene_weight, mode){
         }
       }
       
-    } else if(mode == "GMP"){
+    } else if(mode == "GMR_1"){
+      # make Global Graph(RNAseq+Mehtyl+RPPA(Pathway Graph))
+      intersect_mr <- intersect(substring(names(gene_weight[[2]]),2), substring(names(gene_weight[[3]]),2))
+      intersect_gr <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2))
+      
+      # create Global Graph's adjacency matrix
+      W <- as.matrix(get.adjacency(G)) 
+      
+      # add edges (RPPA->Methyl)
+      for(i in 1:length(intersect_mr)){
+        idx <- which(paste("p", intersect_mr[i], sep="") == rownames(W))
+        if(length(idx) > 0){
+          W[paste("p",intersect_mr[i],sep=""),paste("m",intersect_mr[i],sep="")] <- 1
+        }
+      }
+      
+      # add edges (RPPA->RNAseq)
+      for(i in 1:length(intersect_gr)){
+        idx <- which(paste("g", intersect_gr[i], sep="") == rownames(W))
+        if(length(idx) > 0){
+          W[paste("p",intersect_gr[i],sep=""),paste("g",intersect_gr[i],sep="")] <- 1
+        }
+      }
+      
+    }else if(mode == "GMP"){
       # make Global Graph(RNAseq+Methyl+RPPA)
       # gene_weight[[1]] : RNAseq(G)
       # gene_weight[[2]] : Methyl(M)
