@@ -14,3 +14,9 @@ pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.d
 res_gr_28 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GR_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i])
 }
+
+res_models <- list()
+for(i in 1:length(id_list)){
+  model <- get(load(paste(c('data/model/res_pa_GR_', id_list[i], '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
+}

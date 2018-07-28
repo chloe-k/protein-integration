@@ -7,15 +7,15 @@ id_list <- c("25_5", "25_10", "25_15")
 lim_list <- c(5, 10, 15)
 
 
-# pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-#           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-# res_gmr_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-#   make_GMR_model(id=id_list[i], lim=lim_list[i], type_used = "gmp", prob = 0.001, Gamma = 0.9)
-# }
-# 
-# res_gm_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-#   make_GM_model(id=id_list[i], lim = lim_list[i], type_used = "gmp", prob = 0.001, Gamma = 0.4)
-# }
+pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
+          "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
+res_gmr_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+  make_GMR_model(id=id_list[i], lim=lim_list[i], type_used = "gmp", prob = 0.001, Gamma = 0.9)
+}
+
+res_gm_25 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+  make_GM_model(id=id_list[i], lim = lim_list[i], type_used = "gmp", prob = 0.001, Gamma = 0.4)
+}
 
 
 for(i in 1:length(id_list)){

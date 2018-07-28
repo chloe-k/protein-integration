@@ -87,7 +87,7 @@ res_gmr_d <- list(res_pa_GMR_d_23_1_LOOCV, res_pa_GMR_d_23_2_LOOCV, res_pa_GMR_d
 
 
 for(i in 1:length(id_list)){
-  result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
+  result_name <- paste(c('result',id_list[i],'_GMR_d'), collapse = '')
   write.SigFeatures(res_fit=res_gmr_d[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
 }
 

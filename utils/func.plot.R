@@ -1,8 +1,8 @@
 perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL) {
   df_list = list()
   for(i in 1:length(xlabs)) {
-    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
-    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
   }
   df = Reduce(rbind, df_list)
   
@@ -100,12 +100,12 @@ perf_heatmap <- function(title, res_models, prob_list, Gamma_list){
   mat <- matrix(df$Accuracy, 4, 4, byrow = TRUE)
   rownames(mat) <- sprintf("p = %.1f", c(0.2, 0.4, 0.6, 0.8))
   colnames(mat) <- sprintf("g = %.1f", c(0.2, 0.4, 0.6, 0.8))
-  mat_breaks <- seq(min(mat), max(mat), length.out = 16) 
+  mat_breaks <- seq(0.65, 0.725, length.out = 30) 
   
   pheatmap(mat, display_numbers = TRUE, number_format = "%.3f",
            main = title, cluster_cols = FALSE, cluster_rows = FALSE,
            legend = TRUE, cellwidth = 50, cellheight = 50, breaks = mat_breaks,
-           color =  colorRampPalette(c("yellow", "red"))(16))
+           color =  colorRampPalette(c("yellow", "red"))(30))
            # color = inferno(16))
   
   

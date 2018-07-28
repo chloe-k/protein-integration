@@ -85,11 +85,11 @@ make_GMR_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL, 
                               nFolds = 5, numTops=50, iter = 10)
 
 
-  # model_path <- paste(c('data/model/res_pa_GMR_',id,'_LOOCV.RData'), collapse = '')
-  model_path <- paste(c('data/model/res_pa_GMR_',id,'.RData'), collapse = '')
+  model_path <- paste(c('data/model/res_pa_GMR_',id,'_LOOCV.RData'), collapse = '')
+  # model_path <- paste(c('data/model/res_pa_GMR_',id,'.RData'), collapse = '')
 
-  # name <- paste(c('res_pa_GMR_', id, '_LOOCV'), collapse='')
-  name <- paste(c('res_pa_GMR_', id), collapse='')
+  name <- paste(c('res_pa_GMR_', id, '_LOOCV'), collapse='')
+  # name <- paste(c('res_pa_GMR_', id), collapse='')
   assign(x = name, value = model)
 
   save(list=name, file=file.path(model_path))
