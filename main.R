@@ -99,55 +99,32 @@ y=list(good_samples, poor_samples)
 
 #----------------------------------------iDRW-----------------------------------------------------------#
 
-################################## Result 29 in GR_d ############################################################
+################################## Result 31 in GMR ############################################################
+
+num_cores <- detectCores()/2
 registerDoParallel(cores = 8)
-id_list <- c("29_1", "29_2", "29_3", "29_4",
-             "29_5", "29_6", "29_7", "29_8",
-             "29_9", "29_10", "29_11", "29_12",
-             "29_13", "29_14", "29_15", "29_16")
 
+id_list <- c("31_1", "31_2", "31_3", "31_4", "31_5", "31_6", "31_7")
+type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
 
-id_list <- c("28_0.2", "28_0.4", "28_0.6", "28_0.8", "28_0.9")
-Gamma_list <- c(0.2, 0.4, 0.6, 0.8, 0.9)
-make_GR_model(id=id_list[1], prob = 0.001, Gamma = Gamma_list[1])
+make_GMR_model(id=id_list[1], type_used = type_list[1], prob = 0.001, Gamma = 0.6)
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
-
-res_gr_28 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-  make_GR_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i])
+res_gmr_31 <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
+  make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.6)
 }
 
 
-res_models <- list()
 for(i in 1:length(id_list)){
-
-  load(paste(c('data/model/res_pa_GR_', id_list[i], '_LOOCV.RData'), collapse = ''))
+  load(paste(c('data/model/res_pa_GMR_31_', i, '_LOOCV.RData'), collapse = ''))
 }
 
-res_gr_28 <- list(res_pa_GR_28_0.2_LOOCV, res_pa_GR_28_0.4_LOOCV, res_pa_GR_28_0.6_LOOCV,
-                  res_pa_GR_28_0.8_LOOCV, res_pa_GR_28_0.9_LOOCV)
+res_gmr <- list(res_pa_GMR_31_1_LOOCV, res_pa_GMR_31_2_LOOCV, res_pa_GMR_31_3_LOOCV, res_pa_GMR_31_4_LOOCV, 
+                res_pa_GMR_31_5_LOOCV, res_pa_GMR_31_6_LOOCV, res_pa_GMR_31_7_LOOCV)
 
-# profile_name <- c("rna(Entrez)", "rppa(Entrez)")
-# for(i in 1:length(id_list)){
-#   result_name <- paste(c('result',id_list[i],'_GR'), collapse = '')
-#   write.SigFeatures(res_fit=res_gr_28[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
-# }
+for(i in 1:length(id_list)){
+  result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
+  write.SigFeatures(res_fit=res_gmr[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+}
 
-#########################################################################
-# Plot GR_d
-title <- c("Result 28 GR_d")
-xlabs <- c("[p=0.2,g=0.2]", "[p=0.2,g=0.4]", "[p=0.2,g=0.6]", "[p=0.2,g=0.8]",
-           "[p=0.4,g=0.2]", "[p=0.4,g=0.4]", "[p=0.4,g=0.6]", "[p=0.4,g=0.8]",
-           "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
-           "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
-prob_list <- rep(c(0.2, 0.4, 0.6, 0.8), 4)
-Gamma_list <- rep(c(0.2, 0.4, 0.6, 0.8), each=4)
-
-
-perf_min <- min(sapply(X = res_gr_28, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_gr_28, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gr_28, perf_min = perf_min-0.05, perf_max = perf_max+0.05)
-# perf_lineplot(title, xlabs, res_gr_28, perf_min=55, perf_max=95)
-perf_facet_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15, perf_max, prob_list = prob_list, Gamma_list = Gamma_list)
-perf_heatmap(title, xlabs, res_models)
