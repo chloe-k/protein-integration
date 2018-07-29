@@ -1,4 +1,4 @@
-make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL, mode=NULL){
+make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL, mode=NULL, AntiCorr = FALSE){
   # id - 18_28
   
   msg <- paste(c("id is : ",id), collapse = '')
@@ -19,6 +19,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   # read RNAseq, Methylation data, RPPA data
   #data_all_path <- file.path(datapath, "data.RData")
   data_all_path <- file.path(datapath, "Entrez_data.RData")
+  # data_all_path <- file.path(datapath, "Dup_rppa_data.RData")
   if(!file.exists(data_all_path)) {
     year <- 3
     read_data(year, datapath)
@@ -61,8 +62,8 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   r <- directGraph
   V(r)$name <-paste("p",V(r)$name,sep="")
   
-  p <- DppiGraph
-  V(p)$name <-paste("p",V(p)$name,sep="")
+  # p <- DppiGraph
+  # V(p)$name <-paste("p",V(p)$name,sep="")
   
   y=list(good_samples, poor_samples)
   
@@ -70,6 +71,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   gmr <- list(g, m, r)
   testStatistic <- c("DESeq2", "t-test", "t-test")
   profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
+  # profile_name <- c("rna(res26)", "meth(res26)", "rppa(res26)")
   x=list(rnaseq, imputed_methyl, rppa)
   
   # model_name -> res_pa_GMR_d_18_28.RData
@@ -78,7 +80,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   
   fit.iDRWPClass(x=x, y=y, globalGraph=gmr, testStatistic= testStatistic, profile_name = profile_name,
                  datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
-                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = mode, AntiCorr=FALSE, DEBUG=TRUE)
+                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = mode, AntiCorr=AntiCorr, DEBUG=TRUE)
 
   
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
@@ -86,12 +88,12 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
                               nFolds = 5, numTops=50, iter = 10)
 
   
-  # model_path <- paste(c('data/model/res_pa_GMR_d_',id,'_LOOCV.RData'), collapse = '')
-  model_path <- paste(c('data/model/res_pa_GMR_d_',id,'.RData'), collapse = '')
+  model_path <- paste(c('data/model/res_pa_GMR_d_',id,'_LOOCV.RData'), collapse = '')
+  # model_path <- paste(c('data/model/res_pa_GMR_d_',id,'.RData'), collapse = '')
 
 
-  # name <- paste(c('res_pa_GMR_d_', id, '_LOOCV'), collapse='')
-  name <- paste(c('res_pa_GMR_d_', id), collapse='')
+  name <- paste(c('res_pa_GMR_d_', id, '_LOOCV'), collapse='')
+  # name <- paste(c('res_pa_GMR_d_', id), collapse='')
   assign(x = name, value = model)
 
   save(list=name, file=file.path(model_path))

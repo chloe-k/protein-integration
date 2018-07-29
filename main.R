@@ -161,7 +161,9 @@ perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)
 perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
 ################################## Result 33 in GMR ############################################################
 
-registerDoParallel(cores = 8)
+Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
+
+make_GM_model(id=id_list[1], prob = 0.001, Gamma = Gamma_list[1])
 
 id_list <- c("33_1", "33_2", "33_3", "33_4")
 Gamma_list <- c(0.2, 0.4, 0.6, 0.8)
@@ -176,20 +178,14 @@ res_gmr_33 <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
 
 res_models <- list()
 for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GMR_33_', i, '_LOOCV.RData'), collapse = '')))
+  model <- get(load(paste(c('data/model/res_pa_GM_', id_list[i], '_LOOCV.RData'), collapse = '')))
   res_models <- c(res_models, list(model))
 }
 
-
-for(i in 1:length(id_list)){
-  result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
-  write.SigFeatures(res_fit=res_gmr[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
-}
-
-# Plot for GMR model
-title <- c("Result 33_GMR")
-xlabs <- c("g=0.4", "g=0.6", "g=0.8")
-
+title <- c("Result 18 GM")
+xlabs <- c("g=0", "g=0.2", "g=0.4", "g=0.6", "g=0.8", "g=0.85", "g=0.9", "g=0.95")
 perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+
+perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
+

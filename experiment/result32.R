@@ -5,7 +5,7 @@
 # LOOCV was performed.
 
 
-# edge direction
+# edge direction (GMR_bidir)
 # m <-> g
 # p <-> g
 
@@ -14,7 +14,7 @@
 
 ################################## Result 32 in GMR ############################################################
 
-binum_cores <- detectCores()/2
+num_cores <- detectCores()/2
 registerDoParallel(cores = num_cores)
 
 id_list <- c("32_1", "32_2", "32_3", "32_4", "32_5", "32_6", "32_7")

@@ -1,8 +1,8 @@
 perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=NULL) {
   df_list = list()
   for(i in 1:length(xlabs)) {
-    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
-    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
   }
   df = Reduce(rbind, df_list)
   
@@ -14,7 +14,7 @@ perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=
     scale_y_continuous(limits=c(perf_min,perf_max)) +
     # geom_jitter(alpha=0.4, size=0.6, position=position_jitter(width=0.1,height=0)) +
     theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
-    # geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
+    geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
     theme(plot.title = element_text(hjust = 0.5)) 
   print(p + ggtitle(title))
 }
@@ -29,6 +29,26 @@ perf_barplot <- function(xlabs, res_models, perf_min, perf_max, baseline=NULL) {
   
   print(g1)
   
+}
+
+perf_lineplot_multi <- function(title, xlabs, res_models, perf_min, perf_max, Gamma_list) {
+  
+  df_list = list()
+  for(i in 1:length(res_models)) {
+    # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=mean(res_models[[i]]$resample$Accuracy), Gamma = Gamma_list[i], sd=sd(res_models[[i]]$resample$Accuracy))
+    df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy), Gamma = as.character(Gamma_list[i]))
+  }
+  df_tot = Reduce(rbind, df_list)
+  df <- df_tot[order(df_tot$Gamma, -df_tot$Accuracy),]
+  model_order <- unique(df$model)
+  df$model <- factor(df$model, levels = model_order)
+  
+  # p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=model, color=model)) +
+  p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=1)) +
+    geom_line() +
+    geom_point() +
+    theme(plot.title = element_text(hjust = 0.5)) 
+  print(p + ggtitle(title))
 }
 
 perf_lineplot <- function(title, xlabs, res_models, perf_min, perf_max, Gamma_list) {
@@ -93,20 +113,20 @@ perf_facet_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, bas
 perf_heatmap <- function(title, res_models, prob_list, Gamma_list){
   df_list = list()
   for(i in 1:length(res_models)) {
-    df_list[[i]] = data.frame(Accuracy=mean(res_models[[i]]$resample$Accuracy, prob = prob_list[i], Gamma = Gamma_list[i]))
+    df_list[[i]] = data.frame(Accuracy=max(res_models[[i]]$results$Accuracy), prob = prob_list[i], Gamma = Gamma_list[i])
     # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=mean(res_models[[i]]$resample$Accuracy))
     # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
   }
   df = Reduce(rbind, df_list)
-  mat <- matrix(df$Accuracy, 4, 4, byrow = TRUE)
-  rownames(mat) <- sprintf("p = %.1f", c(0.2, 0.4, 0.6, 0.8))
-  colnames(mat) <- sprintf("g = %.1f", c(0.2, 0.4, 0.6, 0.8))
-  mat_breaks <- seq(0.65, 0.725, length.out = 30) 
+  mat <- matrix(df$Accuracy, length(unique(df$prob)), length(unique(df$Gamma)), byrow = TRUE)
+  rownames(mat) <- sprintf("p = %s", as.character(c(0.2, 0.4, 0.6, 0.8)))
+  colnames(mat) <- sprintf("g = %s", as.character(c(0.2, 0.4, 0.6, 0.8)))
+  mat_breaks <- seq(min(mat), max(mat), length.out = 10) 
   
   pheatmap(mat, display_numbers = TRUE, number_format = "%.3f",
            main = title, cluster_cols = FALSE, cluster_rows = FALSE,
            legend = TRUE, cellwidth = 50, cellheight = 50, breaks = mat_breaks,
-           color =  colorRampPalette(c("yellow", "red"))(30))
+           color =  colorRampPalette(c("yellow", "red"))(10))
            # color = inferno(16))
   
   
