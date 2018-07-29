@@ -547,8 +547,11 @@ res_gmr_27_0.4 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], prob = 0.001, Gamma = 0.4, type_used = type_list[i])
 }
 
+id_list <- c("27_0.2_GMP", "27_0.4_GMP", "27_0.6_GMP")
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_', id_list[i], '.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GMR_', id_list[i], '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
 
 res_gmr_27_0.4 <- list(res_pa_GMR_27_0.4_G, res_pa_GMR_27_0.4_M, res_pa_GMR_27_0.4_R,
@@ -645,7 +648,7 @@ id_list <- c("27_0.9_G", "27_0.9_M", "27_0.9_R", "27_0.9_GM", "27_0.9_GP", "27_0
 
 res_gmr <- list()
 for(i in 1:length(id_list)){
-  model<- get(load(paste(c('data/model/res_pa_GMR_', id_list[i], '.RData'), collapse = '')))
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_list[7], '_LOOCV.RData'), collapse = '')))
   res_gmr <- c(res_gmr, list(model))
 }
 

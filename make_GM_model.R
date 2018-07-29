@@ -60,9 +60,9 @@ make_GM_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
   
   r <- directGraph
   V(r)$name <-paste("p",V(r)$name,sep="")
-  
-  p <- DppiGraph
-  V(p)$name <-paste("p",V(p)$name,sep="")
+  # 
+  # p <- DppiGraph
+  # V(p)$name <-paste("p",V(p)$name,sep="")
   
   y=list(good_samples, poor_samples)
   
@@ -86,12 +86,14 @@ make_GM_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
   
   
   model_path <- paste(c('data/model/res_pa_GM_',id,'_LOOCV.RData'), collapse = '')
+  # model_path <- paste(c('data/model/res_pa_GM_',id,'.RData'), collapse = '')
   
   name <- paste(c('res_pa_GM_', id, '_LOOCV'), collapse='')
+  # name <- paste(c('res_pa_GM_', id), collapse='')
   assign(x = name, value = model)
   
   save(list=name, file=file.path(model_path))
-  write.SigFeatures(res_fit=model, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+  # write.SigFeatures(res_fit=model, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
   
   
   msg <- paste(c(result_name,' is done'), collapse = '')

@@ -65,7 +65,7 @@ xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]", "[g=0.85]", "[g=
 perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
 perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
-
+perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
 
 ################################## Result 18 in GMR_d ############################################################
 num_cores <- 4
