@@ -124,40 +124,53 @@ getW <- function(G, gene_weight, x, datapath, mode, EdgeWeight=FALSE, AntiCorr=F
             }
           }
         }
-      } else if(mode == 'GMR' | mode == 'GMR_d' | mode == 'GMR_1'){
-        # W <- as.matrix(get.adjacency(G))
+      } else if(mode == "GMR_2"){
+        W <- as.matrix(get.adjacency(G))
         
-        # Wpath <- 
         xG <- x[[1]]
         xM <- x[[2]]
         xP <- x[[3]]
         
         intersect_gm <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[2]]),2))
-        intersect_gr <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2)) 
+        intersect_gp <- intersect(substring(names(gene_weight[[1]]),2), substring(names(gene_weight[[3]]),2)) 
         
         
+        # add edge (Methyl -> RNA-seq only anticorrelated)
         for(i in 1:length(intersect_gm)){
-          idx=which(paste("g",intersect_gm[i],sep="")==rownames(W))
+          idx=which(paste("m",intersect_gm[i],sep="")==rownames(W))
           if(length(idx)>0) {
             if(cor(t(xG[paste("g",intersect_gm[i],sep=""),]),
                    t(xM[paste("m",intersect_gm[i],sep=""),])) < 0 &
                cor.test(t(xG[paste("g",intersect_gm[i],sep=""),]),
                         t(xM[paste("m",intersect_gm[i],sep=""),]),
                         method = "pearson", alternative = "less")$p.value <= 0.05) {
-              # W[paste("g",intersect_gm[i],sep=""),paste("m",intersect_gm[i],sep="")] <- 1
               W[paste("m",intersect_gm[i],sep=""),paste("g",intersect_gm[i],sep="")] <- 1
             }
           }
         }
         
         # add edges (RPPA->RNAseq)
-        for(i in 1:length(intersect_gr)){
-          idx <- which(paste("g", intersect_gr[i], sep="") == rownames(W))
+        for(i in 1:length(intersect_gp)){
+          idx <- which(paste("p", intersect_gp[i], sep="") == rownames(W))
           if(length(idx) > 0){
-            W[paste("p",intersect_gr[i],sep=""),paste("g",intersect_gr[i],sep="")] <- 1
-            W[paste("g",intersect_gr[i],sep=""),paste("p",intersect_gr[i],sep="")] <- 1
+            W[paste("p",intersect_gp[i],sep=""),paste("g",intersect_gp[i],sep="")] <- 1
           }
         }
+        
+        # add edge (RPPA -> Methyl only anticorrelated)
+        for(i in 1:length(intersect_gp)){
+          idx=which(paste("p",intersect_gp[i],sep="")==rownames(W))
+          if(length(idx)>0) {
+            if(cor(t(xP[paste("p",intersect_gp[i],sep=""),]),
+                   t(xM[paste("m",intersect_gp[i],sep=""),])) < 0 &
+               cor.test(t(xP[paste("p",intersect_gp[i],sep=""),]),
+                        t(xM[paste("m",intersect_gp[i],sep=""),]),
+                        method = "pearson", alternative = "less")$p.value <= 0.05) {
+              W[paste("p",intersect_gp[i],sep=""),paste("m",intersect_gp[i],sep="")] <- 1
+            }
+          }
+        }
+        
       }
     }
     

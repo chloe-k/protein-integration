@@ -98,46 +98,60 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
+perf_heatmap(title, res_models, prob_list = prob_list, Gamma_list = Gamma_list)
 
-################################## Result 31 in GMR ############################################################
+################################## Result 34 in GMR ############################################################
 
 num_cores <- detectCores()/2
 registerDoParallel(cores = 10)
 
-id_list <- c("31_1", "31_2", "31_3", "31_4", "31_5", "31_6", "31_7")
-type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
+id_list <- c("27_7", "27_2_GMR", "27_3_GMR", "27_4_GMR",
+             "27_5_GMR", "27_6_GMR", "27_7_GMR", "27_8_GMR", 
+             "27_9_GMR", "27_10_GMR", "27_11_GMR", "27_12_GMR",
+             "27_13_GMR", "27_14_GMR", "27_15_GMR", "27_16_GMR")
 
-make_GMR_model(id=id_list[1], type_used = type_list[1], prob = 0.001, Gamma = 0.6)
+
+prob_list <- rep(c(0.2, 0.4, 0.6, 0.8), each = 4)
+Gamma_list <- rep(c(0.2, 0.4, 0.6, 0.8), 4)
+make_GMR_d_model(id=id_list[1], prob = prob_list[1], Gamma = Gamma_list[1])
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
-
-res_gmr_31 <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.6)
+res_gmr_d <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
+  make_GMR_d_model(id=id_list[i], prob = prob_list[i], Gamma = Gamma_list[i])
 }
 
-
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_31_', i, '_LOOCV.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GMR_d_', id_list[i], '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
 
-res_gmr <- list(res_pa_GMR_31_1_LOOCV, res_pa_GMR_31_2_LOOCV, res_pa_GMR_31_3_LOOCV, res_pa_GMR_31_4_LOOCV, 
-                res_pa_GMR_31_5_LOOCV, res_pa_GMR_31_6_LOOCV, res_pa_GMR_31_7_LOOCV)
+title <- c("Result 18 GMR_d")
+id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
+             "18_6", "18_7", "18_8", "18_9", "18_10",
+             "18_11", "18_12", "18_13", "18_14", "18_15",
+             "18_16", "18_17", "18_18", "18_19", "18_20",
+             "18_21", "18_22", "18_23", "18_24", "18_25",
+             "18_26", "18_27", "18_28", "18_29", "18_30")
 
+prob_list <- c(0.001, 0.001, 0.001, 0.001, 0.001,
+               0.01, 0.01, 0.01, 0.01, 0.01,
+               0.2, 0.2, 0.2, 0.2, 0.2,
+               0.4, 0.4, 0.4, 0.4, 0.4,
+               0.6, 0.6, 0.6, 0.6, 0.6,
+               0.8, 0.8, 0.8, 0.8, 0.8)
+
+Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8,
+                0, 0.2, 0.4, 0.6, 0.8,
+                0, 0.2, 0.4, 0.6, 0.8,
+                0, 0.2, 0.4, 0.6, 0.8,
+                0, 0.2, 0.4, 0.6, 0.8,
+                0, 0.2, 0.4, 0.6, 0.8)
+
+res_models <- list()
 for(i in 1:length(id_list)){
-  result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
-  write.SigFeatures(res_fit=res_gmr[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
-}
-
-for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_32_', i, '_LOOCV.RData'), collapse = ''))
-}
-
-res_gmr <- list(res_pa_GMR_32_1_LOOCV, res_pa_GMR_32_2_LOOCV, res_pa_GMR_32_3_LOOCV, res_pa_GMR_32_4_LOOCV, 
-                res_pa_GMR_32_5_LOOCV, res_pa_GMR_32_6_LOOCV, res_pa_GMR_32_7_LOOCV)
-
-for(i in 1:length(id_list)){
-  result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
-  write.SigFeatures(res_fit=res_gmr[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+  model <- get(load(paste(c('data/model/res_pa_GMR_d_18_', i, '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
 
