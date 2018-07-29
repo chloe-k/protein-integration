@@ -4,10 +4,10 @@ fit.iDRWPClass <-
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
 
-    if(mode == 'GMR' | mode == 'GM' | mode == 'GR' | mode == 'GMR_1' | mode == 'GMR_bidir' | mode == 'GMR_2'){
-      subId <- paste(c(mode,'_g',Gamma), collapse = '')
-    }else if(mode == 'GMR_d' | mode == 'GR_d'){
+    if(mode == 'GMR_d' | mode == 'GR_d' | mode == 'GMR_3_d'){
       subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
+    }else {
+      subId <- paste(c(mode,'_g',Gamma), collapse = '')
     }
     pathAct_param_path <- file.path(datapath, paste(c("pathAct_param_", subId, if(AntiCorr) "_anticorr", ".RData"), collapse = ''))
     
