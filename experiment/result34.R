@@ -49,4 +49,4 @@ xlabs <- c("g=0.2", "g=0.4", "g=0.6", "g=0.8")
 perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
-
+perf_lineplot(title, xlabs, res_models, perf_min, perf_max, Gamma_list)

@@ -49,8 +49,10 @@ res_gmr_18 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = "gmp", prob = 0.001, Gamma = Gamma_list[i])
 }
 
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_18_', i, '_LOOCV.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GMR_18_', i, '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
 
 ############################################## plot #######################################

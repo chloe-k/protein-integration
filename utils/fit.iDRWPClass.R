@@ -4,7 +4,7 @@ fit.iDRWPClass <-
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
 
-    if(mode == 'GMR_d' | mode == 'GR_d' | mode == 'GMR_3_d'){
+    if(mode == 'GMR_d' | mode == 'GR_d' | mode == 'GMR_3_d' | mode == 'GMR_d_26'){
       subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
     }else {
       subId <- paste(c(mode,'_g',Gamma), collapse = '')
@@ -35,7 +35,7 @@ fit.iDRWPClass <-
       
       if(method == "DRW") {
         # assign initial weights to the pathway graph
-        if(mode == "GMP" | mode == "GMR_d"){
+        if(mode == "GMP" | mode == "GMR_d" | mode == "GMR_d_26"){
           
           # get W0 of G & M 
           gm <- globalGraph[[1]] %du% globalGraph[[2]]

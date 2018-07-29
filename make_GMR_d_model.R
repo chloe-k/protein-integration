@@ -19,6 +19,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   # read RNAseq, Methylation data, RPPA data
   #data_all_path <- file.path(datapath, "data.RData")
   data_all_path <- file.path(datapath, "Entrez_data.RData")
+  # data_all_path <- file.path(datapath, "Dup_rppa_data.RData")
   if(!file.exists(data_all_path)) {
     year <- 3
     read_data(year, datapath)
@@ -70,6 +71,7 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   gmr <- list(g, m, r)
   testStatistic <- c("DESeq2", "t-test", "t-test")
   profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
+  # profile_name <- c("rna(res26)", "meth(res26)", "rppa(res26)")
   x=list(rnaseq, imputed_methyl, rppa)
   
   # model_name -> res_pa_GMR_d_18_28.RData

@@ -98,60 +98,34 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-perf_heatmap(title, res_models, prob_list = prob_list, Gamma_list = Gamma_list)
 
-################################## Result 34 in GMR ############################################################
+registerDoParallel(cores = 6)
+###########GM#############################################################
+id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
+             "18_6", "18_7", "18_8", "18_9", "18_10")
 
-num_cores <- detectCores()/2
-registerDoParallel(cores = 10)
+Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
 
-id_list <- c("27_7", "27_2_GMR", "27_3_GMR", "27_4_GMR",
-             "27_5_GMR", "27_6_GMR", "27_7_GMR", "27_8_GMR", 
-             "27_9_GMR", "27_10_GMR", "27_11_GMR", "27_12_GMR",
-             "27_13_GMR", "27_14_GMR", "27_15_GMR", "27_16_GMR")
+make_GM_model(id=id_list[1], prob = 0.001, Gamma = Gamma_list[1])
 
 
-prob_list <- rep(c(0.2, 0.4, 0.6, 0.8), each = 4)
-Gamma_list <- rep(c(0.2, 0.4, 0.6, 0.8), 4)
-make_GMR_d_model(id=id_list[1], prob = prob_list[1], Gamma = Gamma_list[1])
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
-res_gmr_d <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GMR_d_model(id=id_list[i], prob = prob_list[i], Gamma = Gamma_list[i])
+res_gm_18 <- foreach(i=2:9, .packages = pack) %dopar%{
+  make_GM_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i])
 }
 
 res_models <- list()
 for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GMR_d_', id_list[i], '_LOOCV.RData'), collapse = '')))
+  model <- get(load(paste(c('data/model/res_pa_GM_', id_list[i], '_LOOCV.RData'), collapse = '')))
   res_models <- c(res_models, list(model))
 }
 
-title <- c("Result 18 GMR_d")
-id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
-             "18_6", "18_7", "18_8", "18_9", "18_10",
-             "18_11", "18_12", "18_13", "18_14", "18_15",
-             "18_16", "18_17", "18_18", "18_19", "18_20",
-             "18_21", "18_22", "18_23", "18_24", "18_25",
-             "18_26", "18_27", "18_28", "18_29", "18_30")
+title <- c("Result 18 GM")
+xlabs <- c("g=0", "g=0.2", "g=0.4", "g=0.6", "g=0.8", "g=0.85", "g=0.9", "g=0.95")
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 
-prob_list <- c(0.001, 0.001, 0.001, 0.001, 0.001,
-               0.01, 0.01, 0.01, 0.01, 0.01,
-               0.2, 0.2, 0.2, 0.2, 0.2,
-               0.4, 0.4, 0.4, 0.4, 0.4,
-               0.6, 0.6, 0.6, 0.6, 0.6,
-               0.8, 0.8, 0.8, 0.8, 0.8)
-
-Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8,
-                0, 0.2, 0.4, 0.6, 0.8)
-
-res_models <- list()
-for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GMR_d_18_', i, '_LOOCV.RData'), collapse = '')))
-  res_models <- c(res_models, list(model))
-}
+perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
 
