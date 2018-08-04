@@ -130,3 +130,73 @@ perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.03, perf_max =
 
 title <- c("Result 18 GMR_d Heatmap")
 perf_heatmap(title, xlabs, res_gmr_d)
+
+
+############################################## plot #######################################
+# Plot for comparison with GMR_26, GMR_d_26, GM_baseline
+title <- c("Result 18")
+gm <- get(load('data/model/res_pa_GM_18_3_LOOCV.RData'))
+gmr <- get(load('data/model/res_pa_GMR_18_3_LOOCV.RData'))
+gmr_d <- get(load('data/model/res_pa_GMR_d_18_17_LOOCV.RData'))
+
+res_models <- list(gm, gmr, gmr_d)
+
+# write sigPathway (202.30.3.222)
+# result_name <- paste(c('result18_3_GM'), collapse = '')
+# write.SigFeatures(res_fit=gm, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+# result_name <- paste(c('result18_3_GMR'), collapse = '')
+# write.SigFeatures(res_fit=gmr, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+# result_name <- paste(c('result18_3_GMR_d'), collapse = '')
+# write.SigFeatures(res_fit=gmr_d, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+
+
+xlabs <- c("iDRW(GM)", "iDRW(GMP)", "iDRW_pr(GMP)")
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+# perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.01, perf_max = perf_max+0.01)
+perf_barplot(xlabs, res_models, perf_min-0.01, perf_max+0.01)
+
+#-------- confusion matrix, specificity, sensitivity
+# GM
+# Accuracy : 0.7021277
+# sensitivity : 0.7085, specificity : 0.6949
+# AUC : 0.701729
+gm_pred <- gm$pred$pred[which(gm$pred$mtry == gm$bestTune$mtry)]
+gm_obs <- gm$pred$obs[which(gm$pred$mtry == gm$bestTune$mtry)]
+gm_pred <- as.numeric(as.character(gm_pred))
+gm_obs <- as.numeric(as.character(gm_obs))
+
+gm_conf <- confusionMatrix(table(gm_pred, gm_obs))
+
+gm_AUC_perf <- performance(prediction(gm_pred, gm_obs), "auc")
+gm_AUC <- gm_AUC_perf@y.values[[1]]
+
+# GMR
+# Accuracy : 0.7340426
+# sensitivity : 0.7236, specificity : 0.7458
+# AUC : 0.7346904
+gmr_pred <- gmr$pred$pred[which(gmr$pred$mtry == gmr$bestTune$mtry)]
+gmr_obs <- gmr$pred$obs[which(gmr$pred$mtry == gmr$bestTune$mtry)]
+gmr_pred <- as.numeric(as.character(gmr_pred))
+gmr_obs <- as.numeric(as.character(gmr_obs))
+
+gmr_conf <- confusionMatrix(table(gmr_pred, gmr_obs))
+
+gmr_AUC_perf <- performance(prediction(gmr_pred, gmr_obs), "auc")
+gmr_AUC <- gmr_AUC_perf@y.values[[1]]
+
+
+# GMR_d
+# Accuracy : 0.7287234
+# sensitivity : 0.7286, specificity : 0.7288
+# AUC : 0.7287284
+gmr_d_pred <- gmr_d$pred$pred[which(gmr_d$pred$mtry == gmr_d$bestTune$mtry)]
+gmr_d_obs <- gmr_d$pred$obs[which(gmr_d$pred$mtry == gmr_d$bestTune$mtry)]
+gmr_d_pred <- as.numeric(as.character(gmr_d_pred))
+gmr_d_obs <- as.numeric(as.character(gmr_d_obs))
+
+gmr_d_conf <- confusionMatrix(table(gmr_d_pred, gmr_d_obs))
+
+gmr_d_AUC_perf <- performance(prediction(gmr_d_pred, gmr_d_obs), "auc")
+gmr_d_AUC <- gmr_d_AUC_perf@y.values[[1]]
