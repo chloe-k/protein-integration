@@ -4,16 +4,16 @@ fit.iDRWPClass <-
            classifier, nFolds, numTops, id, prob, type_used = NULL,
            iter, Gamma, AntiCorr = FALSE, DEBUG=TRUE) {
 
-    if(mode == 'GMR_d' | mode == 'GR_d' | mode == 'GMR_3_d' | mode == 'GMR_d_26'){
-      subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
-    }else {
-      subId <- paste(c(mode,'_g',Gamma), collapse = '')
-    }
-    pathAct_param_path <- file.path(datapath, paste(c("pathAct_param_", subId, if(AntiCorr) "_anticorr", ".RData"), collapse = ''))
+    # if(mode == 'GMR_d' | mode == 'GR_d' | mode == 'GMR_3_d' | mode == 'GMR_d_26' | mode == 'GMR_d_full' | mode == 'GMR_d_heat'){
+    #   subId <- paste(c(mode,'_p',prob,'_g',Gamma), collapse = '')
+    # }else {
+    #   subId <- paste(c(mode,'_g',Gamma), collapse = '')
+    # }
+    # pathAct_param_path <- file.path(datapath, paste(c("pathAct_param_", subId, if(AntiCorr) "_anticorr", ".RData"), collapse = ''))
     
-    if(!file.exists(pathAct_param_path)){
+    # if(!file.exists(pathAct_param_path)){
       cat('Parameters for calculating pathway activity do not exist\n')
-      cat(c(pathAct_param_path, '\n'))
+      # cat(c(pathAct_param_path, '\n'))
       
       x_norm <- list(0)
       x_stats <- list(0)
@@ -35,7 +35,7 @@ fit.iDRWPClass <-
       
       if(method == "DRW") {
         # assign initial weights to the pathway graph
-        if(mode == "GMP" | mode == "GMR_d" | mode == "GMR_d_26"){
+        if(mode == "GMP" | mode == "GMR_d" | mode == "GMR_d_26" | mode == "GMR_3_d" | mode == "GMR_d_full" | mode == "GMR_d_heat"){
           
           # get W0 of G & M 
           gm <- globalGraph[[1]] %du% globalGraph[[2]]
@@ -51,7 +51,8 @@ fit.iDRWPClass <-
           gmp <- gm %du% globalGraph[[3]]
           
           # get adjacency matrix of the (integrated) gene-gene graph
-          wpath <- file.path(datapath, paste(c(mode, if(AntiCorr) "anticorr","W","RData"), collapse = '.'))
+          # wpath <- file.path(datapath, paste(c(mode, if(AntiCorr) "anticorr","W","RData"), collapse = '.'))
+          wpath <- file.path(datapath, paste(c("GMR_d", if(AntiCorr) "anticorr","W","RData"), collapse = '.'))
           if(!file.exists(wpath)){
             W = getW(datapath = datapath, G = gmp, gene_weight = gene_weight, mode = mode, x = x_norm, AntiCorr = AntiCorr, EdgeWeight = FALSE)
           }
@@ -109,13 +110,13 @@ fit.iDRWPClass <-
       desc <- c(profile_name, method, if(AntiCorr) "anticorr", "txt")
       
       # save W_inf, x_norm, x_stats for calculating pathway activity score
-      save(x, x_stats, vertexWeight, desc, file=pathAct_param_path)
+      # save(x, x_stats, vertexWeight, desc, file=pathAct_param_path)
       
-    }else{
-      cat('Parameters for calculating pathway activity already exist\n')
-      cat(c(pathAct_param_path, '\n'))
-      load(file = pathAct_param_path)
-    }
+    # }else{
+    #   cat('Parameters for calculating pathway activity already exist\n')
+    #   cat(c(pathAct_param_path, '\n'))
+    #   load(file = pathAct_param_path)
+    # }
     
     if(method == "gf") {
 
@@ -153,12 +154,14 @@ fit.iDRWPClass <-
       X <- t(pA$pathActivity)
 
       save(stats_feats, X, file=file.path(datapath, paste(c("pathway_rank", id, profile_name, method, "RData"), collapse = '.')))
+      
+      # write pathway ranking
+      write.table(x=matrix(stats_feats, nrow=length(stats_feats), dimnames=list(names(stats_feats),"rank")),
+                  file=fname_rank, sep="\t", row.names=T, col.names=T)
+      
     }
 
-    # write pathway ranking
-    write.table(x=matrix(stats_feats, nrow=length(stats_feats), dimnames=list(names(stats_feats),"rank")),
-                file=fname_rank, sep="\t", row.names=T, col.names=T)
-
+    
 
     cat('fit.iDRWPClass is done\n')
     

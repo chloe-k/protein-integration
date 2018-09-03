@@ -4,37 +4,36 @@ registerDoParallel(cores = 4)
 
 # make RData after DRW
 
-id_list <- c("27_0.2", "27_0.4", "27_0.6", "27_0.8", "27_0.9")
-Gamma_list <- c(0.2, 0.4, 0.6, 0.8, 0.9)
-
+Gamma_list <- c(0.2, 0.4, 0.6, 0.8)
+type_list <- c("g", "m", "p", "gm", "gp", "mp", "gmp")
 
 pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
           "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
 
-id_list <- c("27_1_0.2", "27_2_0.2", "27_3_0.2", "27_4_0.2", "27_5_0.2", "27_6_0.2", "27_7_0.2")
+id_list <- c("27_0.2_G", "27_0.2_M", "27_0.2_P", "27_0.2_GM", "27_0.2_GP", "27_0.2_MP", "27_0.2_GMP")
 res_gmr_27_0.2 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.2)
 }
 
-id_list <- c("27_1_0.4", "27_2_0.4", "27_3_0.4", "27_4_0.4", "27_5_0.4", "27_6_0.4", "27_7_0.4")
+id_list <- c("27_0.4_G", "27_0.4_M", "27_0.4_P", "27_0.4_GM", "27_0.4_GP", "27_0.4_MP", "27_0.4_GMP")
 res_gmr_27_0.4 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.4)
 }
 
-id_list <- c("27_1_0.6", "27_2_0.6", "27_3_0.6", "27_4_0.6", "27_5_0.6", "27_6_0.6", "27_7_0.6")
+id_list <- c("27_0.6_G", "27_0.6_M", "27_0.6_P", "27_0.6_GM", "27_0.6_GP", "27_0.6_MP", "27_0.6_GMP")
 res_gmr_27_0.6 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.6)
 }
 
-id_list <- c("27_1_0.8", "27_2_0.8", "27_3_0.8", "27_4_0.8", "27_5_0.8", "27_6_0.8", "27_7_0.8")
+id_list <- c("27_0.8_G", "27_0.8_M", "27_0.8_P", "27_0.8_GM", "27_0.8_GP", "27_0.8_MP", "27_0.8_GMP")
 res_gmr_27_0.8 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.8)
 }
-
-id_list <- c("27_1_0.9", "27_2_0.9", "27_3_0.9", "27_4_0.9", "27_5_0.9", "27_6_0.9", "27_7_0.9")
-res_gmr_27_0.9 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
-  make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.9)
-}
+# 
+# id_list <- c("27_1_0.9", "27_2_0.9", "27_3_0.9", "27_4_0.9", "27_5_0.9", "27_6_0.9", "27_7_0.9")
+# res_gmr_27_0.9 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
+#   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.9)
+# }
 
 
 for(i in 1:length(id_list)){
@@ -636,23 +635,86 @@ for(i in 1:length(id_list)){
 
 ##############################################################################################
 # Plot GMR
-title <- c("Result 27 GMR")
-xlabs <- rep(c("G", "M", "R", "GM", "GR", "MR", "GMR"), 5)
-Gamma_list <- rep(c("0.2", "0.4", "0.6", "0.8", "0.9"), each=7)
+title <- c("Predictive power of omics type in GMP model")
+xlabs <- rep(c("G", "M", "P", "G+M", "G+P", "M+P", "G+M+P"), 4)
+Gamma_list <- rep(c("0.2", "0.4", "0.6", "0.8"), each=7)
 
-id_list <- c("27_0.2_G", "27_0.2_M", "27_0.2_R", "27_0.2_GM", "27_0.2_GP", "27_0.2_MP", "27_0.2_GMP")
-id_list <- c("27_0.4_G", "27_0.4_M", "27_0.4_R", "27_0.4_GM", "27_0.4_GP", "27_0.4_MP", "27_0.4_GMP")
-id_list <- c("27_0.6_G", "27_0.6_M", "27_0.6_R", "27_0.6_GM", "27_0.6_GP", "27_0.6_MP", "27_0.6_GMP")
-id_list <- c("27_0.8_G", "27_0.8_M", "27_0.8_R", "27_0.8_GM", "27_0.8_GP", "27_0.8_MP", "27_0.8_GMP")
-id_list <- c("27_0.9_G", "27_0.9_M", "27_0.9_R", "27_0.9_GM", "27_0.9_GP", "27_0.9_MP", "27_0.9_GMP")
+id_list <- c()
+id_list <- c(id_list, "27_0.2_G", "27_0.2_M", "27_0.2_P", "27_0.2_GM", "27_0.2_GP", "27_0.2_MP", "27_0.2_GMP")
+id_list <- c(id_list, "27_0.4_G", "27_0.4_M", "27_0.4_R", "27_0.4_GM", "27_0.4_GP", "27_0.4_MP", "27_0.4_GMP")
+id_list <- c(id_list, "27_0.6_G", "27_0.6_M", "27_0.6_R", "27_0.6_GM", "27_0.6_GP", "27_0.6_MP", "27_0.6_GMP")
+id_list <- c(id_list, "27_0.8_G", "27_0.8_M", "27_0.8_R", "27_0.8_GM", "27_0.8_GP", "27_0.8_MP", "27_0.8_GMP")
 
 res_gmr <- list()
 for(i in 1:length(id_list)){
-  model<- get(load(paste(c('data/model/res_pa_GMR_', id_list[7], '_LOOCV.RData'), collapse = '')))
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_list[i], '_LOOCV.RData'), collapse = '')))
   res_gmr <- c(res_gmr, list(model))
 }
 
-perf_min <- min(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr, FUN = function(x){mean(x$resample$Accuracy)}))
+
+perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
 # perf_boxplot(title, xlabs, res_gmr_27_0.2, perf_min = perf_min-0.01, perf_max = perf_max+0.01)
-perf_lineplot(title, xlabs, res_gmr, perf_min, perf_max, Gamma_list)
+perf_lineplot_multi(title, xlabs, res_gmr, perf_min-0.01, perf_max+0.01, Gamma_list)
+
+#----- Getting individual model
+# 0.2
+res_0.2 <- list()
+id_0.2 <- c("27_0.2_G", "27_0.2_M", "27_0.2_P", "27_0.2_GM", "27_0.2_GP", "27_0.2_MP", "27_0.2_GMP")
+for(i in 1:length(id_0.2)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_0.2[i], '_LOOCV.RData'), collapse = '')))
+  res_0.2 <- c(res_0.2, list(model))
+}
+
+# 0.4
+res_0.4 <- list()
+id_0.4 <- c("27_0.4_G", "27_0.4_M", "27_0.4_R", "27_0.4_GM", "27_0.4_GP", "27_0.4_MP", "27_0.4_GMP")
+for(i in 1:length(id_0.4)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_0.4[i], '_LOOCV.RData'), collapse = '')))
+  res_0.4 <- c(res_0.4, list(model))
+}
+
+# 0.6
+res_0.6 <- list()
+id_0.6 <- c("27_0.6_G", "27_0.6_M", "27_0.6_R", "27_0.6_GM", "27_0.6_GP", "27_0.6_MP", "27_0.6_GMP")
+for(i in 1:length(id_0.6)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_0.6[i], '_LOOCV.RData'), collapse = '')))
+  res_0.6 <- c(res_0.6, list(model))
+}
+
+# 0.8
+res_0.8 <- list()
+id_0.8 <- c("27_0.8_G", "27_0.8_M", "27_0.8_R", "27_0.8_GM", "27_0.8_GP", "27_0.8_MP", "27_0.8_GMP")
+for(i in 1:length(id_0.8)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_0.8[i], '_LOOCV.RData'), collapse = '')))
+  res_0.8 <- c(res_0.8, list(model))
+}
+
+
+# paired t-test for res_pa_GMR_27_0.4_GMP and res_pa_GMR_27_0.4_GP
+gmp <- get(load('data/model/res_pa_GMR_27_0.4_GMP_LOOCV.RData'))
+gp <- get(load('data/model/res_pa_GMR_27_0.4_GP_LOOCV.RData'))
+
+gmp_pred <- gmp$pred[which(gmp$pred$mtry == gmp$bestTune$mtry),]
+gp_pred <- gp$pred[which(gp$pred$mtry == gp$bestTune$mtry),]
+
+
+########################################################
+id_gp <- c("27_0.2_GP", "27_0.4_GP", "27_0.6_GP", "27_0.8_GP")
+res_gp <- list()
+for(i in 1:length(id_gp)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_gp[i], '_LOOCV.RData'), collapse = '')))
+  res_gp <- c(res_gp, list(model))
+}
+
+id_gmp <- c("27_0.2_GMP", "27_0.4_GMP", "27_0.6_GMP", "27_0.8_GMP")
+res_gmp <- list()
+for(i in 1:length(id_gmp)){
+  model<- get(load(paste(c('data/model/res_pa_GMR_', id_gmp[i], '_LOOCV.RData'), collapse = '')))
+  res_gmp <- c(res_gmp, list(model))
+}
+
+gp_acc <- sapply(X = res_gp, FUN = function(x){max(x$results$Accuracy)})
+gmp_acc <- sapply(X = res_gmp, FUN = function(x){max(x$results$Accuracy)})
+
+t.test(gp_acc, gmp_acc, paired = T, conf.level = 0.95)

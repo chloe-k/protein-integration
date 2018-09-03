@@ -28,13 +28,11 @@ res_gmr_31 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.001, Gamma = 0.6)
 }
 
-
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_31_', i, '_LOOCV.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GMR_31_', i, '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
-
-res_gmr <- list(res_pa_GMR_31_1_LOOCV, res_pa_GMR_31_2_LOOCV, res_pa_GMR_31_3_LOOCV, res_pa_GMR_31_4_LOOCV, 
-                res_pa_GMR_31_5_LOOCV, res_pa_GMR_31_6_LOOCV, res_pa_GMR_31_7_LOOCV)
 
 for(i in 1:length(id_list)){
   result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')
@@ -45,7 +43,7 @@ for(i in 1:length(id_list)){
 title <- c("Result 31_GMR")
 xlabs <- c("G", "M", "R", "GM", "GR", "MR", "GMR")
 
-perf_min <- min(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_gmr, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_gmr, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.02, perf_max = perf_max+0.02)
 

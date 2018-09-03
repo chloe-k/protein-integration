@@ -28,13 +28,11 @@ res_gmr_32 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_model(id=id_list[i], type_used = type_list[i], prob = 0.2, Gamma = 0.4, mode = "GMR_bidir")
 }
 
-
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_32_', i, '_LOOCV.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GMR_32_', i, '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
-
-res_gmr <- list(res_pa_GMR_32_1_LOOCV, res_pa_GMR_32_2_LOOCV, res_pa_GMR_32_3_LOOCV, res_pa_GMR_32_4_LOOCV, 
-                res_pa_GMR_32_5_LOOCV, res_pa_GMR_32_6_LOOCV, res_pa_GMR_32_7_LOOCV)
 
 for(i in 1:length(id_list)){
   result_name <- paste(c('result',id_list[i],'_GMR'), collapse = '')

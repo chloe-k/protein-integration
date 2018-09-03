@@ -41,16 +41,16 @@ make_GMR_d_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL
   
   
   
-  dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
-  # dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
-  # dppipath <- file.path(datapath, 'DppiGraph_W_str.rda')
-  
-  if(!file.exists(dppipath)) {
-    print('ppiGraph does not exist, now creating ppiGraph start')
-    cons_ppi(datapath, gdacpath, rppa)
-  }
-  load(file.path(dppipath))
-  
+  # dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
+  # # dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
+  # # dppipath <- file.path(datapath, 'DppiGraph_W_str.rda')
+  # 
+  # if(!file.exists(dppipath)) {
+  #   print('ppiGraph does not exist, now creating ppiGraph start')
+  #   cons_ppi(datapath, gdacpath, rppa)
+  # }
+  # load(file.path(dppipath))
+  # 
   
   # directed pathway graph provided in DRWPClass
   g <- directGraph 

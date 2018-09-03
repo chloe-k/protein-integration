@@ -14,17 +14,19 @@ perf_boxplot <- function(title, xlabs, res_models, perf_min, perf_max, baseline=
     scale_y_continuous(limits=c(perf_min,perf_max)) +
     # geom_jitter(alpha=0.4, size=0.6, position=position_jitter(width=0.1,height=0)) +
     theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
-    geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
+    # geom_hline(aes_string(yintercept=baseline), linetype="dashed") +
     theme(plot.title = element_text(hjust = 0.5)) 
   print(p + ggtitle(title))
 }
 
-perf_barplot <- function(xlabs, res_models, perf_min, perf_max, baseline=NULL) {
+perf_barplot <- function(xlabs, res_models, perf_min, perf_max, baseline=NULL, group=NULL) {
   
-  res <- Reduce(rbind,lapply(X = res_models, FUN=function(x) x$results$Accuracy))
+  res <- Reduce(rbind,lapply(X = res_models, FUN=function(x) max(x$results$Accuracy)))
   row.names(res) <- xlabs
   
-  g1 <- plotPerf(res, title = "", measure='Accuracy', perf_min=perf_min, perf_max=perf_max, color="Dark2")
+  g1 <- plotPerf(xlabs, res, title = "", measure='Accuracy', perf_min=perf_min, perf_max=perf_max, color="Dark2", group=group)
+  # g1 <- plotPerf(res, title = "", measure='AUC', perf_min=perf_min, perf_max=perf_max, color="Dark2")
+  
   if(!is.null(baseline)) g1 <- g1 + geom_hline(aes_string(yintercept=baseline), linetype="dashed")
   
   print(g1)
@@ -43,12 +45,27 @@ perf_lineplot_multi <- function(title, xlabs, res_models, perf_min, perf_max, Ga
   model_order <- unique(df$model)
   df$model <- factor(df$model, levels = model_order)
   
-  # p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=model, color=model)) +
-  p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=1)) +
-    geom_line() +
-    geom_point() +
-    theme(plot.title = element_text(hjust = 0.5)) 
-  print(p + ggtitle(title))
+  p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=model, colour=model)) +
+  # p <- ggplot(df, aes(x=Gamma, y=Accuracy, group=1)) +
+    geom_line(aes(linetype=model))+
+    # geom_line() +
+    geom_point(aes(shape=model), size = 1.5) +
+    # theme(plot.title = element_text(hjust = 0.5), legend.title.align = 0.5) +
+    theme(plot.title = element_text(size = 15, hjust=0.5, vjust = 2),
+          plot.subtitle = element_text(size = 12, hjust=0.5, vjust=2),
+          legend.title = element_text(size = 10, hjust=0.5, vjust=2)) +
+    scale_colour_discrete("Combination of\n omics type") +
+    scale_shape_discrete("Combination of\n omics type") +
+    scale_linetype_discrete("Combination of\n omics type") +
+    labs(x="Gamma(Restart probability in iDRW)",
+         # title = title) +
+         title = title,
+         subtitle="(varying combination of omics type for pathway activity inference)\n") +
+    # subtitle("(varying combination of profiles for pathway activity inference)") +
+    # xlab("Gamma(Restart probability in DRW)") + 
+    scale_y_continuous(limits=c(perf_min,perf_max))
+  # print(p + ggtitle(title)) 
+  print(p)
 }
 
 perf_lineplot <- function(title, xlabs, res_models, perf_min, perf_max, Gamma_list) {

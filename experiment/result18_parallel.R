@@ -103,9 +103,15 @@ res_gmr_d_18 <- foreach(i=1:length(id_list), .packages = pack) %dopar%{
   make_GMR_d_model(id=id_list[i], type_used = "gmp", prob = prob_list[i], Gamma = Gamma_list[i])
 }
 
+res_models <- list()
 for(i in 1:length(id_list)){
-  load(paste(c('data/model/res_pa_GMR_d_18_', i, '_LOOCV.RData'), collapse = ''))
+  model <- get(load(paste(c('data/model/res_pa_GMR_d_18_', i, '_LOOCV.RData'), collapse = '')))
+  res_models <- c(res_models, list(model))
 }
+
+result_name <- paste(c('result',id_list[17],'_GMR_d'), collapse = '')
+write.SigFeatures(res_fit=res_models[[17]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+
 
 ############################################## plot #######################################
 # Plot for GMR_d models
@@ -124,6 +130,7 @@ xlabs <- c("[p=0.001,g=0]", "[p=0.001,g=0.2]", "[p=0.001,g=0.4]", "[p=0.001,g=0.
            "[p=0.6,g=0]", "[p=0.6,g=0.2]", "[p=0.6,g=0.4]", "[p=0.6,g=0.6]", "[p=0.6,g=0.8]",
            "[p=0.8,g=0]", "[p=0.8,g=0.2]", "[p=0.8,g=0.4]", "[p=0.8,g=0.6]", "[p=0.8,g=0.8]")
 
+
 perf_min <- min(sapply(X = res_gmr_d, FUN = function(x){max(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_gmr_d, FUN = function(x){max(x$results$Accuracy)}))
 perf_facet_boxplot(title, xlabs, res_gmr_d, perf_min = perf_min-0.03, perf_max = perf_max+0.03, perf_max)
@@ -135,11 +142,19 @@ perf_heatmap(title, xlabs, res_gmr_d)
 ############################################## plot #######################################
 # Plot for comparison with GMR_26, GMR_d_26, GM_baseline
 title <- c("Result 18")
+g <- get(load('data/model/res_pa_G_11.RData'))
+m <- get(load('data/model/res_pa_M_11.RData'))
+r <- get(load('data/model/res_pa_R_11.RData'))
+gm_rdc <- get(load('data/model/res_pa_GM_26.RData'))
+gmr_rdc <- get(load('data/model/res_pa_GMR_26.RData'))
+gmr_d_rdc <- get(load('data/model/res_pa_GMR_d_26.RData'))
 gm <- get(load('data/model/res_pa_GM_18_3_LOOCV.RData'))
 gmr <- get(load('data/model/res_pa_GMR_18_3_LOOCV.RData'))
 gmr_d <- get(load('data/model/res_pa_GMR_d_18_17_LOOCV.RData'))
+gr <- get(load('data/model/res_pa_GR_28_0.6_LOOCV.RData'))
+gr_d <- get(load('data/model/res_pa_GR_d_29_16_LOOCV.RData'))
 
-res_models <- list(gm, gmr, gmr_d)
+res_models <- list(g, m, r, gm_rdc, gmr_rdc, gmr_d_rdc, gm, gmr, gmr_d, gr, gr_d)
 
 # write sigPathway (202.30.3.222)
 # result_name <- paste(c('result18_3_GM'), collapse = '')
@@ -150,12 +165,126 @@ res_models <- list(gm, gmr, gmr_d)
 # write.SigFeatures(res_fit=gmr_d, id = result_name, profile_name=profile_name, method="DRW", respath=respath)
 
 
-xlabs <- c("iDRW(GM)", "iDRW(GMP)", "iDRW_pr(GMP)")
+xlabs <- c("DRW(G)", "DRW(M)", "DRW(P)",
+           "iDRW(overlapped-GM)", "iDRW(overlapped-GMP)", "iDRW_pr(overlapped-GMP)",
+           "iDRW(GM)", "iDRW(GMP)", "iDRW_pr(GMP)",
+           "iDRW(GP)", "iDRW_pr(GP)")
 
 perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
 # perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.01, perf_max = perf_max+0.01)
-perf_barplot(xlabs, res_models, perf_min-0.01, perf_max+0.01)
+perf_barplot(xlabs, res_models, perf_min-0.01, 0.75)
+
+
+
+########## For single pathway profile ########
+g <- get(load('data/model/res_pa_G_11.RData'))
+m <- get(load('data/model/res_pa_M_11.RData'))
+r <- get(load('data/model/res_pa_R_11.RData'))
+
+res_models <- list(g, m, r)
+xlabs <- c("DRW(G)", "DRW(M)", "DRW(P)")
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_barplot(xlabs, res_models, 0.6, perf_max+0.01)
+
+
+########## For reduced profile by extracting overlapped with RPPA protein (Result 26) ########
+#380*610
+gm_rdc <- get(load('data/model/res_pa_GM_26.RData'))
+gmr_rdc <- get(load('data/model/res_pa_GMR_26.RData'))
+gmr_d_rdc <- get(load('data/model/res_pa_GMR_d_26.RData'))
+
+res_models <- list(gm_rdc, gmr_rdc, gmr_d_rdc)
+# xlabs <- c(parse(text = paste('iDRW(G','^R','M','^R)', sep='')), parse(text = paste('iDRW(G','^R','M','^R','P)', sep='')), parse(text = paste('iDRW_pr(G','^R','M','^R','P)', sep='')))
+xlabs <- c("iDRW(overlapped-GM)", "iDRW(overlapped-GMP)", "iDRW_prop(overlapped-GMP)")
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_barplot(xlabs=xlabs, res_models, 0.6, perf_max+0.01)
+
+############################### For performance comparison Line plot - Main figure ############################
+# In iDRW_prop model, the model which has the best performance was selected in same Gamma. 
+
+# load all models
+gm_0.2 <- get(load('data/model/res_pa_GM_18_2_LOOCV.RData'))
+gm_0.4 <- get(load('data/model/res_pa_GM_18_3_LOOCV.RData'))
+gm_0.6 <- get(load('data/model/res_pa_GM_18_4_LOOCV.RData'))
+gm_0.8 <- get(load('data/model/res_pa_GM_18_7_LOOCV.RData'))
+gmr_0.2 <- get(load('data/model/res_pa_GMR_18_2_LOOCV.RData'))
+gmr_0.4 <- get(load('data/model/res_pa_GMR_18_3_LOOCV.RData'))
+gmr_0.6 <- get(load('data/model/res_pa_GMR_18_4_LOOCV.RData'))
+gmr_0.8 <- get(load('data/model/res_pa_GMR_18_5_LOOCV.RData'))
+gmr_d_0.2 <- get(load('data/model/res_pa_GMR_d_18_17_LOOCV.RData'))
+gmr_d_0.4 <- get(load('data/model/res_pa_GMR_d_18_13_LOOCV.RData'))
+gmr_d_0.6 <- get(load('data/model/res_pa_GMR_d_18_14_LOOCV.RData'))
+gmr_d_0.8 <- get(load('data/model/res_pa_GMR_d_18_15_LOOCV.RData'))
+gr_0.2 <- get(load('data/model/res_pa_GR_28_0.2_LOOCV.RData'))
+gr_0.4 <- get(load('data/model/res_pa_GR_28_0.4_LOOCV.RData'))
+gr_0.6 <- get(load('data/model/res_pa_GR_28_0.6_LOOCV.RData'))
+gr_0.8 <- get(load('data/model/res_pa_GR_28_0.8_LOOCV.RData'))
+gr_d_0.2 <- get(load('data/model/res_pa_GR_d_29_1_LOOCV.RData'))
+gr_d_0.4 <- get(load('data/model/res_pa_GR_d_29_6_LOOCV.RData'))
+gr_d_0.6 <- get(load('data/model/res_pa_GR_d_29_11_LOOCV.RData'))
+gr_d_0.8 <- get(load('data/model/res_pa_GR_d_29_16_LOOCV.RData'))
+
+
+# Plot GMR
+title <- c("Performance comparison under varying Gamma")
+xlabs <- rep(c("iDRW(GM)", "iDRW(GMP)", "iDRW_prop(GMP)",
+               "iDRW(GP)", "iDRW_prop(GP)"), each=4)
+Gamma_list <- rep(c("0.2", "0.4", "0.6", "0.8"), 5)
+
+res_models <- list(gm_0.2, gm_0.4, gm_0.6, gm_0.8,
+                   gmr_0.2, gmr_0.4, gmr_0.6, gmr_0.8,
+                   gmr_d_0.2, gmr_d_0.4, gmr_d_0.6, gmr_d_0.8,
+                   gr_0.2, gr_0.4, gr_0.6, gr_0.8,
+                   gr_d_0.2, gr_d_0.4, gr_d_0.6, gr_d_0.8)
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_lineplot_multi(title, xlabs, res_models, perf_min-0.01, perf_max+0.01, Gamma_list)
+#############################################################################################################
+
+
+################## For performance comparison (result 18) - Main figure #######################################
+# 730*472
+gmr_mean <- get(load('data/model/res_pa_GMR_mean.RData'))
+gmr_median <- get(load('data/model/res_pa_GMR_median.RData'))
+gmr_concat <- get(load('data/model/res_pa_GMR_concat.RData'))
+gm <- get(load('data/model/res_pa_GM_18_3_LOOCV.RData'))
+gmr <- get(load('data/model/res_pa_GMR_18_3_LOOCV.RData'))
+gmr_d <- get(load('data/model/res_pa_GMR_d_18_17_LOOCV.RData'))
+gr <- get(load('data/model/res_pa_GR_28_0.6_LOOCV.RData'))
+gr_d <- get(load('data/model/res_pa_GR_d_29_16_LOOCV.RData'))
+
+res_models <- list(gmr_mean, gmr_median, gmr_concat, gm, gmr, gmr_d, gr, gr_d)
+
+xlabs <- c("Mean", "Median", "Concat",
+           "iDRW(GM)", "iDRW(GMP)", "iDRW_prop(GMP)",
+           "iDRW(GP)", "iDRW_prop(GP)")
+
+group <- c("{p(G),p(M),p(P)}", "{p(G),p(M),p(P)}", "{p(G),p(M),p(P)}",
+           "{p(GM)}", "{p(GMP)}", "{p(GMP)}", "{p(GP)}", "{p(GP)}")
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_barplot(xlabs = xlabs, res_models = res_models, perf_min = perf_min-0.01, perf_max = 0.75, group=group)
+
+########## Performance of GP (result 28) ########
+# 500*520
+gmr <- get(load('data/model/res_pa_GMR_18_3_LOOCV.RData'))
+gr <- get(load('data/model/res_pa_GR_28_0.6_LOOCV.RData'))
+gr_d <- get(load('data/model/res_pa_GR_d_29_16_LOOCV.RData'))
+
+res_models <- list(gmr, gr, gr_d)
+
+xlabs <- c("iDRW(GMP)", "iDRW(GP)", "iDRW_prop(GP)")
+
+perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
+perf_barplot(xlabs, res_models, perf_min-0.01, 0.75)
 
 #-------- confusion matrix, specificity, sensitivity
 # GM

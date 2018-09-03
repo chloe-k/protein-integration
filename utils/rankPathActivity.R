@@ -12,6 +12,7 @@ rankPathActivity <- function(pathActivity=NULL, y=NULL, ranking = "t-test", fnam
     # rank pathway activities by weight matrix of DA
     stats_pathway <- read.delim(file = DApath, header = F,row.names = 1,col.names = c("", "weight"))
     stats_pathway <- apply(t(stats_pathway),2,as.numeric)
+    stats_pathway <- stats_pathway[-which(is.na(stats_pathway))]
     
     names(stats_pathway) <- str_pad(names(stats_pathway), 5, pad = "0")
   }

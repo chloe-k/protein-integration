@@ -30,3 +30,18 @@ for(i in 1:length(id_list)){
   res_models <- c(res_models, list(model))
 }
 
+result_name <- paste(c('result',id_list[1],'_GR_d'), collapse = '')
+write.SigFeatures(res_fit=res_models[[1]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+
+result_name <- paste(c('result',id_list[16],'_GR_d'), collapse = '')
+write.SigFeatures(res_fit=res_models[[16]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+
+
+for(i in 1:length(id_list)){
+  result_name <- paste(c('result',id_list[i],'_GR_d'), collapse = '')
+  write.SigFeatures(res_fit=res_models[[i]], id = result_name, profile_name=profile_name, method="DRW", respath=respath)
+}
+
+title <- c("Result 29 GR_d")
+
+perf_heatmap(title, res_models, prob_list = prob_list, Gamma_list = Gamma_list)

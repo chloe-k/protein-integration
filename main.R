@@ -22,6 +22,7 @@ library(KEGG.db)
 library(KEGGREST)
 library(biomaRt)
 library(doParallel)
+library(ROCR)
 
 ######################################################################
 
@@ -62,15 +63,15 @@ load(file.path(pathSetpath))
 
 
 
-dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
-# dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
-# dppipath <- file.path(datapath, 'DppiGraph_W_str.rda')
-
-if(!file.exists(dppipath)) {
-  print('ppiGraph does not exist, now creating ppiGraph start')
-  cons_ppi(datapath, gdacpath, rppa)
-}
-load(file.path(dppipath))
+# dppipath <- file.path(datapath, 'DppiGraph(Entrez).rda')  # directed edge PPI
+# # dppipath <- file.path(datapath, 'DppiGraph_rdc.rda')  # directed edge PPI
+# # dppipath <- file.path(datapath, 'DppiGraph_W_str.rda')
+# 
+# if(!file.exists(dppipath)) {
+#   print('ppiGraph does not exist, now creating ppiGraph start')
+#   cons_ppi(datapath, gdacpath, rppa)
+# }
+# load(file.path(dppipath))
 
 
 # directed pathway graph provided in DRWPClass
@@ -99,93 +100,17 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-
-num_cores <- detectCores()/2
-registerDoParallel(cores = 10)
-
-id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
-             "18_6", "18_7", "18_8")
-
-Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.8,
-                0.85, 0.9, 0.95)
-
-make_GMR_model(id=id_list[1], prob = 0.001, Gamma = Gamma_list[1], mode = "GMR")
-pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-          "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-
-foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GMR_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i], mode = "GMR")
-}
-
-res_models <- list()
-for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GMR_', id_list[i], '_LOOCV.RData'), collapse = '')))
-  res_models <- c(res_models, list(model))
-}
-
-title <- c("Result 18_GMR")
-xlabs <- c("[g=0]", "[g=0.2]", "[g=0.4]", "[g=0.6]", "[g=0.8]", "[g=0.85]", "[g=0.9]", "[g=0.95]")
-perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_boxplot(title, xlabs, res_models, perf_min = perf_min-0.15, perf_max = perf_max+0.15)
-perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
+# GMP
+# result_name <- paste(c('result','18_3','_GMR'), collapse = '')
+# profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
+# fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
+#                    profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+#                    nFolds = 5, numTops=50, iter = 10)
 
 
-###########GM#############################################################
-id_list <- c("18_1", "18_2", "18_3", "18_4", "18_5",
-             "18_6", "18_7", "18_8", "18_9", "18_10")
-
-Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
-
-make_GM_model(id=id_list[10], prob = 0.001, Gamma = Gamma_list[10])
-
-
-pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-          "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-
-res_gm_18 <- foreach(i=1:9, .packages = pack) %dopar%{
-  make_GM_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i])
-}
-
-res_models <- list()
-for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GM_', id_list[i], '_LOOCV.RData'), collapse = '')))
-  res_models <- c(res_models, list(model))
-}
-
-title <- c("Result 18 GM")
-xlabs <- c("g=0", "g=0.2", "g=0.4", "g=0.6", "g=0.8", "g=0.85", "g=0.9", "g=0.95")
-perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-
-perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
-################################## Result 33 in GMR ############################################################
-
-Gamma_list <- c(0, 0.2, 0.4, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
-
-make_GM_model(id=id_list[1], prob = 0.001, Gamma = Gamma_list[1])
-
-id_list <- c("33_1", "33_2", "33_3", "33_4")
-Gamma_list <- c(0.2, 0.4, 0.6, 0.8)
-
-make_GMR_model(id=id_list[2], prob = 0.001, Gamma = Gamma_list[2], mode = "GMR_2", AntiCorr = TRUE)
-pack <- c("KEGGgraph", "igraph", "ggplot2", "annotate", "annotate", "org.Hs.eg.db", "diffusr", "DESeq2", "Matrix",
-          "stringr", "caret", "e1071", "randomForest", "KEGG.db", "KEGGREST")
-
-res_gmr_33 <- foreach(i=2:length(id_list), .packages = pack) %dopar%{
-  make_GMR_model(id=id_list[i], prob = 0.001, Gamma = Gamma_list[i], mode = "GMR_2", AntiCorr = TRUE)
-}
-
-res_models <- list()
-for(i in 1:length(id_list)){
-  model <- get(load(paste(c('data/model/res_pa_GM_', id_list[i], '_LOOCV.RData'), collapse = '')))
-  res_models <- c(res_models, list(model))
-}
-
-title <- c("Result 18 GM")
-xlabs <- c("g=0", "g=0.2", "g=0.4", "g=0.6", "g=0.8", "g=0.85", "g=0.9", "g=0.95")
-perf_min <- min(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-perf_max <- max(sapply(X = res_models, FUN = function(x){max(x$results$Accuracy)}))
-
-perf_lineplot(title = title, xlabs = xlabs, res_models = res_models, perf_max = perf_max, perf_min = perf_min, Gamma_list = Gamma_list)
-
+# GP
+result_name <- paste(c('result','28_0.6','_GR'), collapse = '')
+profile_name <- c("rna(Entrez)", "rppa(Entrez)")
+fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
+                            profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
+                            nFolds = 5, numTops=50, iter = 10)

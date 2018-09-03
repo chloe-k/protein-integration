@@ -33,13 +33,34 @@ getPathActivity <-
           
           for (j in 1 : length(Vpathwayi)){
             ########################### Result 23 ##################################
-            # if(type_used == 'g') {Idx <- which(substring(rownames(x),1,1) == 'g' & substring(rownames(x),2)==Vpathwayi[j])}
-            # else if(type_used == 'm') {Idx <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2)==Vpathwayi[j])}
-            # else if(type_used == 'p') {Idx <- which(substring(rownames(x),1,1) == 'p' & substring(rownames(x),2)==Vpathwayi[j])}
-            # else if(type_used == 'gm') {Idx <- which((substring(rownames(x),1,1) == 'g' | substring(rownames(x),1,1) == 'm') & substring(rownames(x),2)==Vpathwayi[j])}
-            # else if(type_used == 'mp') {Idx <- which((substring(rownames(x),1,1) == 'm' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j])}
-            # else if(type_used == 'gp') {Idx <- which((substring(rownames(x),1,1) == 'g' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j])}
-            # else {Idx <- which(substring(rownames(x),2)==Vpathwayi[j])}
+            # if(type_used == 'g') {
+            #   Idx <- which(substring(rownames(x),1,1) == 'g' & substring(rownames(x),2)==Vpathwayi[j]) 
+            #   print(type_used)
+            # }
+            # else if(type_used == 'm') {
+            #   Idx <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2)==Vpathwayi[j]) 
+            #   print(type_used)
+            # }
+            # else if(type_used == 'p') {
+            #   Idx <- which(substring(rownames(x),1,1) == 'p' & substring(rownames(x),2)==Vpathwayi[j]) 
+            #   print(type_used)
+            # }
+            # else if(type_used == 'gm') {
+            #   Idx <- which((substring(rownames(x),1,1) == 'g' | substring(rownames(x),1,1) == 'm') & substring(rownames(x),2)==Vpathwayi[j]) 
+            #   print(type_used)
+            # }
+            # else if(type_used == 'mp') {
+            #   Idx <- which((substring(rownames(x),1,1) == 'm' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j]) 
+            #   print(type_used)
+            # }
+            # else if(type_used == 'gp') {
+            #   Idx <- which((substring(rownames(x),1,1) == 'g' | substring(rownames(x),1,1) == 'p') & substring(rownames(x),2)==Vpathwayi[j]) 
+            #   print(type_used)
+            # }
+            # else {
+            #   Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
+            #   print(type_used)
+            # }
             #########################################################################
             Idx <- which(substring(rownames(x),2)==Vpathwayi[j])
             # Idx <- which(substring(rownames(x),1,1) == 'm' & substring(rownames(x),2)==Vpathwayi[j])

@@ -4,7 +4,11 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   
   if(method == 'DRW'){
     
+    # iDRW
     load(file.path(datapath, paste(c("pathway_rank", id, profile_name, method, "RData"), collapse = '.')))
+    
+    # iDRW + DA
+    # load(file.path(datapath, paste(c("pathway_rank", id, profile_name, method, pranking, "RData"), collapse = '.')))
     
   } else if(method == 'gf'){
     

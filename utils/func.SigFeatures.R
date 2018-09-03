@@ -1,3 +1,27 @@
+count.sigFeatures <- function(res_fit, iter, nFolds) {
+  # union significant pathway / gene features across 5 folds
+  res <- res_fit[[4]]
+  r <- res[[2]]
+  p <- names(r)
+  for (i in 2:iter*nFolds) {
+    res <- res[[1]]
+    r <- res[[2]]
+    p <- union(p,names(r))
+  }
+  pathway_cnt <- data.frame(pathway_id=p, count=rep(0,length(p)), row.names = 1)
+  
+  # count significant pathway / gene features across 5 folds
+  res <- res_fit[[4]]
+  r <- res[[2]]
+  pathway_cnt[names(r),] <- pathway_cnt[names(r),] + 1
+  for (i in 2:iter*nFolds) {
+    res <- res[[1]]
+    r <- res[[2]]
+    pathway_cnt[names(r),] <- pathway_cnt[names(r),] + 1
+  }
+  return(list(p, pathway_cnt))
+}
+
 # write significant pathway / gene features
 write.SigFeatures <- function(res_fit, id, profile_name, method = "DRW", classifier = NULL, respath, AntiCorr = FALSE, da = FALSE) {
   

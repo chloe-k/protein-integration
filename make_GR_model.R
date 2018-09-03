@@ -76,9 +76,9 @@ make_GR_model <- function(id, lim=NULL, type_used=NULL, prob=NULL, Gamma=NULL){
   # id -> result18_28_GR
   result_name <- paste(c('result',id,'_GR'), collapse = '')
   
-  # fit.iDRWPClass(x=x, y=y, globalGraph=gr, testStatistic= testStatistic, profile_name = profile_name,
-  #                datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
-  #                id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GR", AntiCorr=FALSE, DEBUG=TRUE)
+  fit.iDRWPClass(x=x, y=y, globalGraph=gr, testStatistic= testStatistic, profile_name = profile_name,
+                 datapath = datapath, respath = respath, pathSet=pathSet, method = "DRW", samples = samples, lim = lim, type_used = type_used,
+                 id = result_name, prob = prob, Gamma = Gamma, pranking = "t-test", mode = "GR", AntiCorr=FALSE, DEBUG=TRUE)
   
   model <- fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
                               profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",

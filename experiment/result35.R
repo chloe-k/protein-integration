@@ -14,7 +14,7 @@
 ################################## Result 35 in GMR_d ############################################################
 
 num_cores <- detectCores()/2
-registerDoParallel(cores = 10)
+registerDoParallel(cores = 1)
 
 id_list <- c("35_1", "35_2", "35_3", "35_4",
              "35_5", "35_6", "35_7", "35_8",
