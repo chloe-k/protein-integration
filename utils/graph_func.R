@@ -9,24 +9,16 @@ plotPerf <-
     pf.se <- pf.sd/sqrt(pf.n)
 
     print(list(pf.means, pf.sd, pf.se))
-
+    
     data_AUC <- data.frame(Method=method,
                            meanscore=pf.means,
                            sd=pf.sd,
                            n=pf.n,
-                           se=pf.se,
-                           group=group)
+                           se=pf.se)
     
     data_AUC$Method_ <- factor(data_AUC$Method, as.character(data_AUC$Method))
-    data_AUC$group <- factor(data_AUC$group, levels = c("{p(G),p(M),p(P)}", "{p(GM)}",
-                                                        "{p(GMP)}", "{p(GP)}"))
-    # df_list = list()
-    # for(i in 1:length(xlabs)) {
-    #   # df_list[[i]] = data.frame(model=xlabs[i], Accuracy=res_models[[i]]$resample$Accuracy)
-    #   df_list[[i]] = data.frame(model=xlabs[i], Accuracy=max(res_models[[i]]$results$Accuracy))
-    # }
-    # df = Reduce(rbind, df_list)
-    
+    # data_AUC$group <- factor(data_AUC$group, levels = c("{p(G),p(M),p(P)}", "{p(GM)}",
+
     # model_name <- c(expression(iDRW(~G^R~M^R)),
     #                 expression(iDRW(~G^R~M^R~P)),
     #                 expression(iDRW_prop(~G^R~M^R~P)))
@@ -41,22 +33,31 @@ plotPerf <-
     #                 "iDRW(GMP)",
     #                 expression(iDRW(GMP)_~prop^(p)~))
     
-    g <- ggplot(data=data_AUC, aes(x=Method_, y=meanscore, fill=group)) +
-    # g <- ggplot(data=data_AUC, aes(x=Method_, y=meanscore, fill=factor(Method_, as.character(Method_)))) +
-    # g <- ggplot(data=df, aes(x=model, y=Accuracy, fill=factor(model, as.character(model)))) +
-      
+    
+    g <- ggplot(data=data_AUC, aes(x=Method_, y=meanscore, fill=factor(Method_, as.character(Method_)))) +
       geom_bar(aes(x=Method_), data=data_AUC, stat='identity', position=position_dodge()) +
-      # geom_bar(aes(x=model), data=Accuracy, stat='identity', position=position_dodge()) +
-      
       xlab('Model')+
-      ylab('Accuracy') +
-      # scale_color_brewer(palette=color) +
-      scale_fill_discrete("Set of\npathway profiles\nused in model") +
-      scale_y_continuous(limits=c(perf_min-0.01, perf_max+0.01), oob=rescale_none)+
-      theme(axis.text.x=element_text(angle=45, hjust=1, size=10), legend.title = element_text(hjust=0.5, size=11)) +
-      # scale_x_discrete(labels=model_name)+
+      ylab(measure) +
+      scale_color_brewer(palette=color) +
+      scale_y_continuous(limits=c(perf_min,perf_max), oob=rescale_none)+
+      theme(axis.text.x=element_text(angle=45, hjust=1, size=12), legend.position="none") +
       # geom_errorbar(aes(ymin=meanscore-se, ymax=meanscore+se), colour="black", width=.2, position=position_dodge(0.9)) +
       ggtitle(title)
+    
+    # g <- ggplot(data=data_AUC, aes(x=Method_, y=meanscore, fill=group)) +
+    # g <- ggplot(data=df, aes(x=model, y=Accuracy, fill=factor(model, as.character(model)))) +
+      
+      # geom_bar(aes(x=model), data=Accuracy, stat='identity', position=position_dodge()) +
+      
+      # xlab('Model')+
+      # ylab('Accuracy') +
+      # scale_color_brewer(palette=color) +
+      # # scale_fill_discrete("Set of\npathway profiles\nused in model") +
+      # scale_y_continuous(limits=c(perf_min-0.01, perf_max+0.01), oob=rescale_none)+
+      # theme(axis.text.x=element_text(angle=45, hjust=1, size=10), legend.title = element_text(hjust=0.5, size=11)) +
+      # # scale_x_discrete(labels=model_name)+
+      # # geom_errorbar(aes(ymin=meanscore-se, ymax=meanscore+se), colour="black", width=.2, position=position_dodge(0.9)) +
+      # ggtitle(title)
     
     return(g)
   }

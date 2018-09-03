@@ -100,17 +100,5 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-# GMP
-# result_name <- paste(c('result','18_3','_GMR'), collapse = '')
-# profile_name <- c("rna(Entrez)", "meth(Entrez)", "rppa(Entrez)")
-# fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
-#                    profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
-#                    nFolds = 5, numTops=50, iter = 10)
+perf_barplot(xlabs, res_models, perf_min-0.01, 0.75)
 
-
-# GP
-result_name <- paste(c('result','28_0.6','_GR'), collapse = '')
-profile_name <- c("rna(Entrez)", "rppa(Entrez)")
-fit.classification(y=y, samples = samples, id = result_name, datapath = datapath, respath = respath,
-                            profile_name = profile_name, method = "DRW", pranking = "t-test", classifier = "rf",
-                            nFolds = 5, numTops=50, iter = 10)

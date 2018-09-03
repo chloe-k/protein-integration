@@ -24,8 +24,9 @@ perf_barplot <- function(xlabs, res_models, perf_min, perf_max, baseline=NULL, g
   res <- Reduce(rbind,lapply(X = res_models, FUN=function(x) max(x$results$Accuracy)))
   row.names(res) <- xlabs
   
-  g1 <- plotPerf(xlabs, res, title = "", measure='Accuracy', perf_min=perf_min, perf_max=perf_max, color="Dark2", group=group)
-  # g1 <- plotPerf(res, title = "", measure='AUC', perf_min=perf_min, perf_max=perf_max, color="Dark2")
+  # g1 <- plotPerf(xlabs, res, title = "", measure='Accuracy', perf_min=perf_min, perf_max=perf_max, color="Dark2", group=group)
+  # g1 <- plotPerf(perf = res, title = "", measure='AUC', perf_min=perf_min, perf_max=perf_max, color="Dark2")
+  g1 <- plotPerf(perf = res, title = "", measure='Accuracy', perf_min=perf_min, perf_max=perf_max, color="Dark2")
   
   if(!is.null(baseline)) g1 <- g1 + geom_hline(aes_string(yintercept=baseline), linetype="dashed")
   
