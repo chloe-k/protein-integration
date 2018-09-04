@@ -27,7 +27,8 @@ fit.classification <- function(y, samples, id, datapath, respath, profile_name, 
   set.seed(111)
   
   # dim(X)[2] - The number of pathway
-  numTops = dim(X)[2]/2
+  # numTops = dim(X)[2]/2
+  numTops = 100
   
   # Search for Top N pathway
   toppath <- file.path(respath, paste(c("res_accuracy_tuneK", desc), collapse = '.'))

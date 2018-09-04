@@ -7,61 +7,51 @@
 
 # Classifier : rf(Random Forest)
 
-#------------------------- RNA-seq expression gene profile -------------------------#
-testStatistic <- c('DESeq2')
-profile_name <- c('gf_rna(Entrez)')
-x=list(rnaseq)
-
-fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, id = "result12_G_gf",
-               datapath=datapath, respath = respath, method = "gf", samples = samples)
-
-res_gf_G_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
-                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_G_gf",
-                                  nFolds = 5, numTops=50, iter = 50)
-
-save(res_gf_G_12, file=file.path('data/model/res_gf_G_12.RData'))
-
-#------------------------- methylation expression gene profile -------------------------#
-testStatistic <- c("t-test")
-profile_name <- c('gf_meth(Entrez)')
-x=list(imputed_methyl)
-
-fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, id = "result12_M_gf",
-               datapath=datapath, respath = respath, method = "gf", samples = samples)
-
-res_gf_M_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
-                                  method = "gf", pranking = "t-test", classifier = "rf",
-                                  nFolds = 5, numTops=50, iter = 50)
-
-save(res_gf_M_12, file=file.path('data/model/res_gf_M_12.RData'))
-
-summary(res_gf_M_12)
-print(res_gf_M_12$results)
-print(res_gf_M_12$resample$Accuracy)
-
-
-#------------------------- RPPA expression gene profile -------------------------#
 testStatistic <- c("t-test")
 profile_name <- c('gf_rppa(Entrez)')
 x=list(rppa)
 
-fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name,
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, mode = NULL, id = "result12_P",
                datapath=datapath, respath = respath, method = "gf", samples = samples)
 
 res_gf_P_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
-                                  method = "gf", pranking = "t-test", classifier = "rf",
-                                  nFolds = 5, numTops=50, iter = 50)
+                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_P",
+                                  nFolds = 5, numTops=50, iter = 10)
 
 save(res_gf_P_12, file=file.path('data/model/res_gf_P_12.RData'))
 
-summary(res_gf_P_12)
-print(res_gf_P_12$results)
-print(res_gf_P_12$resample$Accuracy)
+#------------------------------------
+testStatistic <- c("t-test")
+profile_name <- c('gf_meth(Entrez)')
+x=list(imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, mode = NULL, id = "result12_M",
+               datapath=datapath, respath = respath, method = "gf", samples = samples)
+
+res_gf_M_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_M",
+                                  nFolds = 5, numTops=50, iter = 10)
+
+save(res_gf_M_12, file=file.path('data/model/res_gf_M_12.RData'))
+
+#----------------------
+testStatistic <- c('DESeq2')
+profile_name <- c('gf_rna(Entrez)')
+x=list(rnaseq)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, mode = NULL, id = "result12_G",
+               datapath=datapath, respath = respath, method = "gf", samples = samples)
+
+res_gf_G_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_G",
+                                  nFolds = 5, numTops=50, iter = 10)
+
+save(res_gf_G_12, file=file.path('data/model/res_gf_G_12.RData'))
 
 
 # plot
 title <- c("Result 12")
-xlabs <- c("G(gene)", "M(gene)", "P(gene)")
+xlabs <- c("G(gene)", "M(gene)", "P(protein)")
 res_models <- list(res_gf_G_12, res_gf_M_12, res_gf_P_12)
 
 perf_boxplot(title, xlabs, res_models, perf_min = 0.4, perf_max = 0.9, res_gf_G_12$results$Accuracy[1])

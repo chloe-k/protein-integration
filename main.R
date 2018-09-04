@@ -100,5 +100,43 @@ y=list(good_samples, poor_samples)
 
 
 #----------------------------------------iDRW-----------------------------------------------------------#
-perf_barplot(xlabs, res_models, perf_min-0.01, 0.75)
+testStatistic <- c("t-test")
+profile_name <- c('gf_rppa(Entrez)')
+x=list(rppa)
 
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, mode = NULL, id = "result12_P",
+               datapath=datapath, respath = respath, method = "gf", samples = samples)
+
+res_gf_P_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_P",
+                                  nFolds = 5, numTops=50, iter = 10)
+
+save(res_gf_P_12, file=file.path('data/model/res_gf_P_12.RData'))
+
+#------------------------------------
+testStatistic <- c("t-test")
+profile_name <- c('gf_meth(Entrez)')
+x=list(imputed_methyl)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, mode = NULL, id = "result12_M",
+               datapath=datapath, respath = respath, method = "gf", samples = samples)
+
+res_gf_M_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_M",
+                                  nFolds = 5, numTops=50, iter = 10)
+
+save(res_gf_M_12, file=file.path('data/model/res_gf_M_12.RData'))
+
+#----------------------
+testStatistic <- c('DESeq2')
+profile_name <- c('gf_rna(Entrez)')
+x=list(rnaseq)
+
+fit.iDRWPClass(x=x, y=y, testStatistic= testStatistic, profile_name = profile_name, mode = NULL, id = "result12_G",
+               datapath=datapath, respath = respath, method = "gf", samples = samples)
+
+res_gf_G_12 <- fit.classification(y=y, samples = samples, datapath = datapath, respath = respath, profile_name = profile_name,
+                                  method = "gf", pranking = "t-test", classifier = "rf", id = "result12_G",
+                                  nFolds = 5, numTops=50, iter = 10)
+
+save(res_gf_G_12, file=file.path('data/model/res_gf_G_12.RData'))
